@@ -1,4 +1,3 @@
-// models/StudentProfile.js
 import { DataTypes } from "sequelize";
 import { sequelize } from "../config/sequelize.js";
 
@@ -6,18 +5,22 @@ export const StudentProfileModel = () => {
   return sequelize.define(
     "StudentProfile",
     {
-      firstName: DataTypes.STRING,
-      lastName: DataTypes.STRING,
-      school: DataTypes.STRING,
-      level: DataTypes.STRING,
-      fieldOfStudy: DataTypes.STRING,
-      location: DataTypes.STRING,
-      availability: DataTypes.STRING,
+      firstName: { type: DataTypes.STRING, allowNull: false, validate: { notEmpty: true } },
+      lastName: { type: DataTypes.STRING, allowNull: false, validate: { notEmpty: true } },
+      school: { type: DataTypes.STRING, allowNull: false, validate: { notEmpty: true } },
+      level: { type: DataTypes.STRING, allowNull: false },
+      fieldOfStudy: { type: DataTypes.STRING },
+      location: { type: DataTypes.STRING },
+      availability: { type: DataTypes.BOOLEAN, defaultValue: true },
       visibility: { type: DataTypes.BOOLEAN, defaultValue: true },
-      bio: DataTypes.TEXT,
-      photoUrl: { type: DataTypes.STRING, defaultValue: "" },
-      cvUrl: { type: DataTypes.STRING, defaultValue: "" },
+      bio: { type: DataTypes.TEXT },
+      photoUrl: { type: DataTypes.STRING },
+      cvUrl: { type: DataTypes.STRING },
     },
-    { timestamps: true, createdAt: "created", updatedAt: "updated" }
+    {
+      timestamps: true,
+      createdAt: "created",
+      updatedAt: "updated",
+    }
   );
 };

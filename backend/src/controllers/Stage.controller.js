@@ -1,102 +1,219 @@
 import { Stage, User } from "../config/sequelize.js";
+import { Op } from "sequelize";
 
-export const createStage = async (req, res) => {
+export const createStage = async (req, res, next) => {
   try {
-    if (req.user.role === "student") {
-      return res.json({ message: "Vous ne pouvez pas publiez de stages" });
+    // Seuls les users "company" peuvent créer un stage
+    if (req.user.role !== "company") {
+      return res.status(403).json({
+        success: false,
+        message: "Vous ne pouvez pas publier de stages",
+      });
     }
 
-    const { title, description, location, companyId } = req.body;
+    const { title, description, location } = req.body;
+
+    if (
+      !title ||
+      !title.trim() ||
+      !description ||
+      !description.trim() ||
+      !location ||
+      !location.trim()
+    ) {
+      return res.status(400).json({
+        success: false,
+        message: "Titre, description et localisation sont obligatoires",
+      });
+    }
 
     // Vérifier que l'entreprise existe
     const company = await User.findByPk(req.user.id);
-    console.log(company.id);
-
     if (!company) {
-      return res.status(404).json({ message: "Entreprise introuvable" });
+      return res.status(404).json({
+        success: false,
+        message: "Entreprise introuvable",
+      });
     }
 
+    // Créer le stage
     const stage = await Stage.create({
-      title,
-      description,
-      location,
+      title: title.trim(),
+      description: description.trim(),
+      location: location.trim(),
       companyId: company.id,
     });
-    return res.status(201).json(stage);
+
+    return res.status(201).json({
+      success: true,
+      message: "Stage créé avec succès",
+      stage,
+    });
   } catch (error) {
-    console.error("Erreur createStage:", error);
-    return res.status(500).json({ message: "Erreur serveur" });
+    next(error);
   }
 };
 
-export const getAllStages = async (req, res) => {
+export const getAllStages = async (req, res, next) => {
   try {
     const stages = await Stage.findAll({
-      include: [{ model: User, as: "company" }],
+      include: [
+        {
+          model: User,
+          as: "company",
+          attributes: ["id", "email", "role"],
+        },
+      ],
     });
+
     if (!stages.length) {
-      return res.status(404).json({ message: "Aucune offre trouver" });
+      return res.status(404).json({
+        success: false,
+        message: "Aucun stage trouvé",
+      });
     }
 
-    return res.status(200).json(stages);
+    return res.status(200).json({
+      success: true,
+      message: "Liste des stages récupérée avec succès",
+      stages,
+    });
   } catch (error) {
-    console.error("Erreur getAllStages:", error);
-    return res.status(500).json({ message: "Erreur serveur" });
+    next(error);
   }
 };
 
-export const getStageById = async (req, res) => {
+export const getStageById = async (req, res, next) => {
   try {
     const { id } = req.params;
+
     const stage = await Stage.findByPk(id, {
-      include: [{ model: User, as: "company" }],
+      include: [
+        {
+          model: User,
+          as: "company",
+          attributes: ["id", "email", "role"],
+        },
+      ],
     });
+
     if (!stage) {
-      return res.status(404).json({ message: "Stage introuvable" });
+      return res.status(404).json({
+        success: false,
+        message: "Stage introuvable",
+      });
     }
-    return res.status(200).json(stage);
+
+    return res.status(200).json({
+      success: true,
+      message: "Stage récupéré avec succès",
+      stage,
+    });
   } catch (error) {
-    console.error("Erreur getStageById:", error);
-    return res.status(500).json({ message: "Erreur serveur" });
+    next(error);
   }
 };
 
-export const updateStage = async (req, res) => {
+export const updateStage = async (req, res, next) => {
   try {
-    if (req.user.role === "student") {
-      return res.json({ message: "Vous ne pouvez pas modifier de stage" });
+    if (req.user.role !== "company") {
+      return res.status(403).json({
+        success: false,
+        message: "Vous ne pouvez pas modifier de stage",
+      });
     }
+
     const { id } = req.params;
     const { title, description, location, isActive } = req.body;
 
     const stage = await Stage.findOne({
-      where: { id: id, companyId: req.user.id },
+      where: { id, companyId: req.user.id },
     });
-    if (!stage) return res.status(404).json({ message: "Stage introuvable" });
 
+    if (!stage) {
+      return res.status(404).json({
+        success: false,
+        message: "Stage introuvable",
+      });
+    }
+
+    // Mise à jour
     await stage.update({ title, description, location, isActive });
-    return res.status(200).json(stage);
+
+    return res.status(200).json({
+      success: true,
+      message: "Stage mis à jour avec succès",
+      stage,
+    });
   } catch (error) {
-    console.error("Erreur updateStage:", error);
-    return res.status(500).json({ message: "Erreur serveur" });
+    next(error);
   }
 };
 
-export const deleteStage = async (req, res) => {
+export const deleteStage = async (req, res, next) => {
   try {
-    if (req.user.role === "student") {
-      return res.json({ message: "Vous ne pouvez pas modifier de stage" });
+    if (req.user.role !== "company") {
+      return res.status(403).json({
+        success: false,
+        message: "Vous ne pouvez pas supprimer de stage",
+      });
     }
+
     const { id } = req.params;
+
     const stage = await Stage.findOne({
       where: { companyId: req.user.id, id },
     });
-    if (!stage) return res.status(404).json({ message: "Stage introuvable" });
+
+    if (!stage) {
+      return res.status(404).json({
+        success: false,
+        message: "Stage introuvable",
+      });
+    }
 
     await stage.destroy();
-    return res.status(200).json({ message: "Stage supprimé avec succès" });
+
+    return res.status(200).json({
+      success: true,
+      message: "Stage supprimé avec succès",
+    });
   } catch (error) {
-    console.error("Erreur deleteStage:", error);
-    return res.status(500).json({ message: "Erreur serveur" });
+    next(error);
+  }
+};
+
+export const searchStages = async (req, res) => {
+  
+  try {
+    const { q, location, domain } = req.query;
+
+    const filters = {};
+    console.log("log de filters", filters);
+
+    // recherche texte (titre + description)
+    if (q) {
+      filters[Op.or] = [
+        { title: { [Op.like]: `%${q}%` } },
+        { description: { [Op.like]: `%${q}%` } },
+      ];
+    }
+
+    // filtre par localisation
+    if (location) {
+      filters.location = { [Op.like]: `%${location}%` };
+    }
+
+    // filtre par domaine
+    if (domain) {
+      filters.domain = { [Op.like]: `%${domain}%` };
+    }
+
+    const stages = await Stage.findAll({ where: filters });
+
+    res.json(stages);
+  } catch (error) {
+    console.log("Erreur in searchStages: ", error);
+    res.status(500).json({ message: "Erreur serveur", error: error.message });
   }
 };

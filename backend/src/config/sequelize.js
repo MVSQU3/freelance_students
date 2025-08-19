@@ -8,7 +8,7 @@ import { StudentSkillModel } from "../models/StudentSkill.model.js";
 import { StageModel } from "../models/Stage.model.js";
 import { ApplicationModel } from "../models/Application.model.js";
 import setupAssociations from "../models/association/association.js";
-
+import { seed } from "../seed/seed.js";
 export const sequelize = new Sequelize("freelance_students", "root", "", {
   host: "localhost",
   dialect: "mariadb",
@@ -47,21 +47,8 @@ export const InitDb = async () => {
 
     await sequelize.sync({ force: true });
     console.log("DB synchronisée !");
-    const hash = await bcrypt.hash("123456", 10);
-    await User.bulkCreate([
-      {
-        email: "paul@email.com",
-        password: hash,
-        role: "student",
-      },
-      { email: "Orange.ci@email.com", password: hash, role: "company" },
-    ]);
-    await StudentProfile.create({
-      firstName: "Paul Kevin",
-      lastName: "Kouadio",
-      userId: 1,
-    });
-    await CompanyProfile.create({ companyName: "Orange", userId: 2 });
+
+    await seed();
   } catch (error) {
     console.error("Erreur de connexion à la DB:", error);
   }

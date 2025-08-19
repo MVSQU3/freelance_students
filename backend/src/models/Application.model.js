@@ -5,13 +5,15 @@ export const ApplicationModel = () => {
   return sequelize.define(
     "Application",
     {
-      id: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
+      coverLetter: {
+        type: DataTypes.TEXT,
+        allowNull: false,
+        validate: { notEmpty: true },
+      },
       status: {
         type: DataTypes.ENUM("pending", "accepted", "rejected"),
-        allowNull: false,
         defaultValue: "pending",
       },
-      coverLetter: { type: DataTypes.TEXT, allowNull: true },
     },
     {
       timestamps: true,

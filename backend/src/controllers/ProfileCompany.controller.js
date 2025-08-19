@@ -1,7 +1,8 @@
 import { CompanyProfile, User } from "../config/sequelize.js";
 
-export const profile = async (req, res) => {
+export const profile = async (req, res, next) => {
   const { id } = req.params;
+
   try {
     const company = await CompanyProfile.findOne({
       where: { userId: id },
@@ -9,43 +10,63 @@ export const profile = async (req, res) => {
         {
           model: User,
           as: "user",
-          attributes: ["email"],
+          attributes: ["email", "role"],
         },
       ],
     });
 
     if (!company) {
-      return res.json({ message: "Aucun profile trouver" });
+      return res.status(404).json({
+        success: false,
+        message: "Aucun profil entreprise trouvé",
+      });
     }
-    res.json({
-      message: `Profile`,
-      company,
+
+    return res.status(200).json({
+      success: true,
+      message: "Profil entreprise récupéré avec succès",
+      profile: company,
     });
   } catch (error) {
-    console.log("Erreur in controller me: ", error);
-    return res
-      .status(500)
-      .json({ message: "Internal server error: ", Error: error.message });
+    next(error);
   }
 };
 
-export const updateProfile = async (req, res) => {
-  const { companyName, sector, location, website, description } = req.body;
+
+export const updateProfile = async (req, res, next) => {
   try {
-    if (!companyName.trim()) {
-      return res.json({ message: "Le nom de la company est obligatoire" });
+    const { companyName, sector, location, website, description } = req.body;
+
+    if (!companyName || !companyName.trim()) {
+      return res.status(400).json({
+        success: false,
+        message: "Le nom de l'entreprise est obligatoire",
+      });
     }
 
-    const [company] = await CompanyProfile.update(
-      { ...req.body },
+    const [updated] = await CompanyProfile.update(
+      { companyName, sector, location, website, description },
       { where: { userId: req.user.id } }
     );
 
-    res.json("Profile mise à jour", company);
+    if (!updated) {
+      return res.status(404).json({
+        success: false,
+        message: "Profil entreprise non trouvé ou aucune modification apportée",
+      });
+    }
+
+    // Récupérer le profil mis à jour
+    const profile = await CompanyProfile.findOne({
+      where: { userId: req.user.id },
+    });
+
+    return res.status(200).json({
+      success: true,
+      message: "Profil entreprise mis à jour avec succès",
+      profile,
+    });
   } catch (error) {
-    console.log("Erreur in controller register: ", error);
-    return res
-      .status(500)
-      .json({ message: "Internal server error: ", Error: error.message });
+    next(error);
   }
 };

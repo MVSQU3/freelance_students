@@ -13,7 +13,7 @@ import { auth } from "../middleware/auth.js";
 const router = express.Router();
 
 router.get("/:id", profile);
-router.put("/:id", auth, updateProfile);
+router.put("/", auth, updateProfile);
 router.post("/skills/add/", auth, addSkill);
 router.delete("/skills/remove/", auth, removeSkill);
 

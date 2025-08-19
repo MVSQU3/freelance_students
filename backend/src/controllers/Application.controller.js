@@ -1,59 +1,125 @@
 import { Application, User, Stage } from "../config/sequelize.js";
 
-// controllers/application.controller.js
-
 // Postuler à une offre
-export const applyToOffer = async (req, res) => {
+export const applyToOffer = async (req, res, next) => {
   try {
     const { stageId } = req.params;
     const { coverLetter } = req.body;
 
-    const studentId = req.user.id; // récup via auth
+    if (!coverLetter || !coverLetter.trim()) {
+      return res.status(400).json({
+        success: false,
+        message:
+          "Veuillez accompagner votre candidature d'une lettre de motivation",
+      });
+    }
 
+    if (req.user.role !== "student") {
+      return res.status(403).json({
+        success: false,
+        message: "Seuls les étudiants peuvent postuler à un stage",
+      });
+    }
+
+    const studentId = req.user.id;
+
+    // Vérifier que le stage existe
+    const stage = await Stage.findByPk(stageId);
+    if (!stage) {
+      return res.status(404).json({
+        success: false,
+        message: "Stage introuvable",
+      });
+    }
+
+    // Vérifier si l'étudiant a déjà postulé
+    const existingApplication = await Application.findOne({
+      where: { stageId, studentId },
+    });
+
+    if (existingApplication) {
+      return res.status(400).json({
+        success: false,
+        message: "Vous avez déjà postulé à ce stage",
+      });
+    }
+
+    // Créer la candidature
     const application = await Application.create({
       stageId,
       studentId,
-      coverLetter,
+      coverLetter: coverLetter.trim(),
     });
 
-    res.status(201).json({ message: "Candidature envoyée", application });
+    return res.status(201).json({
+      success: true,
+      message: "Candidature envoyée avec succès",
+      application,
+    });
   } catch (error) {
-    console.log("Erreur in applyToOffer me: ", error);
-    return res
-      .status(500)
-      .json({ message: "Internal server error: ", Error: error.message });
+    next(error);
   }
 };
 
 // Voir SES candidatures
-export const getMyApplications = async (req, res) => {
+export const getMyApplications = async (req, res, next) => {
   try {
+    if (req.user.role !== "student") {
+      return res.status(403).json({
+        success: false,
+        message: "Seuls les étudiants peuvent consulter leurs candidatures",
+      });
+    }
+
     const studentId = req.user.id;
 
     const applications = await Application.findAll({
       where: { studentId },
-      include: [{ model: Stage, as: "stage" }],
+      include: [
+        {
+          model: Stage,
+          as: "stage",
+          include: [
+            {
+              model: User,
+              as: "company",
+              attributes: ["id", "email", "role"],
+            },
+          ],
+        },
+      ],
     });
 
-    if(!applications.length){
-        return res.json({message: "Vous avez aucune candidatures"})
+    if (!applications.length) {
+      return res.status(404).json({
+        success: false,
+        message: "Vous n’avez aucune candidature",
+      });
     }
 
-    res.json(applications);
+    return res.status(200).json({
+      success: true,
+      message: "Candidatures récupérées avec succès",
+      applications,
+    });
   } catch (error) {
-    console.log("Erreur in getMyApplications me: ", error);
-    return res
-      .status(500)
-      .json({ message: "Internal server error: ", Error: error.message });
+    next(error);
   }
 };
 
 // Voir les candidatures pour une offre de l’entreprise
-export const getOfferApplications = async (req, res) => {
+export const getOfferApplications = async (req, res, next) => {
   try {
+    if (req.user.role !== "company") {
+      return res.status(403).json({
+        success: false,
+        message: "Seuls les entreprises peuvent consulter les candidatures",
+      });
+    }
+
     const { stageId } = req.params;
 
-    // vérifier que l’offre appartient à l’entreprise connectée
+    // Vérifier que le stage appartient à l'entreprise connectée
     const stage = await Stage.findOne({
       where: {
         id: stageId,
@@ -62,7 +128,10 @@ export const getOfferApplications = async (req, res) => {
     });
 
     if (!stage) {
-      return res.status(403).json({ error: "Accès interdit à cette offre" });
+      return res.status(403).json({
+        success: false,
+        message: "Accès interdit à cette offre",
+      });
     }
 
     const applications = await Application.findAll({
@@ -71,46 +140,82 @@ export const getOfferApplications = async (req, res) => {
         {
           model: User,
           as: "student",
+          attributes: ["id", "email", "role"],
         },
       ],
     });
 
-    res.json(applications);
+    if (!applications.length) {
+      return res.status(404).json({
+        success: false,
+        message: "Aucune candidature pour ce stage",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Candidatures récupérées avec succès",
+      applications,
+    });
   } catch (error) {
-    console.log("Erreur in getOfferApplications me: ", error);
-    return res
-      .status(500)
-      .json({ message: "Internal server error: ", Error: error.message });
+    next(error);
   }
 };
 
 // Accepter / refuser une candidature
-export const updateApplicationStatus = async (req, res) => {
+export const updateApplicationStatus = async (req, res, next) => {
   try {
+    if (req.user.role !== "company") {
+      return res.status(403).json({
+        success: false,
+        message:
+          "Seuls les entreprises peuvent modifier le statut d'une candidature",
+      });
+    }
+
     const { applicationId } = req.params;
     const { status } = req.body; // "accepted" | "rejected"
 
+    if (!["accepted", "rejected"].includes(status)) {
+      return res.status(400).json({
+        success: false,
+        message: "Statut invalide, utilisez 'accepted' ou 'rejected'",
+      });
+    }
+
     const application = await Application.findByPk(applicationId, {
-      include: [{ model: Stage, as: "stage" }],
+      include: [
+        {
+          model: Stage,
+          as: "stage",
+        },
+      ],
     });
 
     if (!application) {
-      return res.status(404).json({ error: "Candidature non trouvée" });
+      return res.status(404).json({
+        success: false,
+        message: "Candidature non trouvée",
+      });
     }
 
-    // Vérif que l'offre appartient bien à l'entreprise
+    // Vérification que le stage appartient bien à l'entreprise connectée
     if (application.stage.companyId !== req.user.id) {
-      return res.status(403).json({ error: "Non autorisé" });
+      return res.status(403).json({
+        success: false,
+        message: "Non autorisé à modifier cette candidature",
+      });
     }
 
     application.status = status;
     await application.save();
 
-    res.json({ message: "Statut mis à jour", application });
+    return res.status(200).json({
+      success: true,
+      message: "Statut de la candidature mis à jour avec succès",
+      application,
+    });
   } catch (error) {
-    console.log("Erreur in updateApplicationStatus me: ", error);
-    return res
-      .status(500)
-      .json({ message: "Internal server error: ", Error: error.message });
+    next(error);
   }
 };
