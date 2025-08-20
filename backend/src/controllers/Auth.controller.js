@@ -1,30 +1,34 @@
 import bcrypt from "bcrypt";
 import { User, StudentProfile, CompanyProfile } from "../config/sequelize.js";
 import { generateToken } from "../config/util.js";
+import { registerSchema } from "../validation/zod.js";
+import { z } from "zod";
 
 export const register = async (req, res, next) => {
-  const { email, password, role } = req.body;
+  // const { email, password, role } = req.body;
   try {
+    const { email, password, role } = registerSchema.parse(req.body);
+
     // Validation des champs
-    if (!email?.trim() || !password?.trim() || !role?.trim()) {
-      const error = new Error("Tous les champs sont requis");
-      error.statusCode = 400;
-      throw error;
-    }
+    // if (!email?.trim() || !password?.trim() || !role?.trim()) {
+    //   const error = new Error("Tous les champs sont requis");
+    //   error.statusCode = 400;
+    //   throw error;
+    // }
 
-    if (password.length < 6) {
-      const error = new Error(
-        "Le mot de passe doit contenir au moins 6 caractères"
-      );
-      error.statusCode = 400;
-      throw error;
-    }
+    // if (password.length < 6) {
+    //   const error = new Error(
+    //     "Le mot de passe doit contenir au moins 6 caractères"
+    //   );
+    //   error.statusCode = 400;
+    //   throw error;
+    // }
 
-    if (role !== "student" && role !== "company") {
-      const error = new Error("Le rôle doit être 'student' ou 'company'");
-      error.statusCode = 400;
-      throw error;
-    }
+    // if (role !== "student" && role !== "company") {
+    //   const error = new Error("Le rôle doit être 'student' ou 'company'");
+    //   error.statusCode = 400;
+    //   throw error;
+    // }
 
     // Vérifier si email existe déjà
     const exist = await User.findOne({ where: { email } });
@@ -46,6 +50,11 @@ export const register = async (req, res, next) => {
       user: { id: user.id, email: user.email, role: user.role },
     });
   } catch (error) {
+    if (error instanceof z.ZodError) {
+      console.log(error);
+
+      return res.status(400).json({ success: false, errors: error });
+    }
     next(error); // on délègue au middleware d'erreurs
   }
 };

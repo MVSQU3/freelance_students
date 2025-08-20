@@ -56,7 +56,16 @@ export const createStage = async (req, res, next) => {
 
 export const getAllStages = async (req, res, next) => {
   try {
-    const stages = await Stage.findAll({
+    let { page, limit, sort = "desc", field = "updated" } = req.query;
+    page = parseInt(page) || 1;
+    limit = parseInt(limit) || 5;
+
+    const offset = (page - 1) * limit;
+
+    const { count, rows } = await Stage.findAndCountAll({
+      limit,
+      offset,
+      order: [[field, sort !== "desc" ? (sort = "asc") : sort]],
       include: [
         {
           model: User,
@@ -66,7 +75,7 @@ export const getAllStages = async (req, res, next) => {
       ],
     });
 
-    if (!stages.length) {
+    if (!rows.length) {
       return res.status(404).json({
         success: false,
         message: "Aucun stage trouvé",
@@ -76,7 +85,10 @@ export const getAllStages = async (req, res, next) => {
     return res.status(200).json({
       success: true,
       message: "Liste des stages récupérée avec succès",
-      stages,
+      total: count,
+      page,
+      totalPages: Math.ceil(count / limit),
+      stages: rows,
     });
   } catch (error) {
     next(error);
@@ -184,12 +196,10 @@ export const deleteStage = async (req, res, next) => {
 };
 
 export const searchStages = async (req, res) => {
-  
   try {
-    const { q, location, domain } = req.query;
+    const { q, location, domain, sort, field } = req.query;
 
     const filters = {};
-    console.log("log de filters", filters);
 
     // recherche texte (titre + description)
     if (q) {
@@ -204,14 +214,25 @@ export const searchStages = async (req, res) => {
       filters.location = { [Op.like]: `%${location}%` };
     }
 
-    // filtre par domaine
     if (domain) {
       filters.domain = { [Op.like]: `%${domain}%` };
     }
 
-    const stages = await Stage.findAll({ where: filters });
+    if (sort === "asc") {
+      const stages = await Stage.findAll({
+        where: filters,
+        order: [[field, sort]],
+      });
+      res.json(stages);
+    }
 
-    res.json(stages);
+    if (sort === "desc") {
+      const stages = await Stage.findAll({
+        where: filters,
+        order: [[field, sort]],
+      });
+      res.json(stages);
+    }
   } catch (error) {
     console.log("Erreur in searchStages: ", error);
     res.status(500).json({ message: "Erreur serveur", error: error.message });

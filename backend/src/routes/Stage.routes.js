@@ -13,12 +13,10 @@ const router = express.Router();
 
 router.post("/", auth, createStage);
 router.get("/", getAllStages);
+router.get("/search", searchStages);  // 👈 placé avant
 router.get("/:id", getStageById);
 router.put("/:id", auth, updateStage);
 router.delete("/:id", auth, deleteStage);
-router.get("/search", (req, res, next) => {
-  console.log("Route searchStages appelée ✅");
-  next();
-}, searchStages);
+
 
 export default router;
