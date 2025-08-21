@@ -5,13 +5,35 @@ export const StudentProfileModel = () => {
   return sequelize.define(
     "StudentProfile",
     {
-      firstName: { type: DataTypes.STRING, allowNull: false, validate: { notEmpty: true } },
-      lastName: { type: DataTypes.STRING, allowNull: false, validate: { notEmpty: true } },
-      school: { type: DataTypes.STRING, allowNull: false, validate: { notEmpty: true } },
-      level: { type: DataTypes.STRING, allowNull: false },
+      firstName: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        validate: { notEmpty: true },
+        defaultValue: "your firstName",
+      },
+      lastName: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        validate: { notEmpty: true },
+        defaultValue: "your lastName",
+      },
+      school: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        validate: { notEmpty: true },
+        defaultValue: "your School",
+      },
+      level: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        defaultValue: "your level",
+      },
       fieldOfStudy: { type: DataTypes.STRING },
       location: { type: DataTypes.STRING },
-      availability: { type: DataTypes.BOOLEAN, defaultValue: true },
+      availability: {
+        type: DataTypes.ENUM("disponible", "indisponible"),
+        defaultValue: "disponible",
+      },
       visibility: { type: DataTypes.BOOLEAN, defaultValue: true },
       bio: { type: DataTypes.TEXT },
       photoUrl: { type: DataTypes.STRING },

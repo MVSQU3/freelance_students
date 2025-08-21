@@ -1,11 +1,12 @@
 import {
   sequelize,
-  User,
   StudentProfile,
   CompanyProfile,
   Skill,
   Stage,
   Application,
+  Student,
+  Company,
 } from "../config/sequelize.js";
 import bcrypt from "bcrypt";
 
@@ -29,10 +30,10 @@ export const seed = async () => {
     ];
 
     const studentUsers = await Promise.all(
-      studentsData.map((u) => User.create({ ...u, password: passwordHash }))
+      studentsData.map((u) => Student.create({ ...u, password: passwordHash }))
     );
     const companyUsers = await Promise.all(
-      companiesData.map((u) => User.create({ ...u, password: passwordHash }))
+      companiesData.map((u) => Company.create({ ...u, password: passwordHash }))
     );
 
     // ====== STUDENT PROFILES ======

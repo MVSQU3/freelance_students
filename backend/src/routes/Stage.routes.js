@@ -8,15 +8,16 @@ import {
   searchStages,
 } from "../controllers/Stage.controller.js";
 import { auth } from "../middleware/auth.js";
+import { stageSchema } from "../validation/Stage.validator.js";
+import { validate } from "../middleware/validate.js";
 
 const router = express.Router();
 
-router.post("/", auth, createStage);
+router.post("/", auth, stageSchema, validate, createStage);
 router.get("/", getAllStages);
-router.get("/search", searchStages);  // 👈 placé avant
+router.get("/search", searchStages);
 router.get("/:id", getStageById);
-router.put("/:id", auth, updateStage);
+router.put("/:id", auth, stageSchema, validate, updateStage);
 router.delete("/:id", auth, deleteStage);
-
 
 export default router;

@@ -1,84 +1,80 @@
 import bcrypt from "bcrypt";
-import { User, StudentProfile, CompanyProfile } from "../config/sequelize.js";
+import {
+  StudentProfile,
+  CompanyProfile,
+  Student,
+  Company,
+} from "../config/sequelize.js";
 import { generateToken } from "../config/util.js";
-import { registerSchema } from "../validation/zod.js";
-import { z } from "zod";
+import { sendMail } from "../config/mailer.js";
 
 export const register = async (req, res, next) => {
-  // const { email, password, role } = req.body;
+  const { email, password, role } = req.body;
+
   try {
-    const { email, password, role } = registerSchema.parse(req.body);
+    // Vérifier le rôle
+    if (!["student", "company"].includes(role)) {
+      const error = new Error("Rôle invalide");
+      error.statusCode = 400;
+      throw error;
+    }
 
-    // Validation des champs
-    // if (!email?.trim() || !password?.trim() || !role?.trim()) {
-    //   const error = new Error("Tous les champs sont requis");
-    //   error.statusCode = 400;
-    //   throw error;
-    // }
+    // Vérifier si l'email existe déjà
+    const existStudent = await Student.findOne({ where: { email } });
+    const existCompany = await Company.findOne({ where: { email } });
 
-    // if (password.length < 6) {
-    //   const error = new Error(
-    //     "Le mot de passe doit contenir au moins 6 caractères"
-    //   );
-    //   error.statusCode = 400;
-    //   throw error;
-    // }
-
-    // if (role !== "student" && role !== "company") {
-    //   const error = new Error("Le rôle doit être 'student' ou 'company'");
-    //   error.statusCode = 400;
-    //   throw error;
-    // }
-
-    // Vérifier si email existe déjà
-    const exist = await User.findOne({ where: { email } });
-    if (exist) {
+    if (existStudent || existCompany) {
       const error = new Error("Un compte avec cet email existe déjà");
       error.statusCode = 409;
       throw error;
     }
 
-    // Hash & création
+    // Hasher le mot de passe
     const hash = await bcrypt.hash(password, 10);
-    const user = await User.create({ email, password: hash, role });
 
-    generateToken(user.id, res);
+    // Créer l'utilisateur et le profil
+    let newUser;
+    if (role === "student") {
+      newUser = await Student.create({ email, password: hash, role });
+      await StudentProfile.create({ userId: newUser.id });
+    } else if (role === "company") {
+      newUser = await Company.create({ email, password: hash, role });
+      await CompanyProfile.create({ userId: newUser.id });
+    }
 
+    // Générer le token
+    generateToken(newUser.id, res);
+
+    // Envoyer l'email de bienvenue
+    await sendMail({
+      to: email,
+      subject: "Bienvenue 🎉",
+      html: `
+        <h2>Bienvenue sur Freelance Students</h2>
+        <p>Merci pour ton inscription !</p>
+        <p>Nous sommes heureux de t’accueillir 🚀</p>
+      `,
+    });
+
+    // Répondre au client
     return res.status(201).json({
       success: true,
       message: "Inscription réussie",
-      user: { id: user.id, email: user.email, role: user.role },
+      user: { id: newUser.id, email: newUser.email, role: newUser.role },
     });
   } catch (error) {
-    if (error instanceof z.ZodError) {
-      console.log(error);
-
-      return res.status(400).json({ success: false, errors: error });
-    }
-    next(error); // on délègue au middleware d'erreurs
+    next(error);
   }
 };
+
 
 export const login = async (req, res, next) => {
   const { email, password } = req.body;
   try {
-    // Validation des champs
-    if (!email?.trim() || !password?.trim()) {
-      const error = new Error("Tous les champs sont requis");
-      error.statusCode = 400;
-      throw error;
-    }
-
-    if (password.length < 6) {
-      const error = new Error("Mot de passe trop court");
-      error.statusCode = 400;
-      throw error;
-    }
-
     // Recherche utilisateur
     const user = await User.findOne({ where: { email } });
     if (!user) {
-      const error = new Error("Email incorrect");
+      const error = new Error("Email incorrect ou introuvable");
       error.statusCode = 401;
       throw error;
     }
@@ -160,6 +156,7 @@ export const me = async (req, res, next) => {
       }
 
       profileData = {
+        id: userInfo.id,
         email: userInfo.email,
         role: userInfo.role,
         firstName: Profile.firstName,

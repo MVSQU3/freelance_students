@@ -1,6 +1,7 @@
 export default function setupAssociations(db) {
   const {
-    User,
+    Student,
+    Company,
     StudentProfile,
     CompanyProfile,
     Skill,
@@ -10,25 +11,25 @@ export default function setupAssociations(db) {
   } = db;
 
   // 1-1 StudentProfile ↔ User
-  User.hasOne(StudentProfile, {
+  Student.hasOne(StudentProfile, {
     foreignKey: "userId",
     as: "studentProfile", // alias clair
     onDelete: "CASCADE",
   });
-  StudentProfile.belongsTo(User, {
+  StudentProfile.belongsTo(Student, {
     foreignKey: "userId",
-    as: "user", // alias clair
+    as: "student", // alias clair
   });
 
   // 1-1 CompanyProfile ↔ User
-  User.hasOne(CompanyProfile, {
+  Company.hasOne(CompanyProfile, {
     foreignKey: "userId",
     as: "companyProfile", // alias clair
     onDelete: "CASCADE",
   });
-  CompanyProfile.belongsTo(User, {
+  CompanyProfile.belongsTo(Company, {
     foreignKey: "userId",
-    as: "user", // alias clair
+    as: "student", // alias clair
   });
 
   // M-M StudentProfile ↔ Skill via StudentSkill
@@ -46,17 +47,18 @@ export default function setupAssociations(db) {
   });
 
   // 1-N CompanyProfile → Stage
-  User.hasMany(Stage, {
+  Company.hasMany(Stage, {
     foreignKey: "companyId",
     as: "stages",
     onDelete: "CASCADE",
   });
-  Stage.belongsTo(User, {
+
+  Stage.belongsTo(Company, {
     foreignKey: "companyId",
     as: "company",
   });
 
-  Application.belongsTo(User, {
+  Application.belongsTo(Student, {
     foreignKey: "studentId",
     as: "student",
   });

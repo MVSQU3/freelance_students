@@ -5,7 +5,12 @@ export const CompanyProfileModel = () => {
   return sequelize.define(
     "CompanyProfile",
     {
-      companyName: { type: DataTypes.STRING, allowNull: false, validate: { notEmpty: true } },
+      companyName: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        validate: { notEmpty: true },
+        defaultValue: "your companyName",
+      },
       sector: { type: DataTypes.STRING },
       location: { type: DataTypes.STRING },
       website: { type: DataTypes.STRING, validate: { isUrl: true } },

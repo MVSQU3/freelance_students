@@ -1,4 +1,4 @@
-import { CompanyProfile, User } from "../config/sequelize.js";
+import { CompanyProfile, Company } from "../config/sequelize.js";
 
 export const profile = async (req, res, next) => {
   const { id } = req.params;
@@ -8,8 +8,8 @@ export const profile = async (req, res, next) => {
       where: { userId: id },
       include: [
         {
-          model: User,
-          as: "user",
+          model: Company,
+          as: "company",
           attributes: ["email", "role"],
         },
       ],
@@ -32,17 +32,9 @@ export const profile = async (req, res, next) => {
   }
 };
 
-
 export const updateProfile = async (req, res, next) => {
   try {
     const { companyName, sector, location, website, description } = req.body;
-
-    if (!companyName || !companyName.trim()) {
-      return res.status(400).json({
-        success: false,
-        message: "Le nom de l'entreprise est obligatoire",
-      });
-    }
 
     const [updated] = await CompanyProfile.update(
       { companyName, sector, location, website, description },

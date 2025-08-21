@@ -1,4 +1,4 @@
-import { Stage, User } from "../config/sequelize.js";
+import { Company, Stage } from "../config/sequelize.js";
 import { Op } from "sequelize";
 
 export const createStage = async (req, res, next) => {
@@ -13,22 +13,8 @@ export const createStage = async (req, res, next) => {
 
     const { title, description, location } = req.body;
 
-    if (
-      !title ||
-      !title.trim() ||
-      !description ||
-      !description.trim() ||
-      !location ||
-      !location.trim()
-    ) {
-      return res.status(400).json({
-        success: false,
-        message: "Titre, description et localisation sont obligatoires",
-      });
-    }
-
     // Vérifier que l'entreprise existe
-    const company = await User.findByPk(req.user.id);
+    const company = await Company.findByPk(req.user.id);
     if (!company) {
       return res.status(404).json({
         success: false,
@@ -41,7 +27,7 @@ export const createStage = async (req, res, next) => {
       title: title.trim(),
       description: description.trim(),
       location: location.trim(),
-      companyId: company.id,
+      companyId: req.user.id,
     });
 
     return res.status(201).json({
@@ -68,7 +54,7 @@ export const getAllStages = async (req, res, next) => {
       order: [[field, sort !== "desc" ? (sort = "asc") : sort]],
       include: [
         {
-          model: User,
+          model: Company,
           as: "company",
           attributes: ["id", "email", "role"],
         },
@@ -102,7 +88,7 @@ export const getStageById = async (req, res, next) => {
     const stage = await Stage.findByPk(id, {
       include: [
         {
-          model: User,
+          model: Company,
           as: "company",
           attributes: ["id", "email", "role"],
         },

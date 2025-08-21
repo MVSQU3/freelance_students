@@ -1,8 +1,7 @@
-import { StudentProfile, User, Skill } from "../config/sequelize.js";
+import { StudentProfile, Student, Skill } from "../config/sequelize.js";
 
 export const profile = async (req, res, next) => {
   const { id } = req.params;
-
   try {
     const student = await StudentProfile.findOne({
       where: { id },
@@ -14,8 +13,8 @@ export const profile = async (req, res, next) => {
           through: { attributes: [] },
         },
         {
-          model: User,
-          as: "user",
+          model: Student,
+          as: "student",
           attributes: ["email", "role"],
         },
       ],
@@ -38,6 +37,10 @@ export const profile = async (req, res, next) => {
   }
 };
 
+export const getAllStudent = async (req, res, next) => {
+  try {
+  } catch (error) {}
+};
 
 export const updateProfile = async (req, res, next) => {
   try {
@@ -54,13 +57,6 @@ export const updateProfile = async (req, res, next) => {
       photoUrl,
       cvUrl,
     } = req.body;
-
-    if (!firstName || !lastName || !school) {
-      return res.status(400).json({
-        success: false,
-        message: "Le nom, le prénom et l’école sont obligatoires",
-      });
-    }
 
     const [updated] = await StudentProfile.update(
       {
@@ -101,12 +97,9 @@ export const updateProfile = async (req, res, next) => {
   }
 };
 
-
-// Ajouter une compétence à un étudiant
 export const addSkill = async (req, res, next) => {
   try {
-    const myId = req.user.id;
-    const { studentId = myId, skillName } = req.body;
+    const { skillName } = req.body;
 
     if (!skillName || !skillName.trim()) {
       return res.status(400).json({
@@ -116,7 +109,9 @@ export const addSkill = async (req, res, next) => {
     }
 
     // Vérifier que le profil étudiant existe
-    const student = await StudentProfile.findByPk(studentId);
+    const student = await StudentProfile.findOne({
+      where: { userId: req.user.id },
+    });
     if (!student) {
       return res.status(404).json({
         success: false,
@@ -151,11 +146,9 @@ export const addSkill = async (req, res, next) => {
   }
 };
 
-
 export const removeSkill = async (req, res, next) => {
   try {
-    const myId = req.user.id;
-    const { studentId = myId, skillName } = req.body;
+    const { skillName } = req.body;
 
     if (!skillName || !skillName.trim()) {
       return res.status(400).json({
@@ -165,7 +158,7 @@ export const removeSkill = async (req, res, next) => {
     }
 
     // Vérifier que le profil étudiant existe
-    const student = await StudentProfile.findByPk(studentId);
+    const student = await StudentProfile.findByPk(req.user.id);
     if (!student) {
       return res.status(404).json({
         success: false,

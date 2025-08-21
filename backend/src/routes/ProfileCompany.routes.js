@@ -8,9 +8,11 @@ import {
   updateProfile,
 } from "../controllers/ProfileCompany.controller.js";
 import { auth } from "../middleware/auth.js";
+import { companySchema } from "../validation/Profile.validator.js";
+import { validate } from "../middleware/validate.js";
 const router = express.Router();
 
 router.get("/:id", profile);
-router.put("/:id", auth, updateProfile);
+router.put("/:id", auth, companySchema, validate, updateProfile);
 
 export default router;

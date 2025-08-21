@@ -10,10 +10,12 @@ import {
   removeSkill,
 } from "../controllers/ProfileStudent.controller.js";
 import { auth } from "../middleware/auth.js";
+import { studentSchema } from "../validation/Profile.validator.js";
+import { validate } from "../middleware/validate.js";
 const router = express.Router();
 
 router.get("/:id", profile);
-router.put("/", auth, updateProfile);
+router.put("/", auth, studentSchema, validate, updateProfile);
 router.post("/skills/add/", auth, addSkill);
 router.delete("/skills/remove/", auth, removeSkill);
 
