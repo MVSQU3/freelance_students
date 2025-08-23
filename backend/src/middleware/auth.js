@@ -6,11 +6,12 @@ export const auth = async (req, res, next) => {
     const token = req.cookies.jwt;
 
     if (!token) {
-      return res.status(401).json({ message: "Unauthorized - No Token Provided" });
+      return res
+        .status(401)
+        .json({ message: "Unauthorized - No Token Provided" });
     }
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
     if (!decoded) {
       return res.status(401).json({ message: "Unauthorized - Invalid Token" });
     }
@@ -35,6 +36,8 @@ export const auth = async (req, res, next) => {
     next();
   } catch (error) {
     console.log("Erreur dans middleware auth:", error);
-    res.status(500).json({ message: "Internal server error", error: error.message });
+    res
+      .status(500)
+      .json({ message: "Internal server error", error: error.message });
   }
 };

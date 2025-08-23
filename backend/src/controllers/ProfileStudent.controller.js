@@ -39,7 +39,30 @@ export const profile = async (req, res, next) => {
 
 export const getAllStudent = async (req, res, next) => {
   try {
-  } catch (error) {}
+    const students = await StudentProfile.findAll({
+      include: [
+        {
+          model: Skill,
+          as: "skills",
+          attributes: ["name"],
+          through: { attributes: [] },
+        },
+        {
+          model: Student,
+          as: "student",
+          attributes: ["email", "role"],
+        },
+      ],
+    });
+
+    return res.status(200).json({
+      success: true,
+      message: "Liste des profils étudiants récupérée avec succès",
+      students,
+    });
+  } catch (error) {
+    next(error);
+  }
 };
 
 export const updateProfile = async (req, res, next) => {

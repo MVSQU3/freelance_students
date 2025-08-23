@@ -8,12 +8,14 @@ import {
   addSkill,
   profile,
   removeSkill,
+  getAllStudent,
 } from "../controllers/ProfileStudent.controller.js";
 import { auth } from "../middleware/auth.js";
 import { studentSchema } from "../validation/Profile.validator.js";
 import { validate } from "../middleware/validate.js";
 const router = express.Router();
 
+router.get("/", getAllStudent);
 router.get("/:id", profile);
 router.put("/", auth, studentSchema, validate, updateProfile);
 router.post("/skills/add/", auth, addSkill);

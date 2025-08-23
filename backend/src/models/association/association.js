@@ -29,7 +29,7 @@ export default function setupAssociations(db) {
   });
   CompanyProfile.belongsTo(Company, {
     foreignKey: "userId",
-    as: "student", // alias clair
+    as: "company", // alias clair
   });
 
   // M-M StudentProfile ↔ Skill via StudentSkill

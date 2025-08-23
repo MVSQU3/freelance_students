@@ -13,6 +13,6 @@ import { validate } from "../middleware/validate.js";
 const router = express.Router();
 
 router.get("/:id", profile);
-router.put("/:id", auth, companySchema, validate, updateProfile);
+router.put("/", auth, companySchema, validate, updateProfile);
 
 export default router;

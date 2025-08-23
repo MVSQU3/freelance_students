@@ -2,7 +2,7 @@ import "dotenv/config";
 import express from "express";
 import cookie from "cookie-parser";
 import helmet from "helmet";
-// import cors from "cors";
+import cors from "cors";
 import { InitDb } from "./config/sequelize.js";
 import authRoutes from "./routes/Auth.routes.js";
 import profileStudentRoutes from "./routes/ProfileStudent.routes.js";
@@ -19,17 +19,18 @@ app.use(helmet());
 InitDb();
 app.use(express.json());
 app.use(cookie());
-// app.use(
-//   cors({
-//     origin: "http://localhost:5173",
-//   })
-// );
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    credentials: true,
+  })
+);
 app.use(apiLimiter);
 app.use("/api/auth/", authRoutes);
 app.use("/api/students/", profileStudentRoutes);
 app.use("/api/company/", profileCompanyRoutes);
 app.use("/api/stages/", stageRoutes);
-app.use("/api/application/", applicationRoutes);
+app.use("/api/apply/", applicationRoutes);
 app.use("/api/upload", uploadRoutes);
 
 app.use(errorHandler);

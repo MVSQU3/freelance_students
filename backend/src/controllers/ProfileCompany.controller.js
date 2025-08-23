@@ -34,6 +34,12 @@ export const profile = async (req, res, next) => {
 
 export const updateProfile = async (req, res, next) => {
   try {
+    if (req.user.role !== "company") {
+      return res.status(403).json({
+        success: false,
+        message: "Action non autorisé",
+      });
+    }
     const { companyName, sector, location, website, description } = req.body;
 
     const [updated] = await CompanyProfile.update(

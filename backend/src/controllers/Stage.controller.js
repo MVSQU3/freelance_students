@@ -11,7 +11,7 @@ export const createStage = async (req, res, next) => {
       });
     }
 
-    const { title, description, location } = req.body;
+    const { title, description, location, domain } = req.body;
 
     // Vérifier que l'entreprise existe
     const company = await Company.findByPk(req.user.id);
@@ -27,6 +27,7 @@ export const createStage = async (req, res, next) => {
       title: title.trim(),
       description: description.trim(),
       location: location.trim(),
+      domain: domain.trim(),
       companyId: req.user.id,
     });
 
@@ -112,6 +113,24 @@ export const getStageById = async (req, res, next) => {
   }
 };
 
+export const getMyStages = async (req, res, next) => {
+  try {
+    if (req.user.role !== "company") {
+      return res.status(403).json({
+        success: false,
+        message: "vous ne pouvez pas possédé de stages",
+      });
+    }
+    const stages = await Stage.findAll({
+      where: { companyId: req.user.id },
+    });
+    console.log(stages);
+    return res.json(stages);
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const updateStage = async (req, res, next) => {
   try {
     if (req.user.role !== "company") {
@@ -166,7 +185,7 @@ export const deleteStage = async (req, res, next) => {
     if (!stage) {
       return res.status(404).json({
         success: false,
-        message: "Stage introuvable",
+        message: "Stage introuvable ou action non autorisé",
       });
     }
 
@@ -181,7 +200,7 @@ export const deleteStage = async (req, res, next) => {
   }
 };
 
-export const searchStages = async (req, res) => {
+export const searchStages = async (req, res, next) => {
   try {
     const { q, location, domain, sort, field } = req.query;
 
@@ -219,8 +238,12 @@ export const searchStages = async (req, res) => {
       });
       res.json(stages);
     }
+    const stages = await Stage.findAll({
+      where: filters,
+    });
+    return res.status(200).json(stages);
   } catch (error) {
-    console.log("Erreur in searchStages: ", error);
-    res.status(500).json({ message: "Erreur serveur", error: error.message });
+    console.error("Erreur in searchStages: ", error);
+    next(error);
   }
 };

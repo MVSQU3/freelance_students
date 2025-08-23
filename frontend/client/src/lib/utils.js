@@ -1,14 +1,6 @@
-import { jwtDecode } from "jwt-decode";
+import axios from "axios";
 
-export const getUserToken = () => {
-  try {
-    const token = localStorage.getItem("JWT");
-    if (!token) {
-      return null;
-    }
-    const decode = jwtDecode(token);
-    return decode;
-  } catch (error) {
-    console.log("Erreur impossible de recupere le token", error);
-  }
-};
+export const api = axios.create({
+  baseURL: "http://localhost:3000/api",
+  withCredentials: true,
+});

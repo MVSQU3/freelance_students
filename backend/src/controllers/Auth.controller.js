@@ -10,7 +10,6 @@ import { sendMail } from "../config/mailer.js";
 
 export const register = async (req, res, next) => {
   const { email, password, role } = req.body;
-
   try {
     // Vérifier le rôle
     if (!["student", "company"].includes(role)) {
@@ -43,18 +42,18 @@ export const register = async (req, res, next) => {
     }
 
     // Générer le token
-    generateToken(newUser.id, res);
+    generateToken(newUser.id, newUser.role, res);
 
     // Envoyer l'email de bienvenue
-    await sendMail({
-      to: email,
-      subject: "Bienvenue 🎉",
-      html: `
-        <h2>Bienvenue sur Freelance Students</h2>
-        <p>Merci pour ton inscription !</p>
-        <p>Nous sommes heureux de t’accueillir 🚀</p>
-      `,
-    });
+    // await sendMail({
+    //   to: email,
+    //   subject: "Bienvenue 🎉",
+    //   html: `
+    //     <h2>Bienvenue sur Freelance Students</h2>
+    //     <p>Merci pour ton inscription !</p>
+    //     <p>Nous sommes heureux de t’accueillir 🚀</p>
+    //   `,
+    // });
 
     // Répondre au client
     return res.status(201).json({
@@ -67,18 +66,21 @@ export const register = async (req, res, next) => {
   }
 };
 
-
 export const login = async (req, res, next) => {
   const { email, password } = req.body;
   try {
     // Recherche utilisateur
-    const user = await User.findOne({ where: { email } });
-    if (!user) {
-      const error = new Error("Email incorrect ou introuvable");
+    let user;
+    const student = await Student.findOne({ where: { email } });
+    const company = await Company.findOne({ where: { email } });
+    if (!student && !company) {
+      const error = new Error("Email incorrect");
       error.statusCode = 401;
       throw error;
     }
 
+    user = student || company;
+    console.log("log de user:", user);
     // Vérification du mot de passe
     const isValidPassword = await bcrypt.compare(password, user.password);
     if (!isValidPassword) {
@@ -88,12 +90,16 @@ export const login = async (req, res, next) => {
     }
 
     // Génération du token
-    generateToken(user.id, res);
+    generateToken(user.id, user.role, res);
 
     return res.status(200).json({
       success: true,
       message: "Connexion réussie",
-      user: { id: user.id, email: user.email, role: user.role },
+      user: {
+        id: user.id,
+        email: user.email,
+        role: user.role,
+      },
     });
   } catch (error) {
     next(error); // délégation au middleware
@@ -132,7 +138,14 @@ export const check = async (req, res, next) => {
 
 export const me = async (req, res, next) => {
   try {
-    const userInfo = await User.findOne({ where: { id: req.user.id } });
+    let userInfo;
+    console.log("req.user.id: ", req.user.id);
+
+    if (req.user.role === "student") {
+      userInfo = await Student.findOne({ where: { id: req.user.id } });
+    } else if (req.user.role === "company") {
+      userInfo = await Company.findOne({ where: { id: req.user.id } });
+    }
 
     if (!userInfo) {
       return res.status(404).json({
