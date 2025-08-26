@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuthStore } from "../store/useAuthStore";
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -7,10 +7,13 @@ const Login = () => {
     password: "",
   });
   const { login, isLoginLoading } = useAuthStore();
-
+  const navigate = useNavigate();
   const handleSubmit = (e) => {
     e.preventDefault();
-    login(formData);
+    login(formData).then((user) => {
+      if (user && user.role === "student") navigate("/dashboard-student");
+      else if (user && user.role === "company") navigate("/dashboard-company");
+    });
   };
 
   return (
@@ -34,7 +37,8 @@ const Login = () => {
         />
         <button type="submit" disabled={isLoginLoading}>
           {isLoginLoading ? "Chargement..." : "Se connecter"}
-        </button><br />
+        </button>
+        <br />
 
         <button>
           Pas encore de compte ? <Link to="/register">Inscrivez-vous</Link>

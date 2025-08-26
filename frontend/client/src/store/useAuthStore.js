@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { api } from "../lib/utils";
+import { useNavigate } from "react-router-dom";
 
 export const useAuthStore = create((set) => ({
   authUser: null,
@@ -9,7 +10,7 @@ export const useAuthStore = create((set) => ({
   checkAuth: async () => {
     try {
       const res = await api.post("/auth/check");
-      set({ authUser: res.data });
+      set({ authUser: res.data.user });
       console.log("log de res.data in checkAuth", res.data);
     } catch (error) {
       set({ authUser: null });
@@ -23,10 +24,12 @@ export const useAuthStore = create((set) => ({
     set({ isRegisterLoading: true });
     try {
       const res = await api.post("/auth/register", data);
-      set({ authUser: res.data });
-      console.log("log de res.data in register:", res.data);
+      set({ authUser: res.data.user });
+      console.log("log de res.data in register:", res.data.user);
+      return res.data.user;
     } catch (error) {
       console.error("Error during registration:", error);
+      return null;
     } finally {
       set({ isRegisterLoading: false });
     }
@@ -36,10 +39,12 @@ export const useAuthStore = create((set) => ({
     set({ isLoginLoading: true });
     try {
       const res = await api.post("/auth/login", data);
-      set({ authUser: res.data });
-      console.log("log de res.data in login:", res.data);
+      set({ authUser: res.data.user });
+      console.log("log de res.data in login:", res.data.user);
+      return res.data.user;
     } catch (error) {
       console.error("Error in login:", error);
+      return null;
     } finally {
       set({ isLoginLoading: false });
     }

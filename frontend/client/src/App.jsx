@@ -6,6 +6,7 @@ import DashboardStudent from "./pages/DashboardStudent.jsx";
 import DashboardCompany from "./pages/DashboardCompany.jsx";
 import ProfileCompany from "./pages/ProfileCompany.jsx";
 import ProfileStudent from "./pages/ProfileStudent.jsx";
+import Stages from "./pages/Stages.jsx";
 import { useAuthStore } from "./store/useAuthStore.js";
 import { useEffect } from "react";
 
@@ -38,6 +39,11 @@ function App() {
         path="/profile-student/:id"
         element={authUser ? <ProfileStudent /> : <Navigate to="/login" />}
       />
+      <Route
+        path="/stages"
+        element={authUser ? <Stages /> : <Navigate to="/login" />}
+      />
+
       <Route
         path="/login"
         element={!authUser ? <Login /> : <Navigate to="/" />}

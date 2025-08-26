@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuthStore } from "../store/useAuthStore";
 
 const Register = () => {
@@ -9,10 +9,13 @@ const Register = () => {
     role: "student",
   });
   const { register, isRegisterLoading } = useAuthStore();
-
+  const navigate = useNavigate();
   const handleSubmit = (e) => {
     e.preventDefault();
-    register(formData);
+    register(formData).then((user) => {
+      if (user && user.role === "student") navigate("/dashboard-student");
+      else if (user && user.role === "company") navigate("/dashboard-company");
+    });
   };
 
   return (
@@ -44,6 +47,7 @@ const Register = () => {
         <button type="submit" disabled={isRegisterLoading}>
           {isRegisterLoading ? "Chargement..." : "S’inscrire "}
         </button>
+        <br />
         <button>
           Pas encore de compte ? <Link to="/login">Connectez-vous</Link>
         </button>

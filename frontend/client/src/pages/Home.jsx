@@ -1,26 +1,29 @@
-import React, { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useAuthStore } from "../store/useAuthStore";
 import { Link } from "react-router-dom";
 import { useStudentStore } from "../store/useStudentStore";
 
 const Home = () => {
   const { getAllStudents } = useStudentStore();
-  const { logout } = useAuthStore();
+  const { authUser, logout } = useAuthStore();
+
   useEffect(() => {
     getAllStudents();
   }, []);
+
   return (
     <div>
-      <h1>Home</h1>
       <div>
-        <p>Welcome to the home page!</p>
-        <Link to="/dashboard-student" className="btn btn-primary">
-          My Dashboard
+        <p>Welcome to the home page! is Connected {authUser.role} </p>
+      </div>
+      <div className="flex justify-evenly">
+        <button onClick={logout} className="btn btn-error">
+          Logout
+        </button>
+        <Link to="/stages" className="btn btn-secondary">
+          voir les offres de stages
         </Link>
       </div>
-      <button onClick={logout} className="btn btn-error">
-        Logout
-      </button>
     </div>
   );
 };
