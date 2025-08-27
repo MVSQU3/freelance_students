@@ -139,7 +139,6 @@ export const check = async (req, res, next) => {
 export const me = async (req, res, next) => {
   try {
     let userInfo;
-    console.log("req.user.id: ", req.user.id);
 
     if (req.user.role === "student") {
       userInfo = await Student.findOne({ where: { id: req.user.id } });

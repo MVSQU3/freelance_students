@@ -5,7 +5,7 @@ import helmet from "helmet";
 import cors from "cors";
 import { InitDb } from "./config/sequelize.js";
 import authRoutes from "./routes/Auth.routes.js";
-import profileStudentRoutes from "./routes/ProfileStudent.routes.js";
+import StudentRoutes from "./routes/Student.routes.js";
 import profileCompanyRoutes from "./routes/ProfileCompany.routes.js";
 import stageRoutes from "./routes/Stage.routes.js";
 import applicationRoutes from "./routes/Application.routes.js";
@@ -27,7 +27,7 @@ app.use(
 );
 app.use(apiLimiter);
 app.use("/api/auth/", authRoutes);
-app.use("/api/students/", profileStudentRoutes);
+app.use("/api/students/", StudentRoutes);
 app.use("/api/company/", profileCompanyRoutes);
 app.use("/api/stages/", stageRoutes);
 app.use("/api/apply/", applicationRoutes);

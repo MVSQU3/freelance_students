@@ -8,7 +8,6 @@ const Stages = () => {
     getAllStages();
   }, []);
 
-  console.log("log de stages: ", stages);
 
   return (
     <>
