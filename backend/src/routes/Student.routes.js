@@ -15,10 +15,10 @@ import { validate } from "../middleware/validate.js";
 const router = express.Router();
 
 router.get("/", getAllStudents);
-router.get("/me", auth, getMyProfile);
-router.put("/update", auth, studentSchema, validate, updateMyProfile);
+router.get("/me/profile", auth, getMyProfile);
+router.put("/update/profile", auth, studentSchema, validate, updateMyProfile);
 router.post("/skills/add", auth, addSkill);
 router.delete("/skills/remove", auth, removeSkill);
-router.get("/:id", getStudentById);
+router.get("/profile/:id", getStudentById);
 
 export default router;

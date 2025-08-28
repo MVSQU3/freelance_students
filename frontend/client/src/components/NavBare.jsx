@@ -4,7 +4,7 @@ import { useAuthStore } from "../store/useAuthStore";
 const NavBare = () => {
   const { authUser } = useAuthStore();
   return (
-    <div>
+    <div className="p-2.5">
       <nav className="flex justify-between p-1">
         <Link to="/">CompusConnect</Link>
         <div className="flex gap-4">
@@ -21,11 +21,11 @@ const NavBare = () => {
           <div className="flex gap-4">
             {authUser.role === "student" ? (
               <>
-                <Link to="/student/profile">Profile</Link>
+                <Link to="/student/me/profile">Profile</Link>
               </>
             ) : (
               <>
-                <Link to="#">Profile</Link>
+                <Link to="/company/me/profile">Profile</Link>
               </>
             )}
           </div>

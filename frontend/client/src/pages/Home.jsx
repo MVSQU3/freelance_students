@@ -16,6 +16,9 @@ const Home = () => {
         <Link to="/stages" className="btn btn-secondary">
           voir les offres de stages
         </Link>
+        <Link to="/student/public/profile/2" className="btn btn-secondary">
+          voir le profile du stagiaire 2
+        </Link>
       </div>
     </div>
   );

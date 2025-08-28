@@ -6,7 +6,7 @@ import cors from "cors";
 import { InitDb } from "./config/sequelize.js";
 import authRoutes from "./routes/Auth.routes.js";
 import StudentRoutes from "./routes/Student.routes.js";
-import profileCompanyRoutes from "./routes/ProfileCompany.routes.js";
+import CompanyRoutes from "./routes/Company.routes.js";
 import stageRoutes from "./routes/Stage.routes.js";
 import applicationRoutes from "./routes/Application.routes.js";
 import uploadRoutes from "./routes/Upload.routes.js";
@@ -28,7 +28,7 @@ app.use(
 app.use(apiLimiter);
 app.use("/api/auth/", authRoutes);
 app.use("/api/students/", StudentRoutes);
-app.use("/api/company/", profileCompanyRoutes);
+app.use("/api/company/", CompanyRoutes);
 app.use("/api/stages/", stageRoutes);
 app.use("/api/apply/", applicationRoutes);
 app.use("/api/upload", uploadRoutes);

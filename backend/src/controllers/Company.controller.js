@@ -1,17 +1,45 @@
 import { CompanyProfile, Company } from "../config/sequelize.js";
 
-export const profile = async (req, res, next) => {
-  const { id } = req.params;
-
+export const getMyProfile = async (req, res, next) => {
   try {
     const company = await CompanyProfile.findOne({
-      where: { userId: id },
+      where: { userId: req.user.id },
       include: [
         {
           model: Company,
           as: "company",
           attributes: ["email", "role"],
         },
+      ],
+    });
+
+    if (!company) {
+      return res.status(404).json({
+        success: false,
+        message: "Aucun profil entreprise trouvé",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Profil entreprise récupéré avec succès",
+      profile: company,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getCompanyById = async (req, res, next) => {
+  const { id } = req.params;
+  try {
+    const company = await CompanyProfile.findByPk(id, {
+      attributes: [
+        "companyName",
+        "sector",
+        "location",
+        "website",
+        "description",
       ],
     });
 

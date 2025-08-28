@@ -21,7 +21,7 @@ export const useStudentStore = create((set) => ({
   getStudentById: async (id) => {
     set({ isStudentLoading: true });
     try {
-      const res = await api.get(`/students/${id}`);
+      const res = await api.get(`/students/profile/${id}`);
       console.log("log de res.data in PublicProfileStudent:", res.data);
     } catch (error) {
       console.error("Error in PublicProfileStudent", error);
@@ -33,7 +33,7 @@ export const useStudentStore = create((set) => ({
   getMyProfile: async () => {
     set({ isStudentLoading: true });
     try {
-      const res = await api.get("/students/me");
+      const res = await api.get("/students/me/profile");
       console.log("log de res.data in MyProfile:", res.data);
       // stocke le profil et renvoie les données pour usage côté composant
       set({ myProfile: res.data.profile });
@@ -49,7 +49,7 @@ export const useStudentStore = create((set) => ({
   UpdateMyProfile: async (data) => {
     set({ isStudentLoading: true });
     try {
-      const res = await api.put("/students/update", data);
+      const res = await api.put("/students/update/profile", data);
       // mettre à jour le profil localement
       set({ myProfile: res.data.profile });
       return res.data.profile;
