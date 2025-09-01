@@ -1,11 +1,9 @@
 import { useEffect, useState } from "react";
 import { useStudentStore } from "../../store/useStudentStore";
-import { useUploadStore } from "../../store/useUploadStore";
 
 const EditProfile = () => {
   const { getMyProfile, UpdateMyProfile, myProfile, isStudentLoading } =
     useStudentStore();
-  const { uploadFile, isUploading, uploadProgress } = useUploadStore();
   const [form, setForm] = useState({
     firstName: "",
     lastName: "",
@@ -45,21 +43,6 @@ const EditProfile = () => {
     const updated = await UpdateMyProfile(form);
     if (updated) setMessage({ type: "success", text: "Profil mis à jour" });
     else setMessage({ type: "error", text: "Erreur lors de la mise à jour" });
-  };
-
-  const handleFileChange = async (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-
-    const url = await uploadFile(file);
-
-    if (url) {
-      if (e.target.name === "pp") {
-        setForm((f) => ({ ...f, photoUrl: url }));
-      } else if (e.target.name === "cv") {
-        setForm((f) => ({ ...f, cvUrl: url }));
-      }
-    }
   };
 
   if (isStudentLoading && !myProfile) return <div>Chargement...</div>;
@@ -203,57 +186,6 @@ const EditProfile = () => {
             className="textarea textarea-bordered w-full h-28"
           ></textarea>
         </div>
-        <div className="flex flex-col gap-4">
-          <div>
-            <label className="label">
-              <span className="label-text">Photo de profil</span>
-            </label>
-            <input
-              type="file"
-              accept="image/*"
-              name="pp"
-              onChange={handleFileChange}
-            />
-            {form.photoUrl && (
-              <img
-                src={form.photoUrl}
-                alt="photo"
-                className="w-20 h-20 rounded-full mt-2"
-              />
-            )}
-          </div>
-
-          <div>
-            <label className="label">
-              <span className="label-text">CV (PDF)</span>
-            </label>
-            <input
-              type="file"
-              accept="application/pdf"
-              name="cv"
-              onChange={handleFileChange}
-            />
-            {form.cvUrl && (
-              <a
-                href={form.cvUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="link link-primary mt-2"
-              >
-                Voir mon CV
-              </a>
-            )}
-          </div>
-
-          {isUploading && (
-            <progress
-              className="progress progress-primary w-full"
-              value={uploadProgress}
-              max="100"
-            ></progress>
-          )}
-        </div>
-
         <div className="flex justify-end">
           <button
             type="submit"

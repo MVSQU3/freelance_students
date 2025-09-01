@@ -249,12 +249,12 @@ export const seed = async () => {
     const stages = await Promise.all(stagesData.map((s) => Stage.create(s)));
 
     // ====== APPLICATIONS ======
-    await Application.create({
-      stageId: stages[0].id,
-      studentId: studentUsers[0].id,
-      coverLetter: "Je suis très motivé pour ce stage en développement web",
-      status: "pending",
-    });
+    // await Application.create({
+    //   stageId: stages[0].id,
+    //   studentId: studentUsers[0].id,
+    //   coverLetter: "Je suis très motivé pour ce stage en développement web",
+    //   status: "pending",
+    // });
 
     await Application.create({
       stageId: stages[1].id,

@@ -57,11 +57,4 @@ export const studentSchema = [
     .optional()
     .isLength({ max: 500 })
     .withMessage("La bio ne doit pas dépasser 500 caractères"),
-
-  body("photoUrl")
-    .optional()
-    .isURL()
-    .withMessage("L'URL de la photo doit être valide"),
-
-  body("cvUrl").optional().isURL().withMessage("L'URL du CV doit être valide"),
 ];
