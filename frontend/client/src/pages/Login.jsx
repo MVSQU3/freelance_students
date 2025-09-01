@@ -11,7 +11,7 @@ const Login = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     login(formData).then((user) => {
-      if (user && user.role === "student") navigate("/student/profile");
+      if (user && user.role === "student") navigate("/student/me/profile");
       else if (user && user.role === "company") navigate("/");
     });
   };

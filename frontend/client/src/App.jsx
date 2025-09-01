@@ -6,6 +6,7 @@ import Home from "./pages/Home.jsx";
 import Login from "./pages/Login.jsx";
 import Register from "./pages/Register.jsx";
 import Stages from "./pages/Stages.jsx";
+import TestRoute from "./test/TestRoute.jsx";
 
 // START STUDENT ROUTES
 import EditProfileStudent from "./pages/StudentPages/EditProfileStudent.jsx";
@@ -30,6 +31,7 @@ function App() {
     <>
       <NavBare />
       <Routes>
+        <Route path="/test" element={<TestRoute />} />
         <Route path="/" element={authUser ? <Home /> : <Login />} />
         <Route path="/stages" element={authUser ? <Stages /> : <Login />} />
 

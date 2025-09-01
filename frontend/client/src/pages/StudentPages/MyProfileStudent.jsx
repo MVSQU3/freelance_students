@@ -11,7 +11,7 @@ const MyProfileStudent = () => {
 
   return (
     <div>
-      <Link to="/student/edite/profile" className="btn btn-success">
+      <Link to="/student/edit/profile" className="btn btn-success">
         Éditer mon profil
       </Link>
     </div>
