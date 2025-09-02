@@ -1,9 +1,13 @@
 import { useEffect, useState } from "react";
 import { useStudentStore } from "../../store/useStudentStore";
+import { useUploadStore } from "../../store/useUploadStore";
 
 const EditProfile = () => {
   const { getMyProfile, UpdateMyProfile, myProfile, isStudentLoading } =
     useStudentStore();
+  const { uploadFile, uploadProgress, lastUploadError } = useUploadStore();
+  const [cvFile, setCvFile] = useState(null);
+
   const [form, setForm] = useState({
     firstName: "",
     lastName: "",
@@ -40,7 +44,23 @@ const EditProfile = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setMessage(null);
-    const updated = await UpdateMyProfile(form);
+    console.log(e.target.files);
+
+    let cvUrl = form.cvUrl; // conserver l'ancien si pas de nouveau fichier
+
+    if (cvFile) {
+      const result = await uploadFile(cvFile);
+      if (result && result.publicUrl) {
+        cvUrl = result.publicUrl; // mettre à jour le CV
+      } else {
+        setMessage({ type: "error", text: "Erreur lors de l'upload du CV" });
+        return;
+      }
+    }
+
+    const updatedForm = { ...form, cvUrl };
+    const updated = await UpdateMyProfile(updatedForm);
+
     if (updated) setMessage({ type: "success", text: "Profil mis à jour" });
     else setMessage({ type: "error", text: "Erreur lors de la mise à jour" });
   };
@@ -185,6 +205,19 @@ const EditProfile = () => {
             placeholder="Bio"
             className="textarea textarea-bordered w-full h-28"
           ></textarea>
+        </div>
+        <div>
+          <label className="label">
+            <span className="label-text">CV (PDF)</span>
+          </label>
+          <input
+            type="file"
+            accept="application/pdf"
+            onChange={(e) => setCvFile(e.target.files[0])}
+            className="input input-bordered"
+          />
+          {uploadProgress > 0 && <p>Progression : {uploadProgress}%</p>}
+          {lastUploadError && <p className="text-red-500">{lastUploadError}</p>}
         </div>
         <div className="flex justify-end">
           <button
