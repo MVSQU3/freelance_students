@@ -1,8 +1,12 @@
+import { Op } from "sequelize";
 import { StudentProfile, Student, Skill } from "../config/sequelize.js";
 
 export const getAllStudents = async (req, res, next) => {
   try {
     const students = await StudentProfile.findAll({
+      where: {
+        [Op.and]: [{ is_public: "Oui" }, { availability: "disponible" }],
+      },
       include: [
         {
           model: Skill,
@@ -47,8 +51,6 @@ export const getStudentById = async (req, res, next) => {
         },
       ],
     });
-
-    console.log(student);
 
     if (!student) {
       return res.status(404).json({

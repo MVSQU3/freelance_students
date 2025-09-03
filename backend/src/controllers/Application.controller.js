@@ -1,3 +1,4 @@
+import { Op } from "sequelize";
 import { Application, Company, Stage, Student } from "../config/sequelize.js";
 
 // Postuler à une offre
@@ -101,6 +102,37 @@ export const getMyApplications = async (req, res, next) => {
       success: true,
       message: "Candidatures récupérées avec succès",
       applications,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const deleteApply = async (req, res) => {
+  try {
+    if (req.user.role !== "student") {
+      return res.status(403).json({
+        success: false,
+        message: "Seuls les étudiants peuvent supprimer une candidature",
+      });
+    }
+    const { applyId } = req.params;
+    const apply = await Application.findOne({
+      where: { [Op.and]: [{ id: applyId }, { studentId: req.user.id }] },
+    });
+
+    if (!apply) {
+      return res.status(404).json({
+        success: false,
+        message: "Candidature introuvable",
+      });
+    }
+
+    await apply.destroy();
+
+    return res.status(200).json({
+      success: true,
+      message: "Candidature supprimée avec succès",
     });
   } catch (error) {
     next(error);

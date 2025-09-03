@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { useAuthStore } from "../store/useAuthStore";
+import { FlaskConical } from "lucide-react";
 
 const NavBare = () => {
   const { authUser } = useAuthStore();
@@ -8,9 +9,16 @@ const NavBare = () => {
       <nav className="flex justify-between p-1">
         <Link to="/">CompusConnect</Link>
         <div className="flex gap-4">
-          <Link to="/student/liste">Découvrir les talents</Link>
+          {authUser?.role === "student" ? (
+            <Link to="/stages">Découvrir les stages</Link>
+          ) : (
+            <Link to={"/student/liste"}>Découvrir les talents</Link>
+          )}
           <Link to="#">À propos</Link>
           <Link to="#">Contact</Link>
+          <Link to="/lab" className="flex items-center gap-1">
+            Laboratoire <FlaskConical className="w-5 h-5" />
+          </Link>
         </div>
         {!authUser ? (
           <div className="flex gap-4">

@@ -1,12 +1,16 @@
 import { useEffect, useState } from "react";
 import { useStudentStore } from "../../store/useStudentStore";
 import { useUploadStore } from "../../store/useUploadStore";
+import { useAuthStore } from "../../store/useAuthStore";
 
 const EditProfile = () => {
+  const { authUser } = useAuthStore();
   const { getMyProfile, UpdateMyProfile, myProfile, isStudentLoading } =
     useStudentStore();
-  const { uploadFile, uploadProgress, lastUploadError } = useUploadStore();
+  const { uploadCv, uploadPp, uploadProgress, lastUploadError } =
+    useUploadStore();
   const [cvFile, setCvFile] = useState(null);
+  const [ppFile, setPpFile] = useState(null);
 
   const [form, setForm] = useState({
     firstName: "",
@@ -16,7 +20,7 @@ const EditProfile = () => {
     fieldOfStudy: "",
     location: "",
     availability: "",
-    visibility: true,
+    is_public: Oui,
     bio: "",
     photoUrl: "" || undefined,
     cvUrl: "" || undefined,
@@ -44,21 +48,32 @@ const EditProfile = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setMessage(null);
-    console.log(e.target.files);
 
-    let cvUrl = form.cvUrl; // conserver l'ancien si pas de nouveau fichier
-
+    let cvUrl = form.cvUrl;
+    let photoUrl = form.photoUrl;
     if (cvFile) {
-      const result = await uploadFile(cvFile);
+      const result = await uploadCv(cvFile);
       if (result && result.publicUrl) {
-        cvUrl = result.publicUrl; // mettre à jour le CV
+        cvUrl = result.publicUrl;
       } else {
         setMessage({ type: "error", text: "Erreur lors de l'upload du CV" });
         return;
       }
     }
+    if (ppFile) {
+      const result = await uploadPp(ppFile);
+      if (result && result.publicUrl) {
+        photoUrl = result.publicUrl;
+      } else {
+        setMessage({
+          type: "error",
+          text: "Erreur lors de l'upload de la photo de profil",
+        });
+        return;
+      }
+    }
 
-    const updatedForm = { ...form, cvUrl };
+    const updatedForm = { ...form, cvUrl, photoUrl };
     const updated = await UpdateMyProfile(updatedForm);
 
     if (updated) setMessage({ type: "success", text: "Profil mis à jour" });
@@ -219,6 +234,23 @@ const EditProfile = () => {
           {uploadProgress > 0 && <p>Progression : {uploadProgress}%</p>}
           {lastUploadError && <p className="text-red-500">{lastUploadError}</p>}
         </div>
+        {authUser && (
+          <div>
+            <label className="label">
+              <span className="label-text">Photo de profil (PNG, JPG)</span>
+            </label>
+            <input
+              type="file"
+              accept="image/png, image/jpeg, image/webp"
+              onChange={(e) => setPpFile(e.target.files[0])}
+              className="input input-bordered"
+            />
+            {uploadProgress > 0 && <p>Progression : {uploadProgress}%</p>}
+            {lastUploadError && (
+              <p className="text-red-500">{lastUploadError}</p>
+            )}
+          </div>
+        )}
         <div className="flex justify-end">
           <button
             type="submit"

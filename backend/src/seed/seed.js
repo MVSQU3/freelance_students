@@ -47,7 +47,7 @@ export const seed = async () => {
         fieldOfStudy: "Informatique",
         location: "Abidjan",
         availability: true,
-        visibility: true,
+        is_public: "Oui",
         bio: "Étudiant motivé",
       },
       {
@@ -59,7 +59,7 @@ export const seed = async () => {
         fieldOfStudy: "Marketing",
         location: "Bouaké",
         availability: true,
-        visibility: true,
+        is_public: "Oui",
         bio: "Étudiante dynamique",
       },
       {
@@ -71,7 +71,7 @@ export const seed = async () => {
         fieldOfStudy: "Gestion",
         location: "San Pedro",
         availability: false,
-        visibility: true,
+        is_public: "Oui",
         bio: "Cherche stage en gestion",
       },
     ];
@@ -249,12 +249,12 @@ export const seed = async () => {
     const stages = await Promise.all(stagesData.map((s) => Stage.create(s)));
 
     // ====== APPLICATIONS ======
-    // await Application.create({
-    //   stageId: stages[0].id,
-    //   studentId: studentUsers[0].id,
-    //   coverLetter: "Je suis très motivé pour ce stage en développement web",
-    //   status: "pending",
-    // });
+    await Application.create({
+      stageId: stages[0].id,
+      studentId: studentUsers[0].id,
+      coverLetter: "Je suis très motivé pour ce stage en développement web",
+      status: "pending",
+    });
 
     await Application.create({
       stageId: stages[1].id,
