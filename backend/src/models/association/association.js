@@ -6,6 +6,7 @@ export default function setupAssociations(db) {
     CompanyProfile,
     Skill,
     StudentSkill,
+    StageSkill,
     Stage,
     Application,
   } = db;
@@ -44,6 +45,20 @@ export default function setupAssociations(db) {
     foreignKey: "skillId",
     otherKey: "studentId",
     as: "students", // alias clair
+  });
+
+  // M-M Stage ↔ Skill via StageSkill
+  Stage.belongsToMany(Skill, {
+    through: StageSkill,
+    foreignKey: "stageId",
+    otherKey: "skillId",
+    as: "skills", // alias clair
+  });
+  Skill.belongsToMany(Stage, {
+    through: StageSkill,
+    foreignKey: "skillId",
+    otherKey: "stageId",
+    as: "stages", // alias clair
   });
 
   // 1-N CompanyProfile → Stage

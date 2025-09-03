@@ -12,6 +12,7 @@ export const StageModel = () => {
       },
       description: { type: DataTypes.TEXT, allowNull: false },
       location: { type: DataTypes.STRING, allowNull: false },
+      duree: { type: DataTypes.STRING, allowNull: false },
       domain: { type: DataTypes.STRING, allowNull: false },
       isActive: { type: DataTypes.BOOLEAN, defaultValue: true },
     },

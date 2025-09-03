@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useStageStore } from "../store/useStageStore";
 import { useApplyStore } from "../store/useApplyStore";
 import { useAuthStore } from "../store/useAuthStore";
+import StageCard from "../components/StageCard";
 
 const Stages = () => {
   const [formData, setFormData] = useState({ coverLetter: "" });
@@ -19,26 +20,67 @@ const Stages = () => {
 
   return (
     <>
-      <div>
-        <form onSubmit={handleApply} className="flex flex-col">
-          <textarea
-            cols="30"
-            className="textarea"
-            placeholder="Votre lettre de motivation..."
-            value={formData.coverLetter}
-            onChange={(e) =>
-              setFormData({ ...formData, coverLetter: e.target.value })
-            }
-          ></textarea>
-
-          <button
-            className="btn btn-success"
-            type="submit"
-            disabled={isApplying}
-          >
-            {isApplying ? "Envoi..." : "Postuler"}
-          </button>
-        </form>
+      <div className="m-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <StageCard
+          title="Stage en Data Science"
+          company="IBM Côte d’Ivoire"
+          duree="6 mois"
+          skills={["Python", "Machine Learning"]}
+        />
+        <StageCard
+          title="Stage en Data Science"
+          company="IBM Côte d’Ivoire"
+          duree="6 mois"
+          skills={["Python", "Machine Learning"]}
+        />
+        <StageCard
+          title="Stage en Data Science"
+          company="IBM Côte d’Ivoire"
+          duree="6 mois"
+          skills={["Python", "Machine Learning"]}
+        />
+        <StageCard
+          title="Stage en Data Science"
+          company="IBM Côte d’Ivoire"
+          duree="6 mois"
+          skills={["Python", "Machine Learning"]}
+        />
+        <StageCard
+          title="Stage en Data Science"
+          company="IBM Côte d’Ivoire"
+          duree="6 mois"
+          skills={["Python", "Machine Learning"]}
+        />
+        <StageCard
+          title="Stage en Data Science"
+          company="IBM Côte d’Ivoire"
+          duree="6 mois"
+          skills={["Python", "Machine Learning"]}
+        />
+        <StageCard
+          title="Stage en Data Science"
+          company="IBM Côte d’Ivoire"
+          duree="6 mois"
+          skills={["Python", "Machine Learning"]}
+        />
+        <StageCard
+          title="Stage en Data Science"
+          company="IBM Côte d’Ivoire"
+          duree="6 mois"
+          skills={["Python", "Machine Learning"]}
+        />
+        <StageCard
+          title="Stage en Data Science"
+          company="IBM Côte d’Ivoire"
+          duree="6 mois"
+          skills={["Python", "Machine Learning"]}
+        />
+        <StageCard
+          title="Stage en Data Science"
+          company="IBM Côte d’Ivoire"
+          duree="6 mois"
+          skills={["Python", "Machine Learning"]}
+        />
       </div>
     </>
   );

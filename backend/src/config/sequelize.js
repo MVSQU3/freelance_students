@@ -5,6 +5,7 @@ import { CompanyProfileModel } from "../models/CompanyProfile.model.js";
 import { StudentProfileModel } from "../models/studentProfile.model.js";
 import { SkillModel } from "../models/Skill.model.js";
 import { StudentSkillModel } from "../models/StudentSkill.model.js";
+import { StageSkillModel } from "../models/StageSkill.js";
 import { StageModel } from "../models/Stage.model.js";
 import { ApplicationModel } from "../models/Application.model.js";
 import setupAssociations from "../models/association/association.js";
@@ -22,6 +23,7 @@ export const CompanyProfile = CompanyProfileModel(sequelize);
 export const StudentProfile = StudentProfileModel(sequelize);
 export const Skill = SkillModel(sequelize);
 export const StudentSkill = StudentSkillModel(sequelize);
+export const StageSkill = StageSkillModel(sequelize);
 export const Stage = StageModel(sequelize);
 export const Application = ApplicationModel(sequelize);
 
@@ -36,6 +38,7 @@ const db = {
   StudentProfile,
   Skill,
   StudentSkill,
+  StageSkill,
   Application,
 };
 

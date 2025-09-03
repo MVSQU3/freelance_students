@@ -1,4 +1,4 @@
-import { Company, Stage } from "../config/sequelize.js";
+import { Company, Stage, Skill } from "../config/sequelize.js";
 import { Op } from "sequelize";
 
 export const createStage = async (req, res, next) => {
@@ -59,6 +59,11 @@ export const getAllStages = async (req, res, next) => {
           as: "company",
           attributes: ["id", "email", "role"],
         },
+        {
+          model: Skill,
+          as: "skills",
+          attributes: ["id", "name"],
+        },
       ],
     });
 
@@ -92,6 +97,11 @@ export const getStageById = async (req, res, next) => {
           model: Company,
           as: "company",
           attributes: ["id", "email", "role"],
+        },
+        {
+          model: Skill,
+          as: "skills",
+          attributes: ["id", "name"],
         },
       ],
     });
@@ -141,7 +151,7 @@ export const updateStage = async (req, res, next) => {
     }
 
     const { id } = req.params;
-    const { title, description, location, isActive } = req.body;
+    const { title, description, location, isActive, skills } = req.body;
 
     const stage = await Stage.findOne({
       where: { id, companyId: req.user.id },

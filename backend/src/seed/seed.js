@@ -107,6 +107,19 @@ export const seed = async () => {
       "Node.js",
       "Marketing Digital",
       "SEO",
+      "Vente",
+      "Prospection",
+      "Recrutement",
+      "Paie",
+      "Comptabilité",
+      "Community Management",
+      "Logistique",
+      "Design Graphique",
+      "Rédaction",
+      "Data Analysis",
+      "Gestion de Projet",
+      "Support Client",
+      "E-commerce",
     ];
     const skills = await Promise.all(
       skillsData.map((s) => Skill.create({ name: s }))
@@ -128,6 +141,7 @@ export const seed = async () => {
         title: "Stage Développement Web",
         description: "Projet Node.js/React",
         location: "Abidjan",
+        duree: "6 mois",
         companyId: companyUsers[0].id,
         domain: "Informatique",
         isActive: true,
@@ -136,6 +150,7 @@ export const seed = async () => {
         title: "Stage Marketing Digital",
         description: "Optimisation SEO et réseaux sociaux",
         location: "Bouaké",
+        duree: "6 mois",
         companyId: companyUsers[1].id,
         domain: "Marketing",
         isActive: true,
@@ -144,6 +159,7 @@ export const seed = async () => {
         title: "Stage Commercial",
         description: "Prospection et suivi client",
         location: "Yamoussoukro",
+        duree: "6 mois",
         companyId: companyUsers[0].id,
         domain: "Commerce",
         isActive: true,
@@ -152,6 +168,7 @@ export const seed = async () => {
         title: "Stage Ressources Humaines",
         description: "Recrutement et gestion du personnel",
         location: "San Pedro",
+        duree: "6 mois",
         companyId: companyUsers[1].id,
         domain: "RH",
         isActive: true,
@@ -160,6 +177,7 @@ export const seed = async () => {
         title: "Stage Comptabilité",
         description: "Suivi des comptes et facturation",
         location: "Korhogo",
+        duree: "6 mois",
         companyId: companyUsers[0].id,
         domain: "Finance",
         isActive: true,
@@ -168,6 +186,7 @@ export const seed = async () => {
         title: "Stage Community Manager",
         description: "Gestion des réseaux sociaux",
         location: "Abidjan",
+        duree: "6 mois",
         companyId: companyUsers[1].id,
         domain: "Marketing",
         isActive: true,
@@ -176,6 +195,7 @@ export const seed = async () => {
         title: "Stage Logistique",
         description: "Organisation des livraisons et stocks",
         location: "Bouaké",
+        duree: "6 mois",
         companyId: companyUsers[0].id,
         domain: "Logistique",
         isActive: true,
@@ -184,6 +204,7 @@ export const seed = async () => {
         title: "Stage Design Graphique",
         description: "Création de supports visuels",
         location: "San Pedro",
+        duree: "6 mois",
         companyId: companyUsers[1].id,
         domain: "Design",
         isActive: true,
@@ -192,6 +213,7 @@ export const seed = async () => {
         title: "Stage Marketing Stratégique",
         description: "Plan de campagne et analyse",
         location: "Yamoussoukro",
+        duree: "6 mois",
         companyId: companyUsers[0].id,
         domain: "Marketing",
         isActive: true,
@@ -200,6 +222,7 @@ export const seed = async () => {
         title: "Stage Gestion de Projet",
         description: "Coordination d'équipes et suivi de projet",
         location: "Korhogo",
+        duree: "6 mois",
         companyId: companyUsers[1].id,
         domain: "Management",
         isActive: true,
@@ -208,6 +231,7 @@ export const seed = async () => {
         title: "Stage Support Client",
         description: "Assistance et relation client",
         location: "Abidjan",
+        duree: "6 mois",
         companyId: companyUsers[0].id,
         domain: "Service Client",
         isActive: true,
@@ -216,6 +240,7 @@ export const seed = async () => {
         title: "Stage E-commerce",
         description: "Gestion d'une boutique en ligne",
         location: "Bouaké",
+        duree: "6 mois",
         companyId: companyUsers[1].id,
         domain: "Commerce",
         isActive: true,
@@ -224,6 +249,7 @@ export const seed = async () => {
         title: "Stage Rédaction",
         description: "Création de contenu pour site web et blog",
         location: "San Pedro",
+        duree: "6 mois",
         companyId: companyUsers[0].id,
         domain: "Communication",
         isActive: true,
@@ -232,6 +258,7 @@ export const seed = async () => {
         title: "Stage Data Marketing",
         description: "Analyse des données clients et campagnes",
         location: "Yamoussoukro",
+        duree: "6 mois",
         companyId: companyUsers[1].id,
         domain: "Marketing",
         isActive: true,
@@ -240,6 +267,7 @@ export const seed = async () => {
         title: "Stage Vente",
         description: "Techniques de vente et négociation",
         location: "Korhogo",
+        duree: "6 mois",
         companyId: companyUsers[0].id,
         domain: "Commerce",
         isActive: true,
@@ -247,6 +275,38 @@ export const seed = async () => {
     ];
 
     const stages = await Promise.all(stagesData.map((s) => Stage.create(s)));
+    // ====== ASSOCIER SKILLS AUX STAGES ======
+    // Stage Développement Web -> JavaScript, React, Node.js
+    if (stages[0]) await stages[0].addSkills([skills[0], skills[1], skills[2]]);
+    // Stage Marketing Digital -> Marketing Digital, SEO, Community Management
+    if (stages[1])
+      await stages[1].addSkills([skills[3], skills[4], skills[10]]);
+    // Stage Commercial -> Vente, Prospection
+    if (stages[2]) await stages[2].addSkills([skills[5], skills[6]]);
+    // Stage Ressources Humaines -> Recrutement, Paie
+    if (stages[3]) await stages[3].addSkills([skills[7], skills[8]]);
+    // Stage Comptabilité -> Comptabilité
+    if (stages[4]) await stages[4].addSkills([skills[9]]);
+    // Stage Community Manager -> Community Management, Social Media
+    if (stages[5]) await stages[5].addSkills([skills[10]]);
+    // Stage Logistique -> Logistique
+    if (stages[6]) await stages[6].addSkills([skills[11]]);
+    // Stage Design Graphique -> Design Graphique
+    if (stages[7]) await stages[7].addSkills([skills[12]]);
+    // Stage Marketing Stratégique -> Marketing Digital, SEO
+    if (stages[8]) await stages[8].addSkills([skills[3], skills[4]]);
+    // Stage Gestion de Projet -> Gestion de Projet
+    if (stages[9]) await stages[9].addSkills([skills[15]]);
+    // Stage Support Client -> Support Client
+    if (stages[10]) await stages[10].addSkills([skills[16]]);
+    // Stage E-commerce -> E-commerce
+    if (stages[11]) await stages[11].addSkills([skills[17]]);
+    // Stage Rédaction -> Rédaction
+    if (stages[12]) await stages[12].addSkills([skills[13]]);
+    // Stage Data Marketing -> Data Analysis, Marketing Digital
+    if (stages[13]) await stages[13].addSkills([skills[14], skills[3]]);
+    // Stage Vente -> Vente
+    if (stages[14]) await stages[14].addSkills([skills[5]]);
 
     // ====== APPLICATIONS ======
     await Application.create({

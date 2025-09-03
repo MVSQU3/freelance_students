@@ -1,3 +1,4 @@
+import StageCard from "../components/StageCard.jsx";
 import StudentCard from "../components/StudentCard.jsx";
 
 export default function Lab() {
@@ -12,8 +13,13 @@ export default function Lab() {
         photo="https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp"
         id="1"
       />
-
-      <div className="card w-96 bg-base-100 border border-gray-200 shadow-lg">
+      <StageCard
+        title="Stage en Data Science"
+        company="IBM Côte d’Ivoire"
+        duree="6 mois"
+        skills={["Python", "Machine Learning"]}
+      />
+      {/* <div className="card w-96 bg-base-100 border border-gray-200 shadow-lg">
         <div className="card-body">
           <h2 className="card-title text-lg font-semibold">
             Stage en Data Science
@@ -31,7 +37,7 @@ export default function Lab() {
             <button className="btn btn-sm btn-primary">Voir plus</button>
           </div>
         </div>
-      </div>
+      </div> */}
     </>
   );
 }

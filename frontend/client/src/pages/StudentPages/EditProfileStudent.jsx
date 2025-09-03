@@ -20,7 +20,7 @@ const EditProfile = () => {
     fieldOfStudy: "",
     location: "",
     availability: "",
-    is_public: Oui,
+    is_public: "",
     bio: "",
     photoUrl: "" || undefined,
     cvUrl: "" || undefined,
@@ -197,15 +197,15 @@ const EditProfile = () => {
             />
           </div>
 
-          <div className="flex items-center gap-2">
-            <input
-              type="checkbox"
-              name="visibility"
-              checked={!!form.visibility}
+          <div>
+            <select
+              value={form.is_public || ""}
               onChange={handleChange}
-              className="checkbox"
-            />
-            <label className="label-text">Visible</label>
+              className="select select-bordered w-full"
+            >
+              <option value="Oui">Public</option>
+              <option value="Non">Privé</option>
+            </select>
           </div>
         </div>
 
