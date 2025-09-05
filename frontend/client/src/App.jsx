@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import { useAuthStore } from "./store/useAuthStore.js";
 import NavBare from "./components/NavBare.jsx";
+import Footer from "./components/Footer.jsx";
 import Home from "./pages/Home.jsx";
 import Login from "./pages/Login.jsx";
 import Register from "./pages/Register.jsx";
@@ -84,6 +85,7 @@ function App() {
           element={!authUser ? <Register /> : <Navigate to="/" />}
         />
       </Routes>
+      <Footer />
     </>
   );
 }

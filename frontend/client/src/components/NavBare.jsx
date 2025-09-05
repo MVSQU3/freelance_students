@@ -19,34 +19,54 @@ const NavBare = () => {
   );
 
   return (
-    <div className="bg-purple-600 p-2.5 mb-4">
-      <nav className="flex items-center p-1">
+    <div className="bg-neutral shadow-md mb-6">
+      <nav className="flex items-center p-4 lg:px-20">
         {/* left: logo */}
         <div className="flex-none">
-          <Link to="/" className="font-bold text-white">
-            CompusConnect
+          <Link to="/" className="font-bold text-primary text-xl">
+            FreelStudent
           </Link>
         </div>
 
-        {/* center: when not authenticated show the main links centered */}
+        {/* center: main links if not authenticated */}
         <div className="flex-1 flex justify-center">
-          {!authUser ? <div className="text-white">{links}</div> : <div />}
-        </div>
-
-        {/* right: if authenticated show links + profile, otherwise login/register */}
-        <div className="flex-none">
           {!authUser ? (
-            <div className="flex gap-4 text-white">
-              <Link to="/login">Se connecter</Link>
-              <Link to="/register">S'inscrire</Link>
+            <div className="flex gap-6 text-base-content font-medium">
+              {links}
             </div>
           ) : (
-            <div className="flex items-center gap-4 text-white">
-              <div>{links}</div>
+            <div />
+          )}
+        </div>
+
+        {/* right: auth links or profile */}
+        <div className="flex-none">
+          {!authUser ? (
+            <div className="flex gap-4">
+              <Link to="/login" className="btn btn-primary btn-sm">
+                Se connecter
+              </Link>
+              <Link to="/register" className="btn btn-secondary btn-sm">
+                S'inscrire
+              </Link>
+            </div>
+          ) : (
+            <div className="flex items-center gap-4">
+              <div className="flex gap-4">{links}</div>
               {authUser.role === "student" ? (
-                <Link to="/student/me/profile">Profile</Link>
+                <Link
+                  to="/student/me/profile"
+                  className="btn btn-outline btn-sm"
+                >
+                  Profile
+                </Link>
               ) : (
-                <Link to="/company/me/profile">Profile</Link>
+                <Link
+                  to="/company/me/profile"
+                  className="btn btn-outline btn-sm"
+                >
+                  Profile
+                </Link>
               )}
             </div>
           )}

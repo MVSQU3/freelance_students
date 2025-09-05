@@ -1,4 +1,17 @@
 @import "tailwindcss";
 @plugin "daisyui" {
-  themes: all;
+  themes: [
+        freelStudent: {
+          "primary": "#4F46E5",     
+          "secondary": "#F97316",   
+          "accent": "#22C55E",      
+          "neutral": "#EAF2FF",     
+          "base-100": "#FFFFFF",    
+          "base-200": "#F3F4F6",    
+          "base-content": "#1F2937",
+          "info": "#3B82F6",
+          "success": "#22C55E",
+          "warning": "#FBBF24",
+          "error": "#EF4444",
+        },  ];
 }
