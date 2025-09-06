@@ -24,7 +24,7 @@ const StudentsList = () => {
           location="Cocody, Abidjan"
           level="Étudiant en 3ème année"
           skill="UI/UX Design"
-          photo="https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp"
+          photo="https://avatars.githubusercontent.com/u/40762276?v=14"
           id="1"
         />
         <StudentCard
@@ -33,7 +33,7 @@ const StudentsList = () => {
           location="Cocody, Abidjan"
           level="Étudiant en 3ème année"
           skill="UI/UX Design"
-          photo="https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp"
+          photo="https://avatars.githubusercontent.com/u/40762276?v=4"
           id="1"
         />
         <StudentCard
@@ -42,7 +42,7 @@ const StudentsList = () => {
           location="Cocody, Abidjan"
           level="Étudiant en 3ème année"
           skill="UI/UX Design"
-          photo="https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp"
+          photo="https://avatars.githubusercontent.com/u/40762276?v=4"
           id="1"
         />
         <StudentCard
@@ -51,7 +51,7 @@ const StudentsList = () => {
           location="Cocody, Abidjan"
           level="Étudiant en 3ème année"
           skill="UI/UX Design"
-          photo="https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp"
+          photo="https://avatars.githubusercontent.com/u/40762276?v=4"
           id="1"
         />
         <StudentCard
@@ -60,7 +60,7 @@ const StudentsList = () => {
           location="Cocody, Abidjan"
           level="Étudiant en 3ème année"
           skill="UI/UX Design"
-          photo="https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp"
+          photo="https://avatars.githubusercontent.com/u/40762276?v=4"
           id="1"
         />
         <StudentCard
@@ -69,7 +69,7 @@ const StudentsList = () => {
           location="Cocody, Abidjan"
           level="Étudiant en 3ème année"
           skill="UI/UX Design"
-          photo="https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp"
+          photo="https://avatars.githubusercontent.com/u/40762276?v=4"
           id="1"
         />
         <StudentCard
@@ -78,7 +78,7 @@ const StudentsList = () => {
           location="Cocody, Abidjan"
           level="Étudiant en 3ème année"
           skill="UI/UX Design"
-          photo="https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp"
+          photo="https://avatars.githubusercontent.com/u/40762276?v=4"
           id="1"
         />
         <StudentCard
@@ -87,7 +87,7 @@ const StudentsList = () => {
           location="Cocody, Abidjan"
           level="Étudiant en 3ème année"
           skill="UI/UX Design"
-          photo="https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp"
+          photo="https://avatars.githubusercontent.com/u/40762276?v=4"
           id="1"
         />
         <StudentCard
@@ -96,7 +96,7 @@ const StudentsList = () => {
           location="Cocody, Abidjan"
           level="Étudiant en 3ème année"
           skill="UI/UX Design"
-          photo="https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp"
+          photo="https://avatars.githubusercontent.com/u/40762276?v=4"
           id="1"
         />
         <StudentCard
@@ -105,7 +105,7 @@ const StudentsList = () => {
           location="Cocody, Abidjan"
           level="Étudiant en 3ème année"
           skill="UI/UX Design"
-          photo="https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp"
+          photo="https://avatars.githubusercontent.com/u/40762276?v=4"
           id="1"
         />
         <StudentCard
@@ -114,7 +114,7 @@ const StudentsList = () => {
           location="Cocody, Abidjan"
           level="Étudiant en 3ème année"
           skill="UI/UX Design"
-          photo="https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp"
+          photo="https://avatars.githubusercontent.com/u/40762276?v=4"
           id="1"
         />
         <StudentCard
@@ -123,7 +123,7 @@ const StudentsList = () => {
           location="Cocody, Abidjan"
           level="Étudiant en 3ème année"
           skill="UI/UX Design"
-          photo="https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp"
+          photo="https://avatars.githubusercontent.com/u/40762276?v=4"
           id="1"
         />
         <StudentCard
@@ -132,7 +132,7 @@ const StudentsList = () => {
           location="Cocody, Abidjan"
           level="Étudiant en 3ème année"
           skill="UI/UX Design"
-          photo="https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp"
+          photo="https://avatars.githubusercontent.com/u/40762276?v=4"
           id="1"
         />
         <StudentCard
@@ -141,7 +141,7 @@ const StudentsList = () => {
           location="Cocody, Abidjan"
           level="Étudiant en 3ème année"
           skill="UI/UX Design"
-          photo="https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp"
+          photo="https://avatars.githubusercontent.com/u/40762276?v=4"
           id="1"
         />
         <StudentCard
@@ -150,7 +150,7 @@ const StudentsList = () => {
           location="Cocody, Abidjan"
           level="Étudiant en 3ème année"
           skill="UI/UX Design"
-          photo="https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp"
+          photo="https://avatars.githubusercontent.com/u/40762276?v=4"
           id="1"
         />
       </div>

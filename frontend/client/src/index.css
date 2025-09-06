@@ -1,17 +1,22 @@
 @import "tailwindcss";
+
+/* Déclaration du plugin DaisyUI avec configuration */
 @plugin "daisyui" {
-  themes: [
-        freelStudent: {
-          "primary": "#4F46E5",     
-          "secondary": "#F97316",   
-          "accent": "#22C55E",      
-          "neutral": "#EAF2FF",     
-          "base-100": "#FFFFFF",    
-          "base-200": "#F3F4F6",    
-          "base-content": "#1F2937",
-          "info": "#3B82F6",
-          "success": "#22C55E",
-          "warning": "#FBBF24",
-          "error": "#EF4444",
-        },  ];
+  themes: false;
+}
+
+/* Déclaration de ton thème personnalisé */
+@plugin "daisyui/theme" {
+  name: "freelStudent";
+  --color-primary: #4F46E5;
+  --color-secondary: #F97316;
+  --color-accent: #22C55E;
+  --color-neutral: #EAF2FF;
+  --color-base-100: #FFFFFF;
+  --color-base-200: #F3F4F6;
+  --color-base-content: #1F2937;
+  --color-info: #3B82F6;
+  --color-success: #22C55E;
+  --color-warning: #FBBF24;
+  --color-error: #EF4444;
 }

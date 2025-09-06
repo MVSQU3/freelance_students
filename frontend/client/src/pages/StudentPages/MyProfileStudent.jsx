@@ -14,62 +14,62 @@ const MyProfileStudent = () => {
   console.log(myProfile);
 
   return (
-    <>
-      <div className="max-w-3xl mx-auto bg-base-100 shadow-2xl rounded-2xl overflow-hidden mt-10 flex flex-col lg:flex-row">
-        {/* Photo de profil */}
-        <div className="lg:w-1/3 relative">
-          <img
-            src="../../../public/success-not-random-portrait-handsome-businessman-leaning-against-glass-wall-249709359.webp"
-            alt="Paul Kevin"
-            className="w-full h-64 lg:h-full object-cover rounded-b-2xl lg:rounded-l-2xl lg:rounded-r-none"
-          />
-          <span className="absolute top-4 right-4 badge badge-primary text-sm">
-            disponible
-          </span>
-        </div>
-
-        {/* Infos principales */}
-        <div className="lg:w-2/3 p-6 flex flex-col justify-between">
-          <div>
-            <h1 className="text-3xl font-bold text-primary mb-2">Paul Kevin</h1>
-            <p className="text-sm text-base-content/70 mb-1">
-              Université Abidjan - Licence 3
-            </p>
-            <p className="text-sm text-base-content/70 mb-1">Abidjan</p>
-
-            <p className="mt-4 text-base-content">{`Étudiant motivé`}</p>
-
-            <p className="mt-3 text-sm text-base-content/70 font-medium">
-              Domaine : Informatique
-            </p>
-
-            {/* Skills */}
-            <div className="mt-4 flex flex-wrap gap-2">
-              <span className="badge badge-outline badge-primary text-xs">
-                React
-              </span>
-              <span className="badge badge-outline badge-primary text-xs">
-                Node.js
-              </span>
-              <span className="badge badge-outline badge-primary text-xs">
-                JavaScript
-              </span>
-            </div>
-          </div>
-
-          {/* Actions */}
-          <div className="mt-6 flex flex-wrap gap-4">
-            <span className="text-sm text-base-content/60 italic">
-              CV non disponible
-            </span>
-            <button className="btn btn-primary btn-sm rounded-lg">
-              Contacter
+    <div className="flex min-h-screen">
+      {/* Sidebar */}
+      <aside className="w-64 bg-base-200 border-r p-6">
+        <h2 className="text-2xl font-bold mb-8 text-primary">Mon compte</h2>
+        <ul className="space-y-3">
+          <li>
+            <button className="w-full text-left px-3 py-2 rounded-lg hover:bg-base-300">
+              Profil
             </button>
+          </li>
+          <li>
+            <button className="w-full text-left px-3 py-2 rounded-lg hover:bg-base-300">
+              Mes candidatures
+            </button>
+          </li>
+          <li>
+            <button className="w-full text-left px-3 py-2 rounded-lg hover:bg-base-300">
+              Paramètres
+            </button>
+          </li>
+          <li>
+            <button
+              className="w-full text-left px-3 py-2 rounded-lg hover:text-white hover:bg-black"
+              onClick={logout}
+            >
+              Déconnexion
+            </button>
+          </li>
+        </ul>
+      </aside>
+
+      {/* Contenu */}
+      <main className="flex-1 p-8 bg-base-100">
+        <h1 className="text-3xl font-semibold mb-6">Profil</h1>
+
+        <div className="card bg-base-100 border shadow-sm p-6 mx-auto w-1/2">
+          <h2 className="text-xl font-bold">Paul Kevin</h2>
+          <p className="text-gray-500">Étudiant en Informatique - Licence 3</p>
+          <p className="mt-4">
+            <span className="font-semibold">Disponibilité :</span> Disponible
+          </p>
+          <p className="mt-2">
+            <span className="font-semibold">Localisation :</span> Abidjan
+          </p>
+          <p className="mt-2">
+            <span className="font-semibold">Email :</span> student1@mail.com
+          </p>
+
+          <div className="mt-4 flex gap-2 flex-wrap">
+            <span className="badge badge-outline">React</span>
+            <span className="badge badge-outline">Node.js</span>
+            <span className="badge badge-outline">JavaScript</span>
           </div>
         </div>
-      </div>
-      );
-    </>
+      </main>
+    </div>
   );
 };
 

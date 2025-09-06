@@ -61,15 +61,18 @@ export default function setupAssociations(db) {
     as: "stages", // alias clair
   });
 
-  // 1-N CompanyProfile → Stage
-  Company.hasMany(Stage, {
+  // 1-N CompanyProfile → Stage (liaison via CompanyProfile.userId <-> Stage.companyId)
+  CompanyProfile.hasMany(Stage, {
     foreignKey: "companyId",
+    sourceKey: "userId",
     as: "stages",
     onDelete: "CASCADE",
   });
 
-  Stage.belongsTo(Company, {
+  // garder l'alias `company` pour compatibilité : Stage.company renverra le CompanyProfile
+  Stage.belongsTo(CompanyProfile, {
     foreignKey: "companyId",
+    targetKey: "userId",
     as: "company",
   });
 

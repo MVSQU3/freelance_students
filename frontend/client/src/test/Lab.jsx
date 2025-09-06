@@ -1,61 +1,43 @@
-import StageCard from "../components/StageCard.jsx";
-import StudentCard from "../components/StudentCard.jsx";
+import { Phone, Mail, Globe, MapPin, User } from "lucide-react";
 
 export default function Lab() {
   return (
-    <div className="max-w-4xl mx-auto bg-base-100 shadow-xl rounded-xl overflow-hidden mt-10">
-      <div className="flex flex-col lg:flex-row">
-        {/* Photo de profil */}
-        <div className="flex-shrink-0 relative">
-          <img
-            src="../../public/success-not-random-portrait-handsome-businessman-leaning-against-glass-wall-249709359.webp"
-            alt="Paul Kevin"
-            className="h-48 w-full lg:h-full lg:w-48 object-cover"
-          />
-          <span className="absolute top-2 right-2 badge badge-primary">
-            disponible
-          </span>
-        </div>
-
-        {/* Infos principales */}
-        <div className="p-6 flex-1 flex flex-col justify-between">
-          <div>
-            <h1 className="text-2xl font-bold text-primary">Paul Kevin</h1>
-            <p className="text-sm text-base-content/70">Université Abidjan</p>
-            <p className="text-sm text-base-content/70">Licence 3</p>
-            <p className="text-sm text-base-content/70">Abidjan</p>
-            <p className="mt-3 text-base-content">Étudiant motivé</p>
-
-            {/* Domaine d'étude */}
-            <p className="mt-2 text-sm text-base-content/70">
-              Domaine : Informatique
-            </p>
-
-            {/* Skills */}
-            <div className="mt-4 flex flex-wrap gap-2">
-              <span className="badge badge-outline badge-primary text-xs">
-                React
-              </span>
-              <span className="badge badge-outline badge-primary text-xs">
-                Node.js
-              </span>
-              <span className="badge badge-outline badge-primary text-xs">
-                JavaScript
-              </span>
-            </div>
-          </div>
-
-          {/* Actions */}
-          <div className="mt-6 flex flex-wrap gap-4">
-            <span className="text-sm text-base-content/60 italic">
-              CV non disponible
-            </span>
-            <button className="btn btn-outline btn-sm rounded-lg">
-              Contacter
-            </button>
+    <div className="card w-80 bg-base-100 shadow-xl hover:shadow-2xl transition-all duration-300 group">
+      {/* Avatar */}
+      <div className="flex flex-col items-center p-6">
+        <div className="avatar">
+          <div className="w-28 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2 group-hover:ring-secondary transition-all duration-300">
+            <User className="w-20 h-20 text-neutral" />
           </div>
         </div>
+        <h2 className="text-xl font-bold text-neutral mt-3">Anna Wilson</h2>
+        <p className="text-sm text-secondary font-semibold">Developer</p>
       </div>
+
+      {/* Infos */}
+      <div className="p-4">
+        <ul className="space-y-3 text-sm font-medium text-neutral">
+          <li className="flex items-center gap-2">
+            <Phone className="w-4 h-4 text-primary" />
+            <span>+123-458-784</span>
+          </li>
+          <li className="flex items-center gap-2">
+            <Mail className="w-4 h-4 text-primary" />
+            <span>smkys@gmail.com</span>
+          </li>
+          <li className="flex items-center gap-2">
+            <Globe className="w-4 h-4 text-primary" />
+            <span>smkydevelopr.com</span>
+          </li>
+          <li className="flex items-center gap-2">
+            <MapPin className="w-4 h-4 text-primary" />
+            <span>456 Anytown, Near Anywhere, ST 47523</span>
+          </li>
+        </ul>
+      </div>
+
+      {/* Footer accent */}
+      <div className="h-2 w-full bg-primary group-hover:bg-secondary transition-colors duration-300" />
     </div>
   );
 }

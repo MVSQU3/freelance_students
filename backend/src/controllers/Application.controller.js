@@ -1,5 +1,5 @@
 import { Op } from "sequelize";
-import { Application, Company, Stage, Student } from "../config/sequelize.js";
+import { Application, Company, CompanyProfile, Stage, Student } from "../config/sequelize.js";
 
 // Postuler à une offre
 export const applyToOffer = async (req, res, next) => {
@@ -82,9 +82,16 @@ export const getMyApplications = async (req, res, next) => {
           as: "stage",
           include: [
             {
-              model: Company,
+              model: CompanyProfile,
               as: "company",
-              attributes: ["id", "email", "role"],
+              attributes: ["id", "companyName", "sector", "location", "website", "userId"],
+              include: [
+                {
+                  model: Company,
+                  as: "company",
+                  attributes: ["id", "email", "role"],
+                },
+              ],
             },
           ],
         },

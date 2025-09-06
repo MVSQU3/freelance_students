@@ -1,4 +1,4 @@
-import { Company, Stage, Skill } from "../config/sequelize.js";
+import { Company, Stage, Skill, CompanyProfile } from "../config/sequelize.js";
 import { Op } from "sequelize";
 
 export const createStage = async (req, res, next) => {
@@ -55,9 +55,16 @@ export const getAllStages = async (req, res, next) => {
       order: [[field, sort !== "desc" ? (sort = "asc") : sort]],
       include: [
         {
-          model: Company,
+          model: CompanyProfile,
           as: "company",
-          attributes: ["id", "email", "role"],
+          attributes: ["id", "companyName", "location"],
+          include: [
+            {
+              model: Company,
+              as: "company",
+              attributes: ["id", "email", "role"],
+            },
+          ],
         },
         {
           model: Skill,
@@ -94,9 +101,23 @@ export const getStageById = async (req, res, next) => {
     const stage = await Stage.findByPk(id, {
       include: [
         {
-          model: Company,
+          model: CompanyProfile,
           as: "company",
-          attributes: ["id", "email", "role"],
+          attributes: [
+            "id",
+            "companyName",
+            "sector",
+            "location",
+            "website",
+            "userId",
+          ],
+          include: [
+            {
+              model: Company,
+              as: "company",
+              attributes: ["id", "email", "role"],
+            },
+          ],
         },
         {
           model: Skill,
@@ -237,19 +258,77 @@ export const searchStages = async (req, res, next) => {
       const stages = await Stage.findAll({
         where: filters,
         order: [[field, sort]],
+        include: [
+          {
+            model: CompanyProfile,
+            as: "company",
+            attributes: ["id", "companyName", "location"],
+            include: [
+              {
+                model: Company,
+                as: "company",
+                attributes: ["id", "email", "role"],
+              },
+            ],
+          },
+          {
+            model: Skill,
+            as: "skills",
+            attributes: ["id", "name"],
+          },
+        ],
       });
-      res.json(stages);
+      return res.status(200).json(stages);
     }
 
     if (sort === "desc") {
       const stages = await Stage.findAll({
         where: filters,
         order: [[field, sort]],
+        include: [
+          {
+            model: CompanyProfile,
+            as: "company",
+            attributes: ["id", "companyName", "location"],
+            include: [
+              {
+                model: Company,
+                as: "company",
+                attributes: ["id", "email", "role"],
+              },
+            ],
+          },
+          {
+            model: Skill,
+            as: "skills",
+            attributes: ["id", "name"],
+          },
+        ],
       });
-      res.json(stages);
+      return res.status(200).json(stages);
     }
+
     const stages = await Stage.findAll({
       where: filters,
+      include: [
+        {
+          model: CompanyProfile,
+          as: "company",
+          attributes: ["id", "companyName", "location"],
+          include: [
+            {
+              model: Company,
+              as: "company",
+              attributes: ["id", "email", "role"],
+            },
+          ],
+        },
+        {
+          model: Skill,
+          as: "skills",
+          attributes: ["id", "name"],
+        },
+      ],
     });
     return res.status(200).json(stages);
   } catch (error) {

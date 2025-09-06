@@ -58,14 +58,14 @@ const NavBare = () => {
                   to="/student/me/profile"
                   className="btn btn-outline btn-sm"
                 >
-                  Profile
+                  Compte
                 </Link>
               ) : (
                 <Link
                   to="/company/me/profile"
                   className="btn btn-outline btn-sm"
                 >
-                  Profile
+                  Compte
                 </Link>
               )}
             </div>
