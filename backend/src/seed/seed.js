@@ -139,7 +139,8 @@ export const seed = async () => {
     const stagesData = [
       {
         title: "Stage Développement Web",
-        description: "Projet Node.js/React",
+        description:
+          "Participation au développement d'applications web avec Node.js et React. Le stagiaire contribuera à la conception des interfaces utilisateurs, à l’implémentation de nouvelles fonctionnalités, à l’optimisation des performances et aux tests des applications.",
         location: "Abidjan",
         duree: "6 mois",
         companyId: companyUsers[0].id,
@@ -148,7 +149,8 @@ export const seed = async () => {
       },
       {
         title: "Stage Marketing Digital",
-        description: "Optimisation SEO et réseaux sociaux",
+        description:
+          "Mise en place de stratégies de référencement (SEO/SEA), gestion de campagnes publicitaires en ligne et animation des réseaux sociaux. Le stagiaire analysera les performances et proposera des actions d’optimisation.",
         location: "Bouaké",
         duree: "6 mois",
         companyId: companyUsers[1].id,
@@ -157,7 +159,8 @@ export const seed = async () => {
       },
       {
         title: "Stage Commercial",
-        description: "Prospection et suivi client",
+        description:
+          "Prospection de nouveaux clients, suivi du portefeuille existant, préparation des offres commerciales et participation aux négociations. Le stagiaire sera impliqué dans la mise en place de stratégies de fidélisation.",
         location: "Yamoussoukro",
         duree: "6 mois",
         companyId: companyUsers[0].id,
@@ -166,7 +169,8 @@ export const seed = async () => {
       },
       {
         title: "Stage Ressources Humaines",
-        description: "Recrutement et gestion du personnel",
+        description:
+          "Appui au processus de recrutement (rédaction d’annonces, tri de CV, participation aux entretiens), gestion administrative du personnel et contribution à l’amélioration de la communication interne.",
         location: "San Pedro",
         duree: "6 mois",
         companyId: companyUsers[1].id,
@@ -175,7 +179,8 @@ export const seed = async () => {
       },
       {
         title: "Stage Comptabilité",
-        description: "Suivi des comptes et facturation",
+        description:
+          "Suivi des opérations comptables quotidiennes, gestion des factures et rapprochements bancaires. Le stagiaire participera aussi à la préparation des bilans et à l’analyse des états financiers.",
         location: "Korhogo",
         duree: "6 mois",
         companyId: companyUsers[0].id,
@@ -184,7 +189,8 @@ export const seed = async () => {
       },
       {
         title: "Stage Community Manager",
-        description: "Gestion des réseaux sociaux",
+        description:
+          "Création et publication de contenus engageants, animation des communautés en ligne et veille concurrentielle. Le stagiaire participera également à la planification éditoriale et au reporting des performances.",
         location: "Abidjan",
         duree: "6 mois",
         companyId: companyUsers[1].id,
@@ -193,7 +199,8 @@ export const seed = async () => {
       },
       {
         title: "Stage Logistique",
-        description: "Organisation des livraisons et stocks",
+        description:
+          "Gestion des stocks, organisation des livraisons, optimisation des flux logistiques et suivi des fournisseurs. Le stagiaire contribuera à l’amélioration des processus de distribution.",
         location: "Bouaké",
         duree: "6 mois",
         companyId: companyUsers[0].id,
@@ -202,7 +209,8 @@ export const seed = async () => {
       },
       {
         title: "Stage Design Graphique",
-        description: "Création de supports visuels",
+        description:
+          "Création de supports visuels (affiches, bannières, publications pour les réseaux sociaux), contribution à l’identité visuelle de l’entreprise et participation à la conception de maquettes UI/UX.",
         location: "San Pedro",
         duree: "6 mois",
         companyId: companyUsers[1].id,
@@ -211,7 +219,8 @@ export const seed = async () => {
       },
       {
         title: "Stage Marketing Stratégique",
-        description: "Plan de campagne et analyse",
+        description:
+          "Élaboration de plans de campagne marketing, analyse du marché et des comportements clients. Le stagiaire proposera des actions pour améliorer le positionnement et la visibilité de l’entreprise.",
         location: "Yamoussoukro",
         duree: "6 mois",
         companyId: companyUsers[0].id,
@@ -220,7 +229,8 @@ export const seed = async () => {
       },
       {
         title: "Stage Gestion de Projet",
-        description: "Coordination d'équipes et suivi de projet",
+        description:
+          "Participation à la planification et au suivi des projets, coordination des équipes et rédaction de rapports d’avancement. Le stagiaire apprendra à utiliser des outils de gestion (Trello, Jira, etc.).",
         location: "Korhogo",
         duree: "6 mois",
         companyId: companyUsers[1].id,
@@ -229,7 +239,8 @@ export const seed = async () => {
       },
       {
         title: "Stage Support Client",
-        description: "Assistance et relation client",
+        description:
+          "Réception et traitement des demandes clients, assistance technique et suivi de la satisfaction. Le stagiaire contribuera à l’amélioration de la qualité du service et à la documentation des processus.",
         location: "Abidjan",
         duree: "6 mois",
         companyId: companyUsers[0].id,
@@ -238,7 +249,8 @@ export const seed = async () => {
       },
       {
         title: "Stage E-commerce",
-        description: "Gestion d'une boutique en ligne",
+        description:
+          "Gestion d’une boutique en ligne, mise en ligne de produits, suivi des commandes et optimisation de l’expérience utilisateur. Le stagiaire participera aussi à la mise en place de campagnes promotionnelles.",
         location: "Bouaké",
         duree: "6 mois",
         companyId: companyUsers[1].id,
@@ -247,7 +259,8 @@ export const seed = async () => {
       },
       {
         title: "Stage Rédaction",
-        description: "Création de contenu pour site web et blog",
+        description:
+          "Rédaction d’articles pour sites web, blogs et newsletters. Le stagiaire veillera au respect du SEO et proposera des contenus adaptés aux différentes plateformes de communication.",
         location: "San Pedro",
         duree: "6 mois",
         companyId: companyUsers[0].id,
@@ -256,7 +269,8 @@ export const seed = async () => {
       },
       {
         title: "Stage Data Marketing",
-        description: "Analyse des données clients et campagnes",
+        description:
+          "Collecte et analyse de données clients, suivi des performances des campagnes marketing et élaboration de tableaux de bord. Le stagiaire utilisera des outils d’analyse comme Google Analytics ou Excel.",
         location: "Yamoussoukro",
         duree: "6 mois",
         companyId: companyUsers[1].id,
@@ -265,7 +279,8 @@ export const seed = async () => {
       },
       {
         title: "Stage Vente",
-        description: "Techniques de vente et négociation",
+        description:
+          "Apprentissage des techniques de vente, négociation avec les clients et participation aux actions commerciales sur le terrain. Le stagiaire contribuera à atteindre les objectifs de chiffre d’affaires.",
         location: "Korhogo",
         duree: "6 mois",
         companyId: companyUsers[0].id,

@@ -109,6 +109,7 @@ const Stages = () => {
                     ? stage.skills.map((s) => s.name)
                     : []
                 }
+                id={stage.id}
               />
             </li>
           ))

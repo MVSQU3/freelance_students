@@ -1,4 +1,6 @@
-const StageCard = ({ title, company, duree, skills }) => {
+import { Link } from "react-router-dom";
+
+const StageCard = ({ title, company, duree, skills, id }) => {
   return (
     <div className="card w-full bg-base-100 border border-gray-200 shadow-xl rounded-xl hover:shadow-2xl transition-shadow duration-300">
       <div className="card-body">
@@ -20,9 +22,12 @@ const StageCard = ({ title, company, duree, skills }) => {
         </div>
 
         <div className="card-actions justify-end mt-4">
-          <button className="btn btn-sm btn-primary rounded-lg">
+          <Link
+            className="btn btn-sm btn-primary rounded-lg"
+            to={`/stage-details/${id}`}
+          >
             Voir plus
-          </button>
+          </Link>
         </div>
       </div>
     </div>

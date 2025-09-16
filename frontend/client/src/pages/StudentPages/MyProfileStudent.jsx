@@ -25,9 +25,12 @@ const MyProfileStudent = () => {
             </button>
           </li>
           <li>
-            <button className="w-full text-left px-3 py-2 rounded-lg hover:bg-base-300">
+            <Link
+              to={"/student/my-apply"}
+              className="w-full text-left px-3 py-2 rounded-lg hover:bg-base-300"
+            >
               Mes candidatures
-            </button>
+            </Link>
           </li>
           <li>
             <button className="w-full text-left px-3 py-2 rounded-lg hover:bg-base-300">

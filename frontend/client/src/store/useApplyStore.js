@@ -4,10 +4,10 @@ import { api } from "../lib/utils";
 export const useApplyStore = create((set) => ({
   isApplying: false,
   apply: null,
+  myAppy: null,
 
-  // stageId: id de l'offre, studentId optionnel (backend utilise req.user.id)
-  // payload attendu: { coverLetter }
-  setApplying: async (stageId, data) => {
+  setApply: async (stageId, data) => {
+    console.log("log de data", data);
     set({ isApplying: true });
     try {
       const res = await api.post(`/apply/${stageId}/apply`, data);
@@ -16,8 +16,20 @@ export const useApplyStore = create((set) => ({
       //   if (res.data?.application) set({ apply: res.data.application });
       //   return res.data;
     } catch (error) {
+      console.error("Erreur lors de la création de la candidature: ", error);
+    } finally {
+      set({ isApplying: false });
+    }
+  },
+
+  getApply: async () => {
+    set({ isApplying: true });
+    try {
+      const res = await api.get("/apply/me");
+      console.log("log de res.data in getApply: ", res.data);
+    } catch (error) {
       console.error(
-        "Erreur lors de la création de la candidature: ",
+        "Erreur lors de la récupération de vos candidatures: ",
         error
       );
     } finally {

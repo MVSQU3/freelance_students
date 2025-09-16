@@ -7,6 +7,7 @@ import Home from "./pages/Home.jsx";
 import Login from "./pages/Login.jsx";
 import Register from "./pages/Register.jsx";
 import Stages from "./pages/Stages.jsx";
+import StageDetails from "./pages/StageDetails.jsx";
 import Lab from "./test/Lab.jsx";
 
 // START STUDENT ROUTES
@@ -20,6 +21,8 @@ import StudentsList from "./pages/StudentPages/StudentsList.jsx";
 import PublicProfileCompany from "./pages/CompanyPages/PublicProfileCompany.jsx";
 import MyProfileCompany from "./pages/CompanyPages/MyProfileCompany.jsx";
 import EditProfileCompany from "./pages/CompanyPages/EditProfileCompany.jsx";
+import MyApply from "./pages/StudentPages/MyApply.jsx";
+import { LogIn } from "lucide-react";
 // END COMPANY ROUTES
 function App() {
   const { authUser, checkAuth } = useAuthStore();
@@ -35,6 +38,11 @@ function App() {
         <Route path="/lab" element={<Lab />} />
         <Route path="/" element={authUser ? <Home /> : <Login />} />
         <Route path="/stages" element={authUser ? <Stages /> : <Login />} />
+        <Route
+          path="/stage-details/:id"
+          element={authUser ? <StageDetails /> : <Login />}
+        />
+        <Route path="student/my-apply" element={authUser ? <MyApply /> : <LogIn />} />
 
         {/* start Student routes */}
         <Route
