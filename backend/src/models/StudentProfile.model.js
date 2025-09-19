@@ -34,10 +34,6 @@ export const StudentProfileModel = () => {
         type: DataTypes.ENUM("disponible", "indisponible"),
         defaultValue: "disponible",
       },
-      is_public: {
-        type: DataTypes.ENUM("Oui", "Non"),
-        defaultValue: "Oui",
-      },
       bio: { type: DataTypes.TEXT },
       photoUrl: { type: DataTypes.STRING },
       cvUrl: { type: DataTypes.STRING },

@@ -6,10 +6,10 @@ export const useStageStore = create((set) => ({
   stage: null,
   isLoading: false,
 
-  getAllStages: async () => {
+  getAllStages: async (page) => {
     set({ isLoading: true });
     try {
-      const res = await api.get("/stages");
+      const res = await api.get(`/stages/?page=${page}`);
       set({ stages: res.data.stages });
       console.log("log de res.data in getAllStages:", res.data.stages);
     } catch (error) {

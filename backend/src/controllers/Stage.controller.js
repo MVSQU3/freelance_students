@@ -45,7 +45,7 @@ export const getAllStages = async (req, res, next) => {
   try {
     let { page, limit, sort = "desc", field = "updated" } = req.query;
     page = parseInt(page) || 1;
-    limit = parseInt(limit) || 5;
+    limit = parseInt(limit) || 6;
 
     const offset = (page - 1) * limit;
 

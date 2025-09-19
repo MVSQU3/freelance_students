@@ -5,7 +5,7 @@ export const getAllStudents = async (req, res, next) => {
   try {
     const students = await StudentProfile.findAll({
       where: {
-        [Op.and]: [{ is_public: "Oui" }, { availability: "disponible" }],
+        [Op.and]: [{ availability: "disponible" }],
       },
       include: [
         {
@@ -173,7 +173,6 @@ export const updateMyProfile = async (req, res, next) => {
         fieldOfStudy,
         location,
         availability,
-        visibility,
         bio,
         photoUrl,
         cvUrl,

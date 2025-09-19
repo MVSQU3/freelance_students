@@ -10,12 +10,54 @@ import {
   Award,
   BookOpen,
   ChevronRight,
+  Camera
 } from "lucide-react";
+import { useAuthStore } from "../../store/useAuthStore";
+import { useStudentStore } from "../../store/useStudentStore";
+import { useEffect, useRef, useState } from "react";
+import { useUploadStore } from "../../store/useUploadStore";
 
 const StudentDashboard = () => {
-  const logout = () => {
-    // Logique de déconnexion
-    console.log("Déconnexion");
+  const [ppFile, setPpFile] = useState(null);
+  const [form, setForm] = useState({ photoUrl: "" || undefined });
+  const fileInputRef = useRef(null);
+  const { logout } = useAuthStore();
+  const { getMyProfile, UpdateMyProfile, myProfile } = useStudentStore();
+  const { uploadPp } = useUploadStore();
+
+  useEffect(() => {
+    getMyProfile();
+  }, [getMyProfile]);
+
+  const handleAvatarClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handlePhotoUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    try {
+      // 1. Upload de la photo
+      const result = await uploadPp(file);
+
+      if (result && result.publicUrl) {
+        console.log("Photo uploadée :", result.publicUrl);
+
+        // 2. Mise à jour du profil avec la nouvelle photo
+        await UpdateMyProfile({
+          ...myProfile,
+          photoUrl: result.publicUrl,
+        });
+
+        // 3. Recharge le profil pour voir le changement
+        getMyProfile();
+      } else {
+        console.error("Erreur lors de l'upload");
+      }
+    } catch (err) {
+      console.error("Erreur:", err);
+    }
   };
 
   return (
@@ -80,9 +122,41 @@ const StudentDashboard = () => {
           {/* Carte de profil */}
           <div className="bg-white rounded-xl shadow-sm p-6 mb-8 border border-gray-100">
             <div className="flex items-start mb-6">
-              <div className="bg-indigo-100 p-4 rounded-full mr-4">
-                <User className="h-8 w-8 text-indigo-600" />
+              <div className="relative group mr-4">
+                <div 
+                  className="bg-indigo-100 w-16 h-16 rounded-full flex items-center justify-center cursor-pointer group-hover:bg-indigo-200 transition-colors"
+                  onClick={handleAvatarClick}
+                >
+                  {myProfile?.photoUrl ? (
+                    <img 
+                      src={myProfile.photoUrl} 
+                      alt="Profile" 
+                      className="w-full h-full rounded-full object-cover"
+                    />
+                  ) : (
+                    <User className="h-8 w-8 text-indigo-600" />
+                  )}
+                  
+                  {/* Overlay au survol */}
+                  <div className="absolute inset-0 bg-black bg-opacity-40 rounded-full opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                    <Camera className="h-5 w-5 text-white" />
+                  </div>
+                </div>
+                
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  onChange={handlePhotoUpload}
+                  accept="image/png, image/jpeg, image/webp"
+                  className="hidden"
+                />
+                
+                {/* Badge de modification */}
+                <div className="absolute -bottom-1 -right-1 bg-indigo-600 rounded-full p-1">
+                  <Camera className="h-3 w-3 text-white" />
+                </div>
               </div>
+              
               <div>
                 <h2 className="text-xl font-bold text-gray-800">Paul Kevin</h2>
                 <p className="text-gray-500 flex items-center">
@@ -197,14 +271,20 @@ const StudentDashboard = () => {
               Actions rapides
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <button className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:border-indigo-400 transition-colors">
-                <span>Compléter mon profil</span>
+              <Link
+                to={"/student/edit/profile/"}
+                className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:border-indigo-400 transition-colors"
+              >
+                <span>Éditer mon profil</span>
                 <ChevronRight className="h-5 w-5 text-gray-400" />
-              </button>
-              <button className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:border-indigo-400 transition-colors">
+              </Link>
+              <Link
+                to={"/stages"}
+                className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:border-indigo-400 transition-colors"
+              >
                 <span>Voir les offres de stage</span>
                 <ChevronRight className="h-5 w-5 text-gray-400" />
-              </button>
+              </Link>
             </div>
           </div>
         </div>

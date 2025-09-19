@@ -36,7 +36,7 @@ export const useStudentStore = create((set) => ({
       const res = await api.get("/students/me/profile");
       console.log("log de res.data in MyProfile:", res.data);
       // stocke le profil et renvoie les données pour usage côté composant
-      set({ myProfile: res.data.profile });
+      set({ myProfile: res.data.profile })
       return res.data.profile;
     } catch (error) {
       console.error("Error in MyProfile", error);

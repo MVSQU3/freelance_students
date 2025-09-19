@@ -8,8 +8,8 @@ const StudentCard = ({ name, school, location, level, skill, photo, id }) => {
         {/* Photo et nom */}
         <div className="flex items-center mb-4">
           <div className="w-16 h-16 rounded-full bg-gray-200 overflow-hidden mr-4">
-            <img 
-              src={photo || "/default-avatar.png"} 
+            <img
+              src={photo || "/default-avatar.png"}
               alt={name}
               className="w-full h-full object-cover"
             />
@@ -26,12 +26,12 @@ const StudentCard = ({ name, school, location, level, skill, photo, id }) => {
             <BookOpen className="w-4 h-4 mr-2 text-indigo-500" />
             <span className="text-sm">{school}</span>
           </div>
-          
+
           <div className="flex items-center text-gray-600">
             <MapPin className="w-4 h-4 mr-2 text-indigo-500" />
             <span className="text-sm">{location}</span>
           </div>
-          
+
           <div className="flex items-center text-gray-600">
             <Briefcase className="w-4 h-4 mr-2 text-indigo-500" />
             <span className="text-sm">{skill}</span>
@@ -39,8 +39,8 @@ const StudentCard = ({ name, school, location, level, skill, photo, id }) => {
         </div>
 
         {/* Bouton action */}
-        <Link 
-          to={`/students/${id}`}
+        <Link
+          to={`/student/public/profile/${id}`}
           className="btn btn-primary btn-sm w-full rounded-lg flex items-center justify-center gap-2"
         >
           <Eye className="w-4 h-4" />

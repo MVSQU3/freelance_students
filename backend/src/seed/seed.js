@@ -9,6 +9,7 @@ import {
   Company,
 } from "../config/sequelize.js";
 import bcrypt from "bcrypt";
+import { fakerFR as faker } from "@faker-js/faker";
 
 export const seed = async () => {
   try {
@@ -17,329 +18,332 @@ export const seed = async () => {
 
     const passwordHash = await bcrypt.hash("123456", 10);
 
-    // ====== USERS ======
-    const studentsData = [
-      { email: "student1@mail.com", role: "student" },
-      { email: "student2@mail.com", role: "student" },
-      { email: "student3@mail.com", role: "student" },
-    ];
-
-    const companiesData = [
-      { email: "company1@mail.com", role: "company" },
-      { email: "company2@mail.com", role: "company" },
-    ];
+    // ====== CRÉATION D'ÉTUDIANTS ======
+    const studentsData = Array.from({ length: 50 }, (_, i) => ({
+      email: `student${i + 1}@mail.com`,
+      role: "student",
+    }));
 
     const studentUsers = await Promise.all(
       studentsData.map((u) => Student.create({ ...u, password: passwordHash }))
     );
+
+    // ====== CRÉATION D'ENTREPRISES ======
+    const companiesData = Array.from({ length: 20 }, (_, i) => ({
+      email: `company${i + 1}@mail.com`,
+      role: "company",
+    }));
+
     const companyUsers = await Promise.all(
       companiesData.map((u) => Company.create({ ...u, password: passwordHash }))
     );
 
-    // ====== STUDENT PROFILES ======
-    const studentProfiles = [
-      {
-        userId: studentUsers[0].id,
-        firstName: "Paul",
-        lastName: "Kevin",
-        school: "Université Abidjan",
-        level: "Licence 3",
-        fieldOfStudy: "Informatique",
-        location: "Abidjan",
-        availability: true,
-        is_public: "Oui",
-        bio: "Étudiant motivé",
-      },
-      {
-        userId: studentUsers[1].id,
-        firstName: "Marie",
-        lastName: "Claire",
-        school: "Université Bouaké",
-        level: "Licence 2",
-        fieldOfStudy: "Marketing",
-        location: "Bouaké",
-        availability: true,
-        is_public: "Oui",
-        bio: "Étudiante dynamique",
-      },
-      {
-        userId: studentUsers[2].id,
-        firstName: "Jean",
-        lastName: "Luc",
-        school: "Université San Pedro",
-        level: "Licence 3",
-        fieldOfStudy: "Gestion",
-        location: "San Pedro",
-        availability: false,
-        is_public: "Oui",
-        bio: "Cherche stage en gestion",
-      },
+    // ====== PROFILS ÉTUDIANTS ======
+    const schools = [
+      "Université Félix Houphouët-Boigny",
+      "Université Nangui Abrogoua",
+      "Université Jean Lorougnon Guédé",
+      "Institut National Polytechnique Houphouët-Boigny",
+      "École Supérieure Africaine des Technologies de l'Information",
+      "Université Alassane Ouattara",
+      "Université Péléforo Gbon Coulibaly",
+      "École Supérieure des Métiers des Technologies de l'Information",
+      "Institut National de la Jeunesse et des Sports",
+      "École de Spécialisation en Économie et Gestion",
     ];
 
-    await Promise.all(studentProfiles.map((s) => StudentProfile.create(s)));
-
-    // ====== COMPANY PROFILES ======
-    const companyProfiles = [
-      {
-        userId: companyUsers[0].id,
-        companyName: "TechCorp",
-        sector: "Informatique",
-        location: "Abidjan",
-        website: "https://techcorp.ci",
-        description: "Entreprise spécialisée dans le développement web",
-      },
-      {
-        userId: companyUsers[1].id,
-        companyName: "MarketPlus",
-        sector: "Marketing",
-        location: "Bouaké",
-        website: "https://marketplus.ci",
-        description: "Agence de marketing digital",
-      },
+    const fieldsOfStudy = [
+      "Informatique",
+      "Marketing",
+      "Gestion",
+      "Finance",
+      "Commerce",
+      "Droit",
+      "Communication",
+      "Ressources Humaines",
+      "Logistique",
+      "Tourisme",
+      "Médecine",
+      "Ingénierie",
+      "Design",
+      "Architecture",
     ];
 
-    await Promise.all(companyProfiles.map((c) => CompanyProfile.create(c)));
+    const levels = [
+      "Licence 1",
+      "Licence 2",
+      "Licence 3",
+      "Master 1",
+      "Master 2",
+    ];
 
-    // ====== SKILLS ======
+    const studentProfilesData = studentUsers.map((user, index) => ({
+      userId: user.id,
+      firstName: faker.person.firstName(),
+      lastName: faker.person.lastName(),
+      school: faker.helpers.arrayElement(schools),
+      level: faker.helpers.arrayElement(levels),
+      fieldOfStudy: faker.helpers.arrayElement(fieldsOfStudy),
+      location: faker.location.city(),
+      availability: faker.datatype.boolean(),
+      bio: faker.lorem.paragraph(),
+      phone: faker.phone.number(),
+      birthDate: faker.date.birthdate({ min: 18, max: 30, mode: "age" }),
+      cvUrl: faker.internet.url(),
+    }));
+
+    const studentProfiles = await Promise.all(
+      studentProfilesData.map((s) => StudentProfile.create(s))
+    );
+
+    // ====== PROFILS ENTREPRISES ======
+    const sectors = [
+      "Informatique",
+      "Marketing",
+      "Finance",
+      "Santé",
+      "Éducation",
+      "Construction",
+      "Transport",
+      "Commerce",
+      "Restauration",
+      "Tourisme",
+      "Énergie",
+      "Télécommunications",
+      "Agriculture",
+      "Industrie",
+      "Services",
+    ];
+
+    const companyNames = [
+      "TechCorp",
+      "MarketPlus",
+      "FinExpert",
+      "Logistica",
+      "BuildCon",
+      "EduFuture",
+      "HealthCare Plus",
+      "AgroBusiness",
+      "Telecom Solutions",
+      "EnergyPlus",
+      "ServiceMaster",
+      "FoodExpress",
+      "Tourism Paradise",
+      "ConsultPro",
+      "Innovation Labs",
+      "DataSystems",
+      "WebFactory",
+      "DigitalMind",
+      "CloudServices",
+      "SmartSolutions",
+    ];
+
+    const companyProfilesData = companyUsers.map((user, index) => ({
+      userId: user.id,
+      companyName: companyNames[index] || faker.company.name(),
+      sector: faker.helpers.arrayElement(sectors),
+      location: faker.location.city(),
+      website: faker.internet.url(),
+      description: faker.company.catchPhrase(),
+      phone: faker.phone.number(),
+      employeesCount: faker.number.int({ min: 5, max: 1000 }),
+      foundedYear: faker.number.int({ min: 1990, max: 2023 }),
+    }));
+
+    const companyProfiles = await Promise.all(
+      companyProfilesData.map((c) => CompanyProfile.create(c))
+    );
+
+    // ====== COMPÉTENCES ======
     const skillsData = [
       "JavaScript",
       "React",
       "Node.js",
+      "Vue.js",
+      "Angular",
+      "Python",
+      "Java",
+      "PHP",
+      "Ruby",
+      "C#",
+      "HTML/CSS",
+      "SASS/LESS",
+      "TypeScript",
+      "Swift",
+      "Kotlin",
       "Marketing Digital",
       "SEO",
+      "SEM",
+      "Google Analytics",
+      "Réseaux sociaux",
       "Vente",
       "Prospection",
+      "Négociation",
+      "Gestion de compte",
       "Recrutement",
       "Paie",
+      "Formation",
+      "Développement RH",
       "Comptabilité",
+      "Finance",
+      "Audit",
+      "Contrôle de gestion",
       "Community Management",
+      "Content Marketing",
+      "Stratégie de marque",
       "Logistique",
+      "Supply Chain",
+      "Gestion des stocks",
+      "Transport",
       "Design Graphique",
+      "UI/UX",
+      "Illustration",
+      "Motion Design",
       "Rédaction",
+      "Copywriting",
+      "Journalisme",
+      "Traduction",
       "Data Analysis",
+      "Machine Learning",
+      "Big Data",
+      "Statistiques",
       "Gestion de Projet",
+      "Agile",
+      "Scrum",
+      "PMI",
       "Support Client",
+      "Service après-vente",
+      "Résolution de problèmes",
       "E-commerce",
+      "Shopify",
+      "WooCommerce",
+      "Marketing d'affiliation",
     ];
+
     const skills = await Promise.all(
       skillsData.map((s) => Skill.create({ name: s }))
     );
 
-    // Associer les skills aux étudiants
-    const student1 = await StudentProfile.findOne({
-      where: { userId: studentUsers[0].id },
-    });
-    const student2 = await StudentProfile.findOne({
-      where: { userId: studentUsers[1].id },
-    });
-    await student1.addSkills([skills[0], skills[1], skills[2]]);
-    await student2.addSkills([skills[3], skills[4]]);
+    // Associer les compétences aux étudiants (chaque étudiant a 3-8 compétences aléatoires)
+    for (const studentProfile of studentProfiles) {
+      const randomSkills = faker.helpers.arrayElements(
+        skills,
+        faker.number.int({ min: 3, max: 8 })
+      );
+      await studentProfile.addSkills(randomSkills);
+    }
 
-    // ====== STAGES ======
-    const stagesData = [
-      {
-        title: "Stage Développement Web",
-        description:
-          "Participation au développement d'applications web avec Node.js et React. Le stagiaire contribuera à la conception des interfaces utilisateurs, à l’implémentation de nouvelles fonctionnalités, à l’optimisation des performances et aux tests des applications.",
-        location: "Abidjan",
-        duree: "6 mois",
-        companyId: companyUsers[0].id,
-        domain: "Informatique",
-        isActive: true,
-      },
-      {
-        title: "Stage Marketing Digital",
-        description:
-          "Mise en place de stratégies de référencement (SEO/SEA), gestion de campagnes publicitaires en ligne et animation des réseaux sociaux. Le stagiaire analysera les performances et proposera des actions d’optimisation.",
-        location: "Bouaké",
-        duree: "6 mois",
-        companyId: companyUsers[1].id,
-        domain: "Marketing",
-        isActive: true,
-      },
-      {
-        title: "Stage Commercial",
-        description:
-          "Prospection de nouveaux clients, suivi du portefeuille existant, préparation des offres commerciales et participation aux négociations. Le stagiaire sera impliqué dans la mise en place de stratégies de fidélisation.",
-        location: "Yamoussoukro",
-        duree: "6 mois",
-        companyId: companyUsers[0].id,
-        domain: "Commerce",
-        isActive: true,
-      },
-      {
-        title: "Stage Ressources Humaines",
-        description:
-          "Appui au processus de recrutement (rédaction d’annonces, tri de CV, participation aux entretiens), gestion administrative du personnel et contribution à l’amélioration de la communication interne.",
-        location: "San Pedro",
-        duree: "6 mois",
-        companyId: companyUsers[1].id,
-        domain: "RH",
-        isActive: true,
-      },
-      {
-        title: "Stage Comptabilité",
-        description:
-          "Suivi des opérations comptables quotidiennes, gestion des factures et rapprochements bancaires. Le stagiaire participera aussi à la préparation des bilans et à l’analyse des états financiers.",
-        location: "Korhogo",
-        duree: "6 mois",
-        companyId: companyUsers[0].id,
-        domain: "Finance",
-        isActive: true,
-      },
-      {
-        title: "Stage Community Manager",
-        description:
-          "Création et publication de contenus engageants, animation des communautés en ligne et veille concurrentielle. Le stagiaire participera également à la planification éditoriale et au reporting des performances.",
-        location: "Abidjan",
-        duree: "6 mois",
-        companyId: companyUsers[1].id,
-        domain: "Marketing",
-        isActive: true,
-      },
-      {
-        title: "Stage Logistique",
-        description:
-          "Gestion des stocks, organisation des livraisons, optimisation des flux logistiques et suivi des fournisseurs. Le stagiaire contribuera à l’amélioration des processus de distribution.",
-        location: "Bouaké",
-        duree: "6 mois",
-        companyId: companyUsers[0].id,
-        domain: "Logistique",
-        isActive: true,
-      },
-      {
-        title: "Stage Design Graphique",
-        description:
-          "Création de supports visuels (affiches, bannières, publications pour les réseaux sociaux), contribution à l’identité visuelle de l’entreprise et participation à la conception de maquettes UI/UX.",
-        location: "San Pedro",
-        duree: "6 mois",
-        companyId: companyUsers[1].id,
-        domain: "Design",
-        isActive: true,
-      },
-      {
-        title: "Stage Marketing Stratégique",
-        description:
-          "Élaboration de plans de campagne marketing, analyse du marché et des comportements clients. Le stagiaire proposera des actions pour améliorer le positionnement et la visibilité de l’entreprise.",
-        location: "Yamoussoukro",
-        duree: "6 mois",
-        companyId: companyUsers[0].id,
-        domain: "Marketing",
-        isActive: true,
-      },
-      {
-        title: "Stage Gestion de Projet",
-        description:
-          "Participation à la planification et au suivi des projets, coordination des équipes et rédaction de rapports d’avancement. Le stagiaire apprendra à utiliser des outils de gestion (Trello, Jira, etc.).",
-        location: "Korhogo",
-        duree: "6 mois",
-        companyId: companyUsers[1].id,
-        domain: "Management",
-        isActive: true,
-      },
-      {
-        title: "Stage Support Client",
-        description:
-          "Réception et traitement des demandes clients, assistance technique et suivi de la satisfaction. Le stagiaire contribuera à l’amélioration de la qualité du service et à la documentation des processus.",
-        location: "Abidjan",
-        duree: "6 mois",
-        companyId: companyUsers[0].id,
-        domain: "Service Client",
-        isActive: true,
-      },
-      {
-        title: "Stage E-commerce",
-        description:
-          "Gestion d’une boutique en ligne, mise en ligne de produits, suivi des commandes et optimisation de l’expérience utilisateur. Le stagiaire participera aussi à la mise en place de campagnes promotionnelles.",
-        location: "Bouaké",
-        duree: "6 mois",
-        companyId: companyUsers[1].id,
-        domain: "Commerce",
-        isActive: true,
-      },
-      {
-        title: "Stage Rédaction",
-        description:
-          "Rédaction d’articles pour sites web, blogs et newsletters. Le stagiaire veillera au respect du SEO et proposera des contenus adaptés aux différentes plateformes de communication.",
-        location: "San Pedro",
-        duree: "6 mois",
-        companyId: companyUsers[0].id,
-        domain: "Communication",
-        isActive: true,
-      },
-      {
-        title: "Stage Data Marketing",
-        description:
-          "Collecte et analyse de données clients, suivi des performances des campagnes marketing et élaboration de tableaux de bord. Le stagiaire utilisera des outils d’analyse comme Google Analytics ou Excel.",
-        location: "Yamoussoukro",
-        duree: "6 mois",
-        companyId: companyUsers[1].id,
-        domain: "Marketing",
-        isActive: true,
-      },
-      {
-        title: "Stage Vente",
-        description:
-          "Apprentissage des techniques de vente, négociation avec les clients et participation aux actions commerciales sur le terrain. Le stagiaire contribuera à atteindre les objectifs de chiffre d’affaires.",
-        location: "Korhogo",
-        duree: "6 mois",
-        companyId: companyUsers[0].id,
-        domain: "Commerce",
-        isActive: true,
-      },
+    // ====== OFFRES DE STAGE ======
+    const stageTitles = [
+      "Développeur Full Stack",
+      "Data Analyst",
+      "Marketing Digital",
+      "Assistant Commercial",
+      "Community Manager",
+      "Designer UX/UI",
+      "Chargé de Communication",
+      "Assistant Ressources Humaines",
+      "Analyste Financier",
+      "Gestionnaire de Projet",
+      "Support Technique",
+      "Spécialiste SEO",
+      "Développeur Mobile",
+      "Chef de Produit",
+      "Consultant en Transformation Digitale",
+      "Architecte Cloud",
+      "Ingénieur DevOps",
+      "Spécialiste Cybersécurité",
+      "Responsable Logistique",
+      "Chargé de Clientèle",
+      "Rédacteur Web",
+      "Traffic Manager",
+      "Contrôleur de Gestion",
+      "Auditeur Interne",
+      "Business Developer",
     ];
 
+    const domains = [
+      "Informatique",
+      "Marketing",
+      "Finance",
+      "Commerce",
+      "Ressources Humaines",
+      "Communication",
+      "Logistique",
+      "Design",
+      "Data",
+      "Gestion de Projet",
+      "Service Client",
+      "E-commerce",
+      "Recherche",
+      "Éducation",
+      "Santé",
+    ];
+
+    const stagesData = Array.from({ length: 100 }, (_, i) => {
+      const randomCompany = faker.helpers.arrayElement(companyUsers);
+      return {
+        title: `${faker.helpers.arrayElement(
+          stageTitles
+        )} - ${faker.company.buzzVerb()}`,
+        description: faker.lorem.paragraphs(3),
+        location: faker.location.city(),
+        duree: `${faker.number.int({ min: 2, max: 12 })} mois`,
+        companyId: randomCompany.id,
+        domain: faker.helpers.arrayElement(domains),
+        isActive: faker.datatype.boolean(0.8), // 80% de chance d'être actif
+        remuneration: faker.number.int({ min: 500, max: 2000 }),
+        remotePossible: faker.datatype.boolean(),
+        startDate: faker.date.future({ years: 0.5 }),
+        applicationDeadline: faker.date.soon({ days: 60 }),
+      };
+    });
+
     const stages = await Promise.all(stagesData.map((s) => Stage.create(s)));
-    // ====== ASSOCIER SKILLS AUX STAGES ======
-    // Stage Développement Web -> JavaScript, React, Node.js
-    if (stages[0]) await stages[0].addSkills([skills[0], skills[1], skills[2]]);
-    // Stage Marketing Digital -> Marketing Digital, SEO, Community Management
-    if (stages[1])
-      await stages[1].addSkills([skills[3], skills[4], skills[10]]);
-    // Stage Commercial -> Vente, Prospection
-    if (stages[2]) await stages[2].addSkills([skills[5], skills[6]]);
-    // Stage Ressources Humaines -> Recrutement, Paie
-    if (stages[3]) await stages[3].addSkills([skills[7], skills[8]]);
-    // Stage Comptabilité -> Comptabilité
-    if (stages[4]) await stages[4].addSkills([skills[9]]);
-    // Stage Community Manager -> Community Management, Social Media
-    if (stages[5]) await stages[5].addSkills([skills[10]]);
-    // Stage Logistique -> Logistique
-    if (stages[6]) await stages[6].addSkills([skills[11]]);
-    // Stage Design Graphique -> Design Graphique
-    if (stages[7]) await stages[7].addSkills([skills[12]]);
-    // Stage Marketing Stratégique -> Marketing Digital, SEO
-    if (stages[8]) await stages[8].addSkills([skills[3], skills[4]]);
-    // Stage Gestion de Projet -> Gestion de Projet
-    if (stages[9]) await stages[9].addSkills([skills[15]]);
-    // Stage Support Client -> Support Client
-    if (stages[10]) await stages[10].addSkills([skills[16]]);
-    // Stage E-commerce -> E-commerce
-    if (stages[11]) await stages[11].addSkills([skills[17]]);
-    // Stage Rédaction -> Rédaction
-    if (stages[12]) await stages[12].addSkills([skills[13]]);
-    // Stage Data Marketing -> Data Analysis, Marketing Digital
-    if (stages[13]) await stages[13].addSkills([skills[14], skills[3]]);
-    // Stage Vente -> Vente
-    if (stages[14]) await stages[14].addSkills([skills[5]]);
 
-    // ====== APPLICATIONS ======
-    await Application.create({
-      stageId: stages[0].id,
-      studentId: studentUsers[0].id,
-      coverLetter: "Je suis très motivé pour ce stage en développement web",
-      status: "pending",
-    });
+    // Associer les compétences aux stages (chaque stage a 3-6 compétences requises)
+    for (const stage of stages) {
+      const requiredSkills = faker.helpers.arrayElements(
+        skills,
+        faker.number.int({ min: 3, max: 6 })
+      );
+      await stage.addSkills(requiredSkills);
+    }
 
-    await Application.create({
-      stageId: stages[1].id,
-      studentId: studentUsers[1].id,
-      coverLetter:
-        "Je souhaite approfondir mes compétences en marketing digital",
-      status: "pending",
-    });
+    // ====== CANDIDATURES ======
+    const statuses = ["pending", "accepted", "rejected", "under_review"];
+
+    // Créer entre 150 et 300 candidatures aléatoires
+    const applicationsCount = faker.number.int({ min: 150, max: 300 });
+    const applicationsData = Array.from({ length: applicationsCount }, () => ({
+      stageId: faker.helpers.arrayElement(stages).id,
+      studentId: faker.helpers.arrayElement(studentUsers).id,
+      coverLetter: faker.lorem.paragraphs(2),
+      status: faker.helpers.arrayElement(statuses),
+      appliedDate: faker.date.recent({ days: 60 }),
+      cvUrl: faker.internet.url(),
+    }));
+
+    // Éviter les doublons (même étudiant sur même stage)
+    const uniqueApplications = [];
+    const applicationKeys = new Set();
+
+    for (const app of applicationsData) {
+      const key = `${app.stageId}-${app.studentId}`;
+      if (!applicationKeys.has(key)) {
+        applicationKeys.add(key);
+        uniqueApplications.push(app);
+      }
+    }
+
+    await Application.bulkCreate(uniqueApplications);
 
     console.log("Seed terminé avec succès !");
+    console.log(`${studentUsers.length} étudiants créés`);
+    console.log(`${companyUsers.length} entreprises créées`);
+    console.log(`${skills.length} compétences créées`);
+    console.log(`${stages.length} offres de stage créées`);
+    console.log(`${uniqueApplications.length} candidatures créées`);
   } catch (error) {
     console.error("Erreur lors du seed :", error);
     process.exit(1);

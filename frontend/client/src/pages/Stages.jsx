@@ -1,42 +1,57 @@
 import { useEffect, useState } from "react";
-// import { Search, MegaphoneOff, MapPin, Briefcase } from "lucide-react";
-import { Search, MapPin, Briefcase, Filter, MegaphoneOff } from "lucide-react";
+import {
+  Search,
+  MapPin,
+  Briefcase,
+  Filter,
+  MegaphoneOff,
+  ChevronRight,
+  ChevronLeft,
+} from "lucide-react";
 import { useStageStore } from "../store/useStageStore";
-import { useApplyStore } from "../store/useApplyStore";
 import StageCard from "../components/StageCard";
 
 const Stages = () => {
-  const [formData, setFormData] = useState({ coverLetter: "" });
   const [q, setQ] = useState("");
   const [location, setLocation] = useState("");
   const [domain, setDomain] = useState("");
   const [sort, setSort] = useState("");
   const [field, setField] = useState("");
+  const [page, setPage] = useState(1);
+  const limit = 6;
 
-  const { getAllStages, stages, isLoading, searchStages } = useStageStore();
-  const { setApplying } = useApplyStore();
-  const stageId = stages[0]?.id;
+  const { getAllStages, stages, isLoading, searchStages, totalCount } = useStageStore();
 
   useEffect(() => {
-    getAllStages();
-  }, []);
+    getAllStages(page, limit);
+  }, [page]);
 
-  const handleApply = (e) => {
-    e.preventDefault();
-    setApplying(stageId, formData);
+  const handleNextClick = () => {
+    if (page < Math.ceil(totalCount / limit)) {
+      setPage(page + 1);
+    }
+  };
+
+  const handlePreviousClick = () => {
+    if (page > 1) {
+      setPage(page - 1);
+    }
   };
 
   const handleSearch = async (e) => {
     e.preventDefault();
+    setPage(1);
     if (!q.trim() && !location && !domain && !sort && !field) {
-      getAllStages();
+      getAllStages(1, limit);
       return;
     }
-    await searchStages(q, location, domain, sort, field);
+    await searchStages(q, location, domain, sort, field, page, limit);
   };
 
+  const totalPages = Math.ceil(totalCount / limit);
+
   return (
-    <div className="flex flex-col md:flex-row gap-6 p-6">
+    <div className="flex flex-col md:flex-row gap-6 p-6 min-h-screen">
       {/* Sidebar de recherche et filtres */}
       <div className="w-full md:w-80 bg-base-100 p-6 rounded-lg shadow-md h-fit">
         <div className="flex items-center gap-2 mb-6">
@@ -134,16 +149,29 @@ const Stages = () => {
         </form>
       </div>
 
-      {/* Liste des stages */}
-      <div className="flex-1">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {/* Contenu principal */}
+      <div className="flex-1 flex flex-col">
+        {/* En-tête avec informations */}
+        <div className="flex justify-between items-center mb-6">
+          <p className="text-gray-600">
+            {totalCount} stage{totalCount !== 1 ? 's' : ''} au total
+          </p>
+          {totalCount > 0 && (
+            <p className="text-sm text-gray-500">
+              Page {page} sur {totalPages}
+            </p>
+          )}
+        </div>
+
+        {/* Grille des stages */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8 flex-1">
           {isLoading ? (
-            <div className="col-span-full flex justify-center">
+            <div className="col-span-full flex justify-center items-center py-12">
               <span className="loading loading-spinner loading-lg" />
             </div>
           ) : stages.length > 0 ? (
             stages.map((stage) => (
-              <li key={stage.id} className="list-none">
+              <div key={stage.id} className="list-none">
                 <StageCard
                   title={stage.title}
                   company={stage.company.companyName}
@@ -156,10 +184,10 @@ const Stages = () => {
                   }
                   id={stage.id}
                 />
-              </li>
+              </div>
             ))
           ) : (
-            <div className="flex flex-col items-center justify-center col-span-full text-gray-500 py-12">
+            <div className="col-span-full flex flex-col items-center justify-center py-12">
               <MegaphoneOff className="w-12 h-12 mb-4 text-gray-400" />
               <span className="text-lg">Aucun résultat trouvé</span>
               <p className="text-sm mt-2 text-gray-400">
@@ -168,6 +196,70 @@ const Stages = () => {
             </div>
           )}
         </div>
+
+        {/* PAGINATION BIEN VISIBLE */}
+        {totalCount > limit && (
+          <div className="bg-white p-4 rounded-lg shadow-md border border-gray-200">
+            <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
+              <div className="text-sm text-gray-600">
+                Affichage de {(page - 1) * limit + 1} à {Math.min(page * limit, totalCount)} sur {totalCount} résultats
+              </div>
+              
+              <div className="flex items-center gap-2">
+                <button 
+                  className="btn btn-outline btn-sm flex items-center gap-1"
+                  onClick={handlePreviousClick}
+                  disabled={page === 1 || isLoading}
+                >
+                  <ChevronLeft className="w-4 h-4" />
+                  Précédent
+                </button>
+                
+                <div className="flex items-center gap-1">
+                  {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                    let pageNumber;
+                    if (totalPages <= 5) {
+                      pageNumber = i + 1;
+                    } else if (page <= 3) {
+                      pageNumber = i + 1;
+                    } else if (page >= totalPages - 2) {
+                      pageNumber = totalPages - 4 + i;
+                    } else {
+                      pageNumber = page - 2 + i;
+                    }
+                    
+                    return (
+                      <button
+                        key={pageNumber}
+                        onClick={() => setPage(pageNumber)}
+                        className={`w-8 h-8 rounded-full text-sm font-medium ${
+                          page === pageNumber
+                            ? 'bg-indigo-600 text-white border-indigo-600'
+                            : 'bg-white text-gray-600 border-gray-300 hover:bg-gray-50'
+                        } border`}
+                      >
+                        {pageNumber}
+                      </button>
+                    );
+                  })}
+                  
+                  {totalPages > 5 && (
+                    <span className="px-2 text-gray-500">...</span>
+                  )}
+                </div>
+                
+                <button 
+                  className="btn btn-outline btn-sm flex items-center gap-1"
+                  onClick={handleNextClick}
+                  disabled={page === totalPages || isLoading}
+                >
+                  Suivant
+                  <ChevronRight className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

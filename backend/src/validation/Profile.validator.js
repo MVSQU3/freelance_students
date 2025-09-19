@@ -48,11 +48,6 @@ export const studentSchema = [
   body("availability")
     .isIn(["disponible", "indisponible"])
     .withMessage("La disponibilité doit être 'disponible' ou 'indisponible'"),
-
-  body("visibility")
-    .isBoolean()
-    .withMessage("La visibilité doit être true ou false"),
-
   body("bio")
     .optional()
     .isLength({ max: 500 })

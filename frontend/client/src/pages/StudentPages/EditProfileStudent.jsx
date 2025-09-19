@@ -1,4 +1,14 @@
 import { useEffect, useState } from "react";
+import {
+  User,
+  Upload,
+  Save,
+  BookOpen,
+  MapPin,
+  FileText,
+  Briefcase,
+} from "lucide-react";
+
 import { useStudentStore } from "../../store/useStudentStore";
 import { useUploadStore } from "../../store/useUploadStore";
 import { useAuthStore } from "../../store/useAuthStore";
@@ -20,7 +30,6 @@ const EditProfile = () => {
     fieldOfStudy: "",
     location: "",
     availability: "",
-    is_public: "",
     bio: "",
     photoUrl: "" || undefined,
     cvUrl: "" || undefined,
@@ -83,184 +92,277 @@ const EditProfile = () => {
   if (isStudentLoading && !myProfile) return <div>Chargement...</div>;
 
   return (
-    <div className="p-6 max-w-3xl mx-auto">
-      <div className="mb-6">
-        <h2 className="text-3xl font-semibold">Éditer mon profil</h2>
-        <p className="text-sm text-gray-500">
-          Mettez à jour vos informations et fichiers
-        </p>
-      </div>
-
-      {message && (
-        <div
-          className={`mb-4 alert ${
-            message.type === "success" ? "alert-success" : "alert-error"
-          }`}
-        >
-          <span>{message.text}</span>
-        </div>
-      )}
-
-      <form
-        onSubmit={handleSubmit}
-        className="bg-base-100 shadow-md rounded-lg p-6 space-y-6"
-      >
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label className="label">
-              <span className="label-text">Prénom</span>
-            </label>
-            <input
-              name="firstName"
-              value={form.firstName || ""}
-              onChange={handleChange}
-              placeholder="Prénom"
-              className="input input-bordered w-full"
-            />
-          </div>
-
-          <div>
-            <label className="label">
-              <span className="label-text">Nom</span>
-            </label>
-            <input
-              name="lastName"
-              value={form.lastName || ""}
-              onChange={handleChange}
-              placeholder="Nom"
-              className="input input-bordered w-full"
-            />
-          </div>
-
-          <div>
-            <label className="label">
-              <span className="label-text">École</span>
-            </label>
-            <input
-              name="school"
-              value={form.school || ""}
-              onChange={handleChange}
-              placeholder="École"
-              className="input input-bordered w-full"
-            />
-          </div>
-
-          <div>
-            <label className="label">
-              <span className="label-text">Niveau</span>
-            </label>
-            <input
-              name="level"
-              value={form.level || ""}
-              onChange={handleChange}
-              placeholder="Niveau"
-              className="input input-bordered w-full"
-            />
-          </div>
-
-          <div>
-            <label className="label">
-              <span className="label-text">Filière</span>
-            </label>
-            <input
-              name="fieldOfStudy"
-              value={form.fieldOfStudy || ""}
-              onChange={handleChange}
-              placeholder="Filière"
-              className="input input-bordered w-full"
-            />
-          </div>
-
-          <div>
-            <label className="label">
-              <span className="label-text">Localisation</span>
-            </label>
-            <input
-              name="location"
-              value={form.location || ""}
-              onChange={handleChange}
-              placeholder="Localisation"
-              className="input input-bordered w-full"
-            />
-          </div>
-
-          <div>
-            <label className="label">
-              <span className="label-text">Disponibilités</span>
-            </label>
-            <input
-              name="availability"
-              value={form.availability || ""}
-              onChange={handleChange}
-              placeholder="Disponibilités"
-              className="input input-bordered w-full"
-            />
-          </div>
-
-          <div>
-            <select
-              value={form.is_public || ""}
-              onChange={handleChange}
-              className="select select-bordered w-full"
-            >
-              <option value="Oui">Public</option>
-              <option value="Non">Privé</option>
-            </select>
-          </div>
+    <div className="min-h-screen bg-gray-50 p-6">
+      <div className="max-w-4xl mx-auto">
+        {/* En-tête */}
+        <div className="mb-8">
+          <h2 className="text-3xl font-bold text-gray-800 mb-2">
+            Éditer mon profil
+          </h2>
+          <p className="text-gray-600">
+            Mettez à jour vos informations personnelles et professionnelles
+          </p>
         </div>
 
-        <div>
-          <label className="label">
-            <span className="label-text">Bio</span>
-          </label>
-          <textarea
-            name="bio"
-            value={form.bio || ""}
-            onChange={handleChange}
-            placeholder="Bio"
-            className="textarea textarea-bordered w-full h-28"
-          ></textarea>
-        </div>
-        <div>
-          <label className="label">
-            <span className="label-text">CV (PDF)</span>
-          </label>
-          <input
-            type="file"
-            accept="application/pdf"
-            onChange={(e) => setCvFile(e.target.files[0])}
-            className="input input-bordered"
-          />
-          {uploadProgress > 0 && <p>Progression : {uploadProgress}%</p>}
-          {lastUploadError && <p className="text-red-500">{lastUploadError}</p>}
-        </div>
-        {authUser && (
-          <div>
-            <label className="label">
-              <span className="label-text">Photo de profil (PNG, JPG)</span>
-            </label>
-            <input
-              type="file"
-              accept="image/png, image/jpeg, image/webp"
-              onChange={(e) => setPpFile(e.target.files[0])}
-              className="input input-bordered"
-            />
-            {uploadProgress > 0 && <p>Progression : {uploadProgress}%</p>}
-            {lastUploadError && (
-              <p className="text-red-500">{lastUploadError}</p>
-            )}
+        {/* Message d'alerte */}
+        {message && (
+          <div
+            className={`mb-6 p-4 rounded-lg ${
+              message.type === "success"
+                ? "bg-green-100 text-green-800 border border-green-200"
+                : "bg-red-100 text-red-800 border border-red-200"
+            }`}
+          >
+            <span>{message.text}</span>
           </div>
         )}
-        <div className="flex justify-end">
-          <button
-            type="submit"
-            disabled={isStudentLoading}
-            className="btn btn-primary"
-          >
-            {isStudentLoading ? "En cours..." : "Enregistrer"}
-          </button>
-        </div>
-      </form>
+
+        <form
+          onSubmit={handleSubmit}
+          className="bg-white shadow-lg rounded-xl p-6 space-y-8 border border-gray-200"
+        >
+          {/* Section Informations personnelles */}
+          <div>
+            <h3 className="text-xl font-semibold text-gray-800 mb-6 flex items-center gap-2">
+              <User className="w-5 h-5 text-indigo-600" />
+              Informations personnelles
+            </h3>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="form-control">
+                <label className="label">
+                  <span className="label-text font-medium">Prénom</span>
+                </label>
+                <input
+                  name="firstName"
+                  value={form.firstName || ""}
+                  onChange={handleChange}
+                  placeholder="Votre prénom"
+                  className="input input-bordered w-full focus:ring-2 focus:ring-indigo-500"
+                />
+              </div>
+
+              <div className="form-control">
+                <label className="label">
+                  <span className="label-text font-medium">Nom</span>
+                </label>
+                <input
+                  name="lastName"
+                  value={form.lastName || ""}
+                  onChange={handleChange}
+                  placeholder="Votre nom"
+                  className="input input-bordered w-full focus:ring-2 focus:ring-indigo-500"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Section Formation */}
+          <div>
+            <h3 className="text-xl font-semibold text-gray-800 mb-6 flex items-center gap-2">
+              <BookOpen className="w-5 h-5 text-indigo-600" />
+              Formation
+            </h3>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="form-control">
+                <label className="label">
+                  <span className="label-text font-medium">École</span>
+                </label>
+                <input
+                  name="school"
+                  value={form.school || ""}
+                  onChange={handleChange}
+                  placeholder="Nom de votre école"
+                  className="input input-bordered w-full focus:ring-2 focus:ring-indigo-500"
+                />
+              </div>
+
+              <div className="form-control">
+                <label className="label">
+                  <span className="label-text font-medium">Niveau</span>
+                </label>
+                <input
+                  name="level"
+                  value={form.level || ""}
+                  onChange={handleChange}
+                  placeholder="Ex: Licence 3, Master 2"
+                  className="input input-bordered w-full focus:ring-2 focus:ring-indigo-500"
+                />
+              </div>
+
+              <div className="form-control md:col-span-2">
+                <label className="label">
+                  <span className="label-text font-medium">Filière</span>
+                </label>
+                <input
+                  name="fieldOfStudy"
+                  value={form.fieldOfStudy || ""}
+                  onChange={handleChange}
+                  placeholder="Votre domaine d'étude"
+                  className="input input-bordered w-full focus:ring-2 focus:ring-indigo-500"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Section Localisation */}
+          <div>
+            <h3 className="text-xl font-semibold text-gray-800 mb-6 flex items-center gap-2">
+              <MapPin className="w-5 h-5 text-indigo-600" />
+              Localisation
+            </h3>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="form-control">
+                <label className="label">
+                  <span className="label-text font-medium">Localisation</span>
+                </label>
+                <input
+                  name="location"
+                  value={form.location || ""}
+                  onChange={handleChange}
+                  placeholder="Ville, région"
+                  className="input input-bordered w-full focus:ring-2 focus:ring-indigo-500"
+                />
+              </div>
+
+              <div className="form-control">
+                <label className="label">
+                  <span className="label-text font-medium">Disponibilité</span>
+                </label>
+                <select
+                  name="availability"
+                  value={form.availability || ""}
+                  onChange={handleChange}
+                  className="select select-bordered w-full focus:ring-2 focus:ring-indigo-500"
+                >
+                  <option value="">Sélectionnez...</option>
+                  <option value="disponible">Disponible</option>
+                  <option value="indisponible">Indisponible</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          {/* Section Bio */}
+          <div>
+            <h3 className="text-xl font-semibold text-gray-800 mb-6 flex items-center gap-2">
+              <Briefcase className="w-5 h-5 text-indigo-600" />
+              Présentation
+            </h3>
+
+            <div className="form-control">
+              <label className="label">
+                <span className="label-text font-medium">Bio</span>
+              </label>
+              <textarea
+                name="bio"
+                value={form.bio || ""}
+                onChange={handleChange}
+                placeholder="Parlez-nous de vous, de vos compétences et de vos aspirations professionnelles..."
+                className="textarea textarea-bordered w-full h-32 focus:ring-2 focus:ring-indigo-500"
+              ></textarea>
+              <label className="label">
+                <span className="label-text-alt">Maximum 500 caractères</span>
+              </label>
+            </div>
+          </div>
+
+          {/* Section Fichiers */}
+          <div>
+            <h3 className="text-xl font-semibold text-gray-800 mb-6 flex items-center gap-2">
+              <FileText className="w-5 h-5 text-indigo-600" />
+              Documents
+            </h3>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="form-control">
+                <label className="label">
+                  <span className="label-text font-medium">CV (PDF)</span>
+                </label>
+                <div className="flex items-center gap-3">
+                  <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-indigo-400 transition-colors">
+                    <Upload className="w-8 h-8 text-gray-400 mb-2" />
+                    <span className="text-sm text-gray-500">
+                      Cliquer pour uploader
+                    </span>
+                    <input
+                      type="file"
+                      accept="application/pdf"
+                      onChange={(e) => setCvFile(e.target.files[0])}
+                      className="hidden"
+                    />
+                  </label>
+                </div>
+                {cvFile && (
+                  <p className="text-sm text-green-600 mt-2">✓ {cvFile.name}</p>
+                )}
+              </div>
+
+              <div className="form-control">
+                <label className="label">
+                  <span className="label-text font-medium">
+                    Photo de profil
+                  </span>
+                </label>
+                <div className="flex items-center gap-3">
+                  <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-indigo-400 transition-colors">
+                    <Upload className="w-8 h-8 text-gray-400 mb-2" />
+                    <span className="text-sm text-gray-500">
+                      Cliquer pour uploader
+                    </span>
+                    <input
+                      type="file"
+                      accept="image/png, image/jpeg, image/webp"
+                      onChange={(e) => setPpFile(e.target.files[0])}
+                      className="hidden"
+                    />
+                  </label>
+                </div>
+                {ppFile && (
+                  <p className="text-sm text-green-600 mt-2">✓ {ppFile.name}</p>
+                )}
+              </div>
+            </div>
+
+            {/* Barre de progression */}
+            {uploadProgress > 0 && (
+              <div className="mt-4">
+                <div className="flex justify-between text-sm text-gray-600 mb-1">
+                  <span>Upload en cours...</span>
+                  <span>{uploadProgress}%</span>
+                </div>
+                <progress
+                  className="progress progress-primary w-full"
+                  value={uploadProgress}
+                  max="100"
+                ></progress>
+              </div>
+            )}
+
+            {lastUploadError && (
+              <p className="text-red-500 text-sm mt-2">{lastUploadError}</p>
+            )}
+          </div>
+
+          {/* Bouton de soumission */}
+          <div className="flex justify-end pt-6 border-t border-gray-200">
+            <button
+              type="submit"
+              disabled={isStudentLoading}
+              className="btn btn-primary min-w-[120px] flex items-center gap-2"
+            >
+              {isStudentLoading ? (
+                <span className="loading loading-spinner loading-sm"></span>
+              ) : (
+                <Save className="w-4 h-4" />
+              )}
+              {isStudentLoading ? "Enregistrement..." : "Enregistrer"}
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 };
