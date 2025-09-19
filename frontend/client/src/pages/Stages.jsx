@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { Search, MegaphoneOff } from "lucide-react";
+// import { Search, MegaphoneOff, MapPin, Briefcase } from "lucide-react";
+import { Search, MapPin, Briefcase, Filter, MegaphoneOff } from "lucide-react";
 import { useStageStore } from "../store/useStageStore";
 import { useApplyStore } from "../store/useApplyStore";
 import StageCard from "../components/StageCard";
@@ -35,92 +36,140 @@ const Stages = () => {
   };
 
   return (
-    <>
-      {/* Barre de recherche + filtres */}
-      <div className="flex flex-col gap-4 justify-center mt-6">
-        <form
-          onSubmit={handleSearch}
-          className="flex flex-col md:flex-row gap-2"
-        >
-          <input
-            type="text"
-            placeholder="Rechercher un stage..."
-            className="input input-bordered flex-1"
-            value={q}
-            onChange={(e) => setQ(e.target.value)}
-          />
+    <div className="flex flex-col md:flex-row gap-6 p-6">
+      {/* Sidebar de recherche et filtres */}
+      <div className="w-full md:w-80 bg-base-100 p-6 rounded-lg shadow-md h-fit">
+        <div className="flex items-center gap-2 mb-6">
+          <Filter className="w-5 h-5 text-primary" />
+          <h2 className="text-xl font-semibold">Filtres</h2>
+        </div>
 
-          <input
-            type="text"
-            placeholder="Localisation"
-            className="input input-bordered"
-            value={location}
-            onChange={(e) => setLocation(e.target.value)}
-          />
+        <form onSubmit={handleSearch} className="space-y-4">
+          <div className="form-control">
+            <label className="label">
+              <span className="label-text">Recherche</span>
+            </label>
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+              <input
+                type="text"
+                placeholder="Rechercher un stage..."
+                className="input input-bordered pl-10 w-full"
+                value={q}
+                onChange={(e) => setQ(e.target.value)}
+              />
+            </div>
+          </div>
 
-          <input
-            type="text"
-            placeholder="Domaine"
-            className="input input-bordered"
-            value={domain}
-            onChange={(e) => setDomain(e.target.value)}
-          />
+          <div className="form-control">
+            <label className="label">
+              <span className="label-text">Localisation</span>
+            </label>
+            <div className="relative">
+              <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+              <input
+                type="text"
+                placeholder="Localisation"
+                className="input input-bordered pl-10 w-full"
+                value={location}
+                onChange={(e) => setLocation(e.target.value)}
+              />
+            </div>
+          </div>
 
-          <select
-            className="select select-bordered"
-            value={field}
-            onChange={(e) => setField(e.target.value)}
+          <div className="form-control">
+            <label className="label">
+              <span className="label-text">Domaine</span>
+            </label>
+            <div className="relative">
+              <Briefcase className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+              <input
+                type="text"
+                placeholder="Domaine"
+                className="input input-bordered pl-10 w-full"
+                value={domain}
+                onChange={(e) => setDomain(e.target.value)}
+              />
+            </div>
+          </div>
+
+          <div className="form-control">
+            <label className="label">
+              <span className="label-text">Trier par</span>
+            </label>
+            <select
+              className="select select-bordered w-full"
+              value={field}
+              onChange={(e) => setField(e.target.value)}
+            >
+              <option value="">Champ de tri</option>
+              <option value="title">Titre</option>
+              <option value="location">Localisation</option>
+              <option value="duree">Durée</option>
+            </select>
+          </div>
+
+          <div className="form-control">
+            <label className="label">
+              <span className="label-text">Ordre</span>
+            </label>
+            <select
+              className="select select-bordered w-full"
+              value={sort}
+              onChange={(e) => setSort(e.target.value)}
+            >
+              <option value="">Ordre</option>
+              <option value="asc">Ascendant</option>
+              <option value="desc">Descendant</option>
+            </select>
+          </div>
+
+          <button
+            type="submit"
+            className="btn btn-primary w-full mt-4 flex items-center gap-2"
           >
-            <option value="">Champ de tri</option>
-            <option value="title">Titre</option>
-            <option value="location">Localisation</option>
-            <option value="duree">Durée</option>
-          </select>
-
-          <select
-            className="select select-bordered"
-            value={sort}
-            onChange={(e) => setSort(e.target.value)}
-          >
-            <option value="">Ordre</option>
-            <option value="asc">Ascendant</option>
-            <option value="desc">Descendant</option>
-          </select>
-
-          <button type="submit" className="btn btn-primary">
             <Search className="w-4 h-4" />
+            Appliquer les filtres
           </button>
         </form>
       </div>
 
       {/* Liste des stages */}
-      <div className="m-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {isLoading ? (
-          <span className="loading loading-spinner loading-lg col-span-full" />
-        ) : stages.length > 0 ? (
-          stages.map((stage) => (
-            <li key={stage.id} className="list-none">
-              <StageCard
-                title={stage.title}
-                company={stage.company.companyName}
-                duree={stage.duree}
-                skills={
-                  Array.isArray(stage.skills)
-                    ? stage.skills.map((s) => s.name)
-                    : []
-                }
-                id={stage.id}
-              />
-            </li>
-          ))
-        ) : (
-          <div className="flex flex-col items-center justify-center col-span-full text-gray-500">
-            <MegaphoneOff className="w-10 h-10 mb-2" />
-            <span>Aucun résultat trouvé</span>
-          </div>
-        )}
+      <div className="flex-1">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {isLoading ? (
+            <div className="col-span-full flex justify-center">
+              <span className="loading loading-spinner loading-lg" />
+            </div>
+          ) : stages.length > 0 ? (
+            stages.map((stage) => (
+              <li key={stage.id} className="list-none">
+                <StageCard
+                  title={stage.title}
+                  company={stage.company.companyName}
+                  duree={stage.duree}
+                  location={stage.location}
+                  skills={
+                    Array.isArray(stage.skills)
+                      ? stage.skills.map((s) => s.name)
+                      : []
+                  }
+                  id={stage.id}
+                />
+              </li>
+            ))
+          ) : (
+            <div className="flex flex-col items-center justify-center col-span-full text-gray-500 py-12">
+              <MegaphoneOff className="w-12 h-12 mb-4 text-gray-400" />
+              <span className="text-lg">Aucun résultat trouvé</span>
+              <p className="text-sm mt-2 text-gray-400">
+                Essayez de modifier vos critères de recherche
+              </p>
+            </div>
+          )}
+        </div>
       </div>
-    </>
+    </div>
   );
 };
 

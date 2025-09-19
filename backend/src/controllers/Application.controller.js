@@ -1,5 +1,11 @@
 import { Op } from "sequelize";
-import { Application, Company, CompanyProfile, Stage, Student } from "../config/sequelize.js";
+import {
+  Application,
+  Company,
+  CompanyProfile,
+  Stage,
+  Student,
+} from "../config/sequelize.js";
 
 // Postuler à une offre
 export const applyToOffer = async (req, res, next) => {
@@ -84,7 +90,14 @@ export const getMyApplications = async (req, res, next) => {
             {
               model: CompanyProfile,
               as: "company",
-              attributes: ["id", "companyName", "sector", "location", "website", "userId"],
+              attributes: [
+                "id",
+                "companyName",
+                "sector",
+                "location",
+                "website",
+                "userId",
+              ],
               include: [
                 {
                   model: Company,
@@ -98,7 +111,7 @@ export const getMyApplications = async (req, res, next) => {
       ],
     });
 
-    if (!applications.length) {
+    if (applications.length === 0) {
       return res.status(404).json({
         success: false,
         message: "Vous n’avez aucune candidature",

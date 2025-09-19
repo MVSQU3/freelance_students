@@ -1,37 +1,51 @@
-// src/components/StudentCard.jsx
+import { MapPin, BookOpen, Briefcase, Eye } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const StudentCard = ({ name, school, location, level, skill, photo, id }) => {
   return (
-    <div className="card bg-base-100 w-full max-w-sm shadow-xl rounded-xl hover:shadow-2xl transition-shadow duration-300 relative">
-      <figure className="relative">
-        {/* Badge skill */}
-        {skill && (
-          <div className="badge badge-primary absolute top-2 left-2">
-            <span>{skill}</span>
+    <div className="bg-white rounded-xl shadow-md overflow-hidden border border-gray-200 hover:shadow-lg transition-shadow">
+      <div className="p-6">
+        {/* Photo et nom */}
+        <div className="flex items-center mb-4">
+          <div className="w-16 h-16 rounded-full bg-gray-200 overflow-hidden mr-4">
+            <img 
+              src={photo || "/default-avatar.png"} 
+              alt={name}
+              className="w-full h-full object-cover"
+            />
           </div>
-        )}
-        <img
-          src={photo}
-          alt={`Photo de profil de ${name}`}
-          className="h-48 w-full object-cover rounded-t-xl"
-        />
-      </figure>
-
-      <div className="card-body">
-        <h2 className="card-title text-primary">{name}</h2>
-        <p className="text-sm text-base-content/70">{school}</p>
-        <p className="text-sm text-base-content/70">{location}</p>
-        <p className="font-medium text-base-content">{level}</p>
-
-        <div className="card-actions justify-end mt-3">
-          <Link
-            to={`/student/public/profile/${id}`}
-            className="btn btn-primary rounded-lg btn-sm"
-          >
-            Voir le profil
-          </Link>
+          <div>
+            <h3 className="font-bold text-lg text-gray-800">{name}</h3>
+            <p className="text-gray-600 text-sm">{level}</p>
+          </div>
         </div>
+
+        {/* Informations */}
+        <div className="space-y-3 mb-5">
+          <div className="flex items-center text-gray-600">
+            <BookOpen className="w-4 h-4 mr-2 text-indigo-500" />
+            <span className="text-sm">{school}</span>
+          </div>
+          
+          <div className="flex items-center text-gray-600">
+            <MapPin className="w-4 h-4 mr-2 text-indigo-500" />
+            <span className="text-sm">{location}</span>
+          </div>
+          
+          <div className="flex items-center text-gray-600">
+            <Briefcase className="w-4 h-4 mr-2 text-indigo-500" />
+            <span className="text-sm">{skill}</span>
+          </div>
+        </div>
+
+        {/* Bouton action */}
+        <Link 
+          to={`/students/${id}`}
+          className="btn btn-primary btn-sm w-full rounded-lg flex items-center justify-center gap-2"
+        >
+          <Eye className="w-4 h-4" />
+          Voir le profil
+        </Link>
       </div>
     </div>
   );

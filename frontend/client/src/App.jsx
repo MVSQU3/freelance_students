@@ -23,6 +23,7 @@ import MyProfileCompany from "./pages/CompanyPages/MyProfileCompany.jsx";
 import EditProfileCompany from "./pages/CompanyPages/EditProfileCompany.jsx";
 import MyApply from "./pages/StudentPages/MyApply.jsx";
 import { LogIn } from "lucide-react";
+import SettingsPage from "./pages/SettingsPage.jsx";
 // END COMPANY ROUTES
 function App() {
   const { authUser, checkAuth } = useAuthStore();
@@ -39,10 +40,17 @@ function App() {
         <Route path="/" element={authUser ? <Home /> : <Login />} />
         <Route path="/stages" element={authUser ? <Stages /> : <Login />} />
         <Route
+          path="/settings"
+          element={authUser ? <SettingsPage /> : <Login />}
+        />
+        <Route
           path="/stage-details/:id"
           element={authUser ? <StageDetails /> : <Login />}
         />
-        <Route path="student/my-apply" element={authUser ? <MyApply /> : <LogIn />} />
+        <Route
+          path="student/my-apply"
+          element={authUser ? <MyApply /> : <LogIn />}
+        />
 
         {/* start Student routes */}
         <Route

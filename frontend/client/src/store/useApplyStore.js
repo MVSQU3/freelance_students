@@ -4,9 +4,9 @@ import { api } from "../lib/utils";
 export const useApplyStore = create((set) => ({
   isApplying: false,
   apply: null,
-  myAppy: null,
+  myApply: null,
 
-  setApply: async (stageId, data) => {
+  setApplying: async (stageId, data) => {
     console.log("log de data", data);
     set({ isApplying: true });
     try {
@@ -22,11 +22,12 @@ export const useApplyStore = create((set) => ({
     }
   },
 
-  getApply: async () => {
+  getMyApply: async () => {
     set({ isApplying: true });
     try {
       const res = await api.get("/apply/me");
       console.log("log de res.data in getApply: ", res.data);
+      set({ myApply: res.data.applications });
     } catch (error) {
       console.error(
         "Erreur lors de la récupération de vos candidatures: ",
