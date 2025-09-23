@@ -1,3 +1,4 @@
+import { af_ZA } from "@faker-js/faker";
 import { Company, Stage, Skill, CompanyProfile } from "../config/sequelize.js";
 import { Op } from "sequelize";
 
@@ -333,6 +334,31 @@ export const searchStages = async (req, res, next) => {
     return res.status(200).json(stages);
   } catch (error) {
     console.error("Erreur in searchStages: ", error);
+    next(error);
+  }
+};
+
+export const lastUploadedStages = async (req, res, next) => {
+  try {
+    const stages = await Stage.findAll({
+      limit: 6,
+      order: [["created", "DESC"]],
+      include: [
+        {
+          model: CompanyProfile,
+          as: "company",
+          attributes: ["id", "companyName", "location"],
+        },
+        {
+          model: Skill,
+          as: "skills",
+          attributes: ["id", "name"],
+        },
+      ],
+    });
+
+    return res.status(200).json(stages);
+  } catch (error) {
     next(error);
   }
 };

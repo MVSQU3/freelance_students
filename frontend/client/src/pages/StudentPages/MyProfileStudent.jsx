@@ -10,7 +10,7 @@ import {
   Award,
   BookOpen,
   ChevronRight,
-  Camera
+  Camera,
 } from "lucide-react";
 import { useAuthStore } from "../../store/useAuthStore";
 import { useStudentStore } from "../../store/useStudentStore";
@@ -18,16 +18,14 @@ import { useEffect, useRef, useState } from "react";
 import { useUploadStore } from "../../store/useUploadStore";
 
 const StudentDashboard = () => {
-  const [ppFile, setPpFile] = useState(null);
-  const [form, setForm] = useState({ photoUrl: "" || undefined });
   const fileInputRef = useRef(null);
   const { logout } = useAuthStore();
   const { getMyProfile, UpdateMyProfile, myProfile } = useStudentStore();
   const { uploadPp } = useUploadStore();
 
   useEffect(() => {
-    getMyProfile();
-  }, [getMyProfile]);
+    if (!myProfile.id) getMyProfile();
+  }, []);
 
   const handleAvatarClick = () => {
     fileInputRef.current?.click();
@@ -123,26 +121,26 @@ const StudentDashboard = () => {
           <div className="bg-white rounded-xl shadow-sm p-6 mb-8 border border-gray-100">
             <div className="flex items-start mb-6">
               <div className="relative group mr-4">
-                <div 
+                <div
                   className="bg-indigo-100 w-16 h-16 rounded-full flex items-center justify-center cursor-pointer group-hover:bg-indigo-200 transition-colors"
                   onClick={handleAvatarClick}
                 >
                   {myProfile?.photoUrl ? (
-                    <img 
-                      src={myProfile.photoUrl} 
-                      alt="Profile" 
+                    <img
+                      src={myProfile?.photoUrl}
+                      alt="Profile"
                       className="w-full h-full rounded-full object-cover"
                     />
                   ) : (
                     <User className="h-8 w-8 text-indigo-600" />
                   )}
-                  
+
                   {/* Overlay au survol */}
                   <div className="absolute inset-0 bg-black bg-opacity-40 rounded-full opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                     <Camera className="h-5 w-5 text-white" />
                   </div>
                 </div>
-                
+
                 <input
                   type="file"
                   ref={fileInputRef}
@@ -150,18 +148,20 @@ const StudentDashboard = () => {
                   accept="image/png, image/jpeg, image/webp"
                   className="hidden"
                 />
-                
+
                 {/* Badge de modification */}
                 <div className="absolute -bottom-1 -right-1 bg-indigo-600 rounded-full p-1">
                   <Camera className="h-3 w-3 text-white" />
                 </div>
               </div>
-              
+
               <div>
-                <h2 className="text-xl font-bold text-gray-800">Paul Kevin</h2>
+                <h2 className="text-xl font-bold text-gray-800">
+                  {myProfile?.lastName} {myProfile?.firstName}
+                </h2>
                 <p className="text-gray-500 flex items-center">
                   <BookOpen className="mr-2 h-4 w-4" />
-                  Étudiant en Informatique - Licence 3
+                  {myProfile?.school} - {myProfile?.level}
                 </p>
               </div>
             </div>
@@ -171,7 +171,7 @@ const StudentDashboard = () => {
                 <Calendar className="h-5 w-5 text-indigo-600 mr-3" />
                 <div>
                   <p className="text-sm text-gray-500">Disponibilité</p>
-                  <p className="font-medium">Disponible</p>
+                  <p className="font-medium">{myProfile?.availability}</p>
                 </div>
               </div>
 
@@ -179,7 +179,7 @@ const StudentDashboard = () => {
                 <MapPin className="h-5 w-5 text-indigo-600 mr-3" />
                 <div>
                   <p className="text-sm text-gray-500">Localisation</p>
-                  <p className="font-medium">Abidjan</p>
+                  <p className="font-medium">{myProfile?.location}</p>
                 </div>
               </div>
 
@@ -187,7 +187,7 @@ const StudentDashboard = () => {
                 <Mail className="h-5 w-5 text-indigo-600 mr-3" />
                 <div>
                   <p className="text-sm text-gray-500">Email</p>
-                  <p className="font-medium">student1@mail.com</p>
+                  <p className="font-medium">{myProfile?.email}</p>
                 </div>
               </div>
 
@@ -195,7 +195,7 @@ const StudentDashboard = () => {
                 <Award className="h-5 w-5 text-indigo-600 mr-3" />
                 <div>
                   <p className="text-sm text-gray-500">Niveau</p>
-                  <p className="font-medium">Licence 3</p>
+                  <p className="font-medium">{myProfile?.level}</p>
                 </div>
               </div>
             </div>
@@ -204,18 +204,22 @@ const StudentDashboard = () => {
               <h3 className="font-semibold text-gray-700 mb-3 flex items-center">
                 Compétences
                 <span className="ml-2 text-xs bg-indigo-100 text-indigo-700 px-2 py-1 rounded-full">
-                  {["React", "Node.js", "JavaScript"].length}
+                  {Array.isArray(myProfile?.skills)
+                    ? myProfile?.skills.length
+                    : 0}
                 </span>
               </h3>
               <div className="flex flex-wrap gap-2">
-                {["React", "Node.js", "JavaScript"].map((skill, index) => (
-                  <span
-                    key={index}
-                    className="badge bg-indigo-100 text-indigo-700 border-0 px-3 py-2"
-                  >
-                    {skill}
-                  </span>
-                ))}
+                {Array.isArray(myProfile?.skills)
+                  ? myProfile?.skills.map((skill, index) => (
+                      <span
+                        key={index}
+                        className="badge bg-indigo-100 text-indigo-700 border-0 px-3 py-2"
+                      >
+                        {skill.name}
+                      </span>
+                    ))
+                  : []}
                 <button className="text-indigo-600 text-sm flex items-center hover:underline">
                   Ajouter une compétence{" "}
                   <ChevronRight className="h-4 w-4 ml-1" />

@@ -1,6 +1,7 @@
 import { Sequelize } from "sequelize";
 import { StudentModel } from "../models/Student.model.js";
 import { CompanyModel } from "../models/Company.model.js";
+import { UserModel } from "../models/User.model.js";
 import { CompanyProfileModel } from "../models/CompanyProfile.model.js";
 import { StudentProfileModel } from "../models/studentProfile.model.js";
 import { SkillModel } from "../models/Skill.model.js";
@@ -19,6 +20,7 @@ export const sequelize = new Sequelize("freelance_students", "root", "", {
 // Initialiser tous les modèles
 export const Student = StudentModel(sequelize);
 export const Company = CompanyModel(sequelize);
+export const User = UserModel(sequelize);
 export const CompanyProfile = CompanyProfileModel(sequelize);
 export const StudentProfile = StudentProfileModel(sequelize);
 export const Skill = SkillModel(sequelize);
@@ -40,6 +42,7 @@ const db = {
   StudentSkill,
   StageSkill,
   Application,
+  User,
 };
 
 // Initialisation DB

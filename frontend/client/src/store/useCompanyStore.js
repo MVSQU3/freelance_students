@@ -2,7 +2,7 @@ import { create } from "zustand";
 import { api } from "../lib/utils";
 
 export const useCompanyStore = create((set) => ({
-  myProfile: null,
+  myProfile: {},
   isCompanyLoading: false,
 
   getMyProfile: async () => {

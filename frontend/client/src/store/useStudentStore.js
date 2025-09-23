@@ -3,14 +3,16 @@ import { api } from "../lib/utils";
 
 export const useStudentStore = create((set) => ({
   students: [],
-  myProfile: null,
+  myProfile: {},
+  myPublicProfile: {},
   isStudentLoading: false,
 
   getAllStudents: async () => {
     set({ isStudentLoading: true });
     try {
       const res = await api.get("/students");
-      console.log(res.data);
+      set({ students: res.data.students });
+      console.log("log de students in getAllStudents: ", res.data);
     } catch (error) {
       console.error("Error in getAllStudents students:", error);
     } finally {
@@ -22,6 +24,7 @@ export const useStudentStore = create((set) => ({
     set({ isStudentLoading: true });
     try {
       const res = await api.get(`/students/profile/${id}`);
+      set({ myPublicProfile: res.data.profile });
       console.log("log de res.data in PublicProfileStudent:", res.data);
     } catch (error) {
       console.error("Error in PublicProfileStudent", error);
@@ -36,7 +39,7 @@ export const useStudentStore = create((set) => ({
       const res = await api.get("/students/me/profile");
       console.log("log de res.data in MyProfile:", res.data);
       // stocke le profil et renvoie les données pour usage côté composant
-      set({ myProfile: res.data.profile })
+      set({ myProfile: res.data.profile });
       return res.data.profile;
     } catch (error) {
       console.error("Error in MyProfile", error);

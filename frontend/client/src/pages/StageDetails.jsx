@@ -11,8 +11,11 @@ const StageDetails = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
-    getStageById(id);
+    if (!stage.id) {
+      getStageById(id);
+    }
   }, [id]);
+  console.log("stage =>", stage);
 
   const handleApplyClick = () => {
     setIsModalOpen(true);
@@ -29,27 +32,25 @@ const StageDetails = () => {
           {stage && (
             <StageDetailCard
               title={stage.title}
-              company={stage.company.companyName}
-              location={stage.location}
-              duree={stage.duree}
+              company={stage.company?.companyName || ""}
+              location={stage.location || ""}
+              duree={stage.duree || ""}
               isActive={stage.isActive}
-              description={stage.description}
-              skills={stage.skills.map((skill) => skill.name)}
+              description={stage.description || ""}
+              skills={stage.skills?.map((skill) => skill.name) || []}
               onApply={handleApplyClick}
             />
           )}
         </div>
       </div>
 
-      {stage && (
-        <MotivationModal
-          isOpen={isModalOpen}
-          onClose={handleCloseModal}
-          title={stage.title}
-          company={stage.company.companyName}
-          stageId={stage.id}
-        />
-      )}
+      <MotivationModal
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        title={stage.title || ""}
+        company={stage.company?.companyName || ""}
+        stageId={stage.id}
+      />
     </div>
   );
 };

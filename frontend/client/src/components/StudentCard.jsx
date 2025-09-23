@@ -1,7 +1,7 @@
 import { MapPin, BookOpen, Briefcase, Eye } from "lucide-react";
 import { Link } from "react-router-dom";
 
-const StudentCard = ({ name, school, location, level, skill, photo, id }) => {
+const StudentCard = ({ name, school, location, level, skills, photo, id }) => {
   return (
     <div className="bg-white rounded-xl shadow-md overflow-hidden border border-gray-200 hover:shadow-lg transition-shadow">
       <div className="p-6">
@@ -32,9 +32,22 @@ const StudentCard = ({ name, school, location, level, skill, photo, id }) => {
             <span className="text-sm">{location}</span>
           </div>
 
-          <div className="flex items-center text-gray-600">
-            <Briefcase className="w-4 h-4 mr-2 text-indigo-500" />
-            <span className="text-sm">{skill}</span>
+          <div className="mb-5">
+            <div className="flex flex-wrap gap-2">
+              {skills.slice(0, 3).map((skill, index) => (
+                <span
+                  key={index}
+                  className="badge bg-indigo-100 text-indigo-700 border-0 px-3 py-1 text-xs"
+                >
+                  {skill}
+                </span>
+              ))}
+              {skills.length > 3 && (
+                <span className="badge bg-gray-100 text-gray-600 border-0 px-3 py-1 text-xs">
+                  +{skills.length - 3}
+                </span>
+              )}
+            </div>
           </div>
         </div>
 

@@ -11,10 +11,18 @@ import {
 import { useAuthStore } from "../store/useAuthStore";
 import { Link } from "react-router-dom";
 import StageCard from "../components/StageCard.jsx";
+import { useStageStore } from "../store/useStageStore.js";
+import { useEffect } from "react";
 
 const Home = () => {
   const { authUser } = useAuthStore();
+  const { lastUploadedStages, stages, isLoading } = useStageStore();
 
+  useEffect(() => {
+    lastUploadedStages();
+  }, [lastUploadedStages]);
+
+  console.log("stages =>", stages);
   return (
     <div className="bg-gray-50 min-h-screen">
       {authUser.role === "student" ? (
@@ -73,57 +81,22 @@ const Home = () => {
               </p>
 
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {[1, 2, 3, 4, 5, 6].map((item) => (
-                  <div
-                    key={item}
-                    className="bg-white rounded-xl shadow-md overflow-hidden border border-gray-200 hover:shadow-lg transition-shadow"
-                  >
-                    <div className="p-6">
-                      <div className="flex items-start justify-between mb-4">
-                        <div>
-                          <h3 className="font-bold text-lg text-gray-800">
-                            Stage en Data Science
-                          </h3>
-                          <p className="text-indigo-600 font-medium">
-                            IBM Côte d'Ivoire
-                          </p>
-                        </div>
-                        <div className="bg-indigo-100 p-2 rounded-lg">
-                          <Briefcase className="h-5 w-5 text-indigo-600" />
-                        </div>
-                      </div>
-
-                      <div className="flex items-center text-gray-600 mb-3">
-                        <MapPin className="h-4 w-4 mr-2" />
-                        <span className="text-sm">Abidjan, Plateaux</span>
-                      </div>
-
-                      <div className="flex items-center text-gray-600 mb-4">
-                        <Clock className="h-4 w-4 mr-2" />
-                        <span className="text-sm">6 mois</span>
-                      </div>
-
-                      <div className="mb-5">
-                        <div className="flex flex-wrap gap-2">
-                          {["Python", "Machine Learning", "Data Analysis"].map(
-                            (skill, idx) => (
-                              <span
-                                key={idx}
-                                className="badge bg-indigo-100 text-indigo-700 border-0 px-3 py-1 text-xs"
-                              >
-                                {skill}
-                              </span>
-                            )
-                          )}
-                        </div>
-                      </div>
-
-                      <button className="btn btn-primary btn-sm w-full rounded-lg">
-                        Voir les détails
-                      </button>
-                    </div>
-                  </div>
-                ))}
+                {isLoading ? (
+                  <Loader />
+                ) : (
+                  stages.map((stage, index) => (
+                    <li key={index} className="list-none">
+                      <StageCard
+                        title={stage.title}
+                        company={stage.company.companyName}
+                        duree={stage.duree}
+                        location={stage.location}
+                        id={stage.id}
+                        skills={stage.skills.map((s) => s.name)}
+                      />
+                    </li>
+                  ))
+                )}
               </div>
 
               <div className="text-center mt-10">

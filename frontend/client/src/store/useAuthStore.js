@@ -3,7 +3,7 @@ import { api } from "../lib/utils";
 import { useNavigate } from "react-router-dom";
 
 export const useAuthStore = create((set) => ({
-  authUser: null,
+  authUser: {},
   isCheckingAuth: true,
   isRegisterLoading: false,
   isLoginLoading: false,

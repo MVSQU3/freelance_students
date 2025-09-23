@@ -3,8 +3,8 @@ import { api } from "../lib/utils";
 
 export const useApplyStore = create((set) => ({
   isApplying: false,
-  apply: null,
-  myApply: null,
+  apply: {},
+  myApply: {},
 
   setApplying: async (stageId, data) => {
     console.log("log de data", data);

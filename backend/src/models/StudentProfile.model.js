@@ -31,8 +31,8 @@ export const StudentProfileModel = () => {
       fieldOfStudy: { type: DataTypes.STRING },
       location: { type: DataTypes.STRING },
       availability: {
-        type: DataTypes.ENUM("disponible", "indisponible"),
-        defaultValue: "disponible",
+        type: DataTypes.ENUM("Disponible", "Indisponible"),
+        defaultValue: "Disponible",
       },
       bio: { type: DataTypes.TEXT },
       photoUrl: { type: DataTypes.STRING },

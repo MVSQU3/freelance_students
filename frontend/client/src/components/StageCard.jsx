@@ -1,10 +1,11 @@
 import { MapPin, Clock, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 
-const StageCard = ({ title, company, duree, skills, location, id }) => {
+const StageCard = ({ title, company, duree, skills = [], location, id }) => {
   return (
     <div className="bg-white rounded-xl shadow-md overflow-hidden border border-gray-200 hover:shadow-lg transition-shadow">
       <div className="p-6">
+        {/* titre et entreprise */}
         <div className="flex items-start justify-between mb-4">
           <div className="flex-1">
             <h3 className="font-bold text-lg text-gray-800 line-clamp-2">
@@ -14,16 +15,19 @@ const StageCard = ({ title, company, duree, skills, location, id }) => {
           </div>
         </div>
 
+        {/* localisation */}
         <div className="flex items-center text-gray-600 mb-3">
           <MapPin className="h-4 w-4 mr-2" />
           <span className="text-sm">{location}, Côte d'ivoire</span>
         </div>
 
+        {/* durée */}
         <div className="flex items-center text-gray-600 mb-4">
           <Clock className="h-4 w-4 mr-2" />
           <span className="text-sm">{duree}</span>
         </div>
 
+        {/* skills */}
         <div className="mb-5">
           <div className="flex flex-wrap gap-2">
             {skills.slice(0, 3).map((skill, index) => (
@@ -42,6 +46,7 @@ const StageCard = ({ title, company, duree, skills, location, id }) => {
           </div>
         </div>
 
+        {/* bouton voir détails */}
         <Link
           to={`/stage-details/${id}`}
           className="btn btn-primary btn-sm w-full rounded-lg flex items-center justify-center gap-2"

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useStudentStore } from "../../store/useStudentStore";
 import StudentCard from "../../components/StudentCard";
-import { Search, MapPin, BookOpen, Filter, X } from "lucide-react";
+import { Search, MapPin, BookOpen, Filter, X, Loader } from "lucide-react";
 
 const StudentsList = () => {
   const { getAllStudents, isStudentLoading, students } = useStudentStore();
@@ -13,33 +13,10 @@ const StudentsList = () => {
 
   useEffect(() => {
     getAllStudents();
-  }, []);
-
-  const filteredStudents = students.filter((student) => {
-    const matchesSearch =
-      student.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      student.school?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      student.skill?.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesLocation =
-      !locationFilter ||
-      student.location?.toLowerCase().includes(locationFilter.toLowerCase());
-    const matchesSchool =
-      !schoolFilter ||
-      student.school?.toLowerCase().includes(schoolFilter.toLowerCase());
-    const matchesSkill =
-      !skillFilter ||
-      student.skill?.toLowerCase().includes(skillFilter.toLowerCase());
-
-    return matchesSearch && matchesLocation && matchesSchool && matchesSkill;
-  });
-
-  const clearFilters = () => {
-    setLocationFilter("");
-    setSchoolFilter("");
-    setSkillFilter("");
-  };
+  }, [getAllStudents]);
 
   const hasActiveFilters = locationFilter || schoolFilter || skillFilter;
+  console.log("students =>", students);
 
   return (
     <div className="min-h-screen bg-gray-50 p-6">
@@ -170,147 +147,27 @@ const StudentsList = () => {
         {/* Liste des étudiants */}
         {isStudentLoading ? (
           <div className="flex justify-center py-12">
-            <span className="loading loading-spinner loading-lg text-primary"></span>
+            <Loader />
           </div>
-        ) : true ? (
+        ) : students.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            <>
-              <StudentCard
-                name="Lucie Stonis"
-                school="Ecole Ingénieur Agitel Formation"
-                location="Cocody, Abidjan"
-                level="Étudiant en 3ème année"
-                skill="UI/UX Design"
-                photo="https://avatars.githubusercontent.com/u/40762276?v=14"
-                id="1"
-              />
-              <StudentCard
-                name="Lucie Stonis"
-                school="Ecole Ingénieur Agitel Formation"
-                location="Cocody, Abidjan"
-                level="Étudiant en 3ème année"
-                skill="UI/UX Design"
-                photo="https://avatars.githubusercontent.com/u/40762276?v=4"
-                id="1"
-              />
-              <StudentCard
-                name="Lucie Stonis"
-                school="Ecole Ingénieur Agitel Formation"
-                location="Cocody, Abidjan"
-                level="Étudiant en 3ème année"
-                skill="UI/UX Design"
-                photo="https://avatars.githubusercontent.com/u/40762276?v=4"
-                id="1"
-              />
-              <StudentCard
-                name="Lucie Stonis"
-                school="Ecole Ingénieur Agitel Formation"
-                location="Cocody, Abidjan"
-                level="Étudiant en 3ème année"
-                skill="UI/UX Design"
-                photo="https://avatars.githubusercontent.com/u/40762276?v=4"
-                id="1"
-              />
-              <StudentCard
-                name="Lucie Stonis"
-                school="Ecole Ingénieur Agitel Formation"
-                location="Cocody, Abidjan"
-                level="Étudiant en 3ème année"
-                skill="UI/UX Design"
-                photo="https://avatars.githubusercontent.com/u/40762276?v=4"
-                id="1"
-              />
-              <StudentCard
-                name="Lucie Stonis"
-                school="Ecole Ingénieur Agitel Formation"
-                location="Cocody, Abidjan"
-                level="Étudiant en 3ème année"
-                skill="UI/UX Design"
-                photo="https://avatars.githubusercontent.com/u/40762276?v=4"
-                id="1"
-              />
-              <StudentCard
-                name="Lucie Stonis"
-                school="Ecole Ingénieur Agitel Formation"
-                location="Cocody, Abidjan"
-                level="Étudiant en 3ème année"
-                skill="UI/UX Design"
-                photo="https://avatars.githubusercontent.com/u/40762276?v=4"
-                id="1"
-              />
-              <StudentCard
-                name="Lucie Stonis"
-                school="Ecole Ingénieur Agitel Formation"
-                location="Cocody, Abidjan"
-                level="Étudiant en 3ème année"
-                skill="UI/UX Design"
-                photo="https://avatars.githubusercontent.com/u/40762276?v=4"
-                id="1"
-              />
-              <StudentCard
-                name="Lucie Stonis"
-                school="Ecole Ingénieur Agitel Formation"
-                location="Cocody, Abidjan"
-                level="Étudiant en 3ème année"
-                skill="UI/UX Design"
-                photo="https://avatars.githubusercontent.com/u/40762276?v=4"
-                id="1"
-              />
-              <StudentCard
-                name="Lucie Stonis"
-                school="Ecole Ingénieur Agitel Formation"
-                location="Cocody, Abidjan"
-                level="Étudiant en 3ème année"
-                skill="UI/UX Design"
-                photo="https://avatars.githubusercontent.com/u/40762276?v=4"
-                id="1"
-              />
-              <StudentCard
-                name="Lucie Stonis"
-                school="Ecole Ingénieur Agitel Formation"
-                location="Cocody, Abidjan"
-                level="Étudiant en 3ème année"
-                skill="UI/UX Design"
-                photo="https://avatars.githubusercontent.com/u/40762276?v=4"
-                id="1"
-              />
-              <StudentCard
-                name="Lucie Stonis"
-                school="Ecole Ingénieur Agitel Formation"
-                location="Cocody, Abidjan"
-                level="Étudiant en 3ème année"
-                skill="UI/UX Design"
-                photo="https://avatars.githubusercontent.com/u/40762276?v=4"
-                id="1"
-              />
-              <StudentCard
-                name="Lucie Stonis"
-                school="Ecole Ingénieur Agitel Formation"
-                location="Cocody, Abidjan"
-                level="Étudiant en 3ème année"
-                skill="UI/UX Design"
-                photo="https://avatars.githubusercontent.com/u/40762276?v=4"
-                id="1"
-              />
-              <StudentCard
-                name="Lucie Stonis"
-                school="Ecole Ingénieur Agitel Formation"
-                location="Cocody, Abidjan"
-                level="Étudiant en 3ème année"
-                skill="UI/UX Design"
-                photo="https://avatars.githubusercontent.com/u/40762276?v=4"
-                id="1"
-              />
-              <StudentCard
-                name="Lucie Stonis"
-                school="Ecole Ingénieur Agitel Formation"
-                location="Cocody, Abidjan"
-                level="Étudiant en 3ème année"
-                skill="UI/UX Design"
-                photo="https://avatars.githubusercontent.com/u/40762276?v=4"
-                id="1"
-              />
-            </>
+            {students.map((student, index) => (
+              <li key={index} className="list-none">
+                <StudentCard
+                  name={student.lastName}
+                  school={student.school}
+                  location={student.location}
+                  level={student.level}
+                  skills={
+                    Array.isArray(student.skills)
+                      ? student.skills.map((s) => s.name)
+                      : []
+                  }
+                  photo={student.photoUrl}
+                  id={student.id}
+                />
+              </li>
+            ))}
           </div>
         ) : (
           <div className="bg-white rounded-xl shadow-sm p-8 text-center border border-gray-100">

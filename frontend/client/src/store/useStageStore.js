@@ -3,7 +3,7 @@ import { api } from "../lib/utils";
 
 export const useStageStore = create((set) => ({
   stages: [],
-  stage: null,
+  stage: {},
   isLoading: false,
 
   getAllStages: async (page) => {
@@ -11,7 +11,7 @@ export const useStageStore = create((set) => ({
     try {
       const res = await api.get(`/stages/?page=${page}`);
       set({ stages: res.data.stages });
-      console.log("log de res.data in getAllStages:", res.data.stages);
+      console.log("log de res.data in getAllStages:", res.data);
     } catch (error) {
       console.error("Error in getAllStages:", error);
     } finally {
@@ -23,8 +23,8 @@ export const useStageStore = create((set) => ({
     set({ isLoading: true });
     try {
       const res = await api.get(`/stages/${stageId}`);
-      set({ stage: res.data.stage });
       console.log("log de res.data in getStageById:", res.data.stage);
+      set({ stage: res.data.stage });
     } catch (error) {
       console.error("Error in getStageById:", error);
     } finally {
@@ -48,6 +48,18 @@ export const useStageStore = create((set) => ({
       return res.data;
     } catch (error) {
       console.error("Error in searchStages:", error);
+    }
+  },
+
+  lastUploadedStages: async () => {
+    try {
+      const res = await api.get("/stages/last-uploaded");
+      set({ stages: res.data });
+      console.log("log de res.data in lastUploadedStages:", res.data);
+
+      return res.data;
+    } catch (error) {
+      console.error("Error in lastUploadedStages:", error);
     }
   },
 }));

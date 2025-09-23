@@ -7,6 +7,7 @@ import {
   Application,
   Student,
   Company,
+  User,
 } from "../config/sequelize.js";
 import bcrypt from "bcrypt";
 import { fakerFR as faker } from "@faker-js/faker";
@@ -18,25 +19,27 @@ export const seed = async () => {
 
     const passwordHash = await bcrypt.hash("123456", 10);
 
-    // ====== CRÉATION D'ÉTUDIANTS ======
+    // ====== CRÉATION DES USERS ÉTUDIANTS ======
     const studentsData = Array.from({ length: 50 }, (_, i) => ({
-      email: `student${i + 1}@mail.com`,
+      email: `student${i + 1}@gmail.com`, // <-- format demandé
       role: "student",
+      password: passwordHash,
     }));
 
-    const studentUsers = await Promise.all(
-      studentsData.map((u) => Student.create({ ...u, password: passwordHash }))
-    );
+    const studentUsers = await User.bulkCreate(studentsData, {
+      returning: true,
+    });
 
-    // ====== CRÉATION D'ENTREPRISES ======
+    // ====== CRÉATION DES USERS ENTREPRISES ======
     const companiesData = Array.from({ length: 20 }, (_, i) => ({
       email: `company${i + 1}@mail.com`,
       role: "company",
+      password: passwordHash,
     }));
 
-    const companyUsers = await Promise.all(
-      companiesData.map((u) => Company.create({ ...u, password: passwordHash }))
-    );
+    const companyUsers = await User.bulkCreate(companiesData, {
+      returning: true,
+    });
 
     // ====== PROFILS ÉTUDIANTS ======
     const schools = [
@@ -86,6 +89,7 @@ export const seed = async () => {
       fieldOfStudy: faker.helpers.arrayElement(fieldsOfStudy),
       location: faker.location.city(),
       availability: faker.datatype.boolean(),
+      is_public: faker.helpers.arrayElement(["Oui", "Non"]),
       bio: faker.lorem.paragraph(),
       phone: faker.phone.number(),
       birthDate: faker.date.birthdate({ min: 18, max: 30, mode: "age" }),

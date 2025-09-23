@@ -4,6 +4,7 @@ import {
   CompanyProfile,
   Student,
   Company,
+  User,
 } from "../config/sequelize.js";
 import { generateToken } from "../config/util.js";
 import { sendMail } from "../config/mailer.js";
@@ -19,10 +20,9 @@ export const register = async (req, res, next) => {
     }
 
     // Vérifier si l'email existe déjà
-    const existStudent = await Student.findOne({ where: { email } });
-    const existCompany = await Company.findOne({ where: { email } });
+    const existUser = await User.findOne({ where: { email } });
 
-    if (existStudent || existCompany) {
+    if (existUser) {
       const error = new Error("Un compte avec cet email existe déjà");
       error.statusCode = 409;
       throw error;
@@ -34,10 +34,10 @@ export const register = async (req, res, next) => {
     // Créer l'utilisateur et le profil
     let newUser;
     if (role === "student") {
-      newUser = await Student.create({ email, password: hash, role });
+      newUser = await User.create({ email, password: hash, role });
       await StudentProfile.create({ userId: newUser.id });
     } else if (role === "company") {
-      newUser = await Company.create({ email, password: hash, role });
+      newUser = await User.create({ email, password: hash, role });
       await CompanyProfile.create({ userId: newUser.id });
     }
 
