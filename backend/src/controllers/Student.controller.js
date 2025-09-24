@@ -1,5 +1,10 @@
 import { Op } from "sequelize";
-import { StudentProfile, Student, Skill } from "../config/sequelize.js";
+import {
+  StudentProfile,
+  Skill,
+  User,
+  Application,
+} from "../config/sequelize.js";
 
 export const getAllStudents = async (req, res, next) => {
   try {
@@ -15,7 +20,7 @@ export const getAllStudents = async (req, res, next) => {
           through: { attributes: [] },
         },
         {
-          model: Student,
+          model: User,
           as: "student",
           attributes: ["email", "role"],
         },
@@ -45,7 +50,7 @@ export const getStudentById = async (req, res, next) => {
           through: { attributes: [] },
         },
         {
-          model: Student,
+          model: User,
           as: "student",
           attributes: ["email"],
         },
@@ -91,8 +96,8 @@ export const getMyProfile = async (req, res, next) => {
     console.log(req.user);
 
     // Load basic user info
-    const userInfo = await Student.findOne({
-      where: { id: req.user.id },
+    const userInfo = await User.findOne({
+      where: { id: req.user.id, role: "student" },
       attributes: ["id", "email", "role"],
     });
     if (!userInfo) {
@@ -113,6 +118,23 @@ export const getMyProfile = async (req, res, next) => {
         },
       ],
     });
+    let candidatureStats = {};
+    const candidatureCount = await Application.count({
+      where: { studentId: req.user.id },
+    });
+    const candidatureAcceptedCount = await Application.count({
+      where: { studentId: req.user.id, status: "accepted" },
+    });
+    const candidatureRejectedCount = await Application.count({
+      where: { studentId: req.user.id, status: "rejected" },
+    });
+
+    candidatureStats = {
+      candidatures: candidatureCount,
+      candidatureAccepted: candidatureAcceptedCount,
+      candidatureRejected: candidatureRejectedCount,
+    };
+    console.log(candidatureStats);
 
     if (!profile) {
       return res
@@ -142,6 +164,7 @@ export const getMyProfile = async (req, res, next) => {
       success: true,
       message: "Profil étudiant récupéré",
       profile: profileData,
+      stats: { candidatureStats },
     });
   } catch (error) {
     next(error);

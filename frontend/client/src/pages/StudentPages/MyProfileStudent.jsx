@@ -11,6 +11,7 @@ import {
   BookOpen,
   ChevronRight,
   Camera,
+  LucidePieChart,
 } from "lucide-react";
 import { useAuthStore } from "../../store/useAuthStore";
 import { useStudentStore } from "../../store/useStudentStore";
@@ -24,7 +25,7 @@ const StudentDashboard = () => {
   const { uploadPp } = useUploadStore();
 
   useEffect(() => {
-    if (!myProfile.id) getMyProfile();
+    getMyProfile();
   }, []);
 
   const handleAvatarClick = () => {
@@ -84,6 +85,15 @@ const StudentDashboard = () => {
               >
                 <Briefcase className="mr-3 h-5 w-5" />
                 Mes candidatures
+              </Link>
+            </li>
+            <li>
+              <Link
+                to={"/student/stats"}
+                className="w-full text-left px-4 py-3 rounded-lg flex items-center text-gray-600 hover:bg-gray-100 transition-colors"
+              >
+                <LucidePieChart className="mr-3 h-5 w-5" />
+                Données & Statistique
               </Link>
             </li>
             <li>

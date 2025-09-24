@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import { Student, Company } from "../config/sequelize.js";
+import { User } from "../config/sequelize.js";
 
 export const auth = async (req, res, next) => {
   try {
@@ -19,11 +19,13 @@ export const auth = async (req, res, next) => {
     let user;
     // Vérifier le rôle pour choisir la table
     if (decoded.role === "student") {
-      user = await Student.findByPk(decoded.userId, {
+      user = await User.findByPk(decoded.userId, {
+        where: { role: "student" },
         attributes: ["id", "email", "role"],
       });
     } else if (decoded.role === "company") {
-      user = await Company.findByPk(decoded.userId, {
+      user = await User.findByPk(decoded.userId, {
+        where: { role: "company" },
         attributes: ["id", "email", "role"],
       });
     }

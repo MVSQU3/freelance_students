@@ -1,4 +1,4 @@
-import { CompanyProfile, Company } from "../config/sequelize.js";
+import { CompanyProfile, User } from "../config/sequelize.js";
 
 export const getMyProfile = async (req, res, next) => {
   try {
@@ -6,7 +6,7 @@ export const getMyProfile = async (req, res, next) => {
       where: { userId: req.user.id },
       include: [
         {
-          model: Company,
+          model: User,
           as: "company",
           attributes: ["email", "role"],
         },
@@ -68,10 +68,11 @@ export const updateProfile = async (req, res, next) => {
         message: "Action non autorisé",
       });
     }
-    const { companyName, sector, location, website, description } = req.body;
+    const { companyName, sector, location, website, description, photoUrl } =
+      req.body;
 
     const [updated] = await CompanyProfile.update(
-      { companyName, sector, location, website, description },
+      { companyName, sector, location, website, description, photoUrl },
       { where: { userId: req.user.id } }
     );
 

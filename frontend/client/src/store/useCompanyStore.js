@@ -11,6 +11,7 @@ export const useCompanyStore = create((set) => ({
       const res = await api.get("/company/me/profile");
       console.log("log de res.data dans getMyProfile: ", res.data);
       set({ myProfile: res.data.profile });
+      return res.data.profile;
     } catch (error) {
       console.error("Error in getMyProfile:", error);
     } finally {
@@ -35,8 +36,8 @@ export const useCompanyStore = create((set) => ({
     set({ isCompanyLoading: true });
     try {
       const res = await api.put("/company/update/profile", data);
-      console.log("log de res.data dans updateMyProfile: ", res.data);
       set({ myProfile: res.data.profile });
+      console.log("log de res.data dans updateMyProfile: ", res.data);
     } catch (error) {
       console.error("Error in updateMyProfile:", error);
     } finally {

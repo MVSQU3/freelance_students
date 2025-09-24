@@ -1,5 +1,11 @@
-import { af_ZA } from "@faker-js/faker";
-import { Company, Stage, Skill, CompanyProfile } from "../config/sequelize.js";
+import {
+  User,
+  Stage,
+  Skill,
+  CompanyProfile,
+  Application,
+  StudentProfile,
+} from "../config/sequelize.js";
 import { Op } from "sequelize";
 
 export const createStage = async (req, res, next) => {
@@ -61,7 +67,7 @@ export const getAllStages = async (req, res, next) => {
           attributes: ["id", "companyName", "location"],
           include: [
             {
-              model: Company,
+              model: User,
               as: "company",
               attributes: ["id", "email", "role"],
             },
@@ -114,7 +120,7 @@ export const getStageById = async (req, res, next) => {
           ],
           include: [
             {
-              model: Company,
+              model: User,
               as: "company",
               attributes: ["id", "email", "role"],
             },
@@ -124,6 +130,29 @@ export const getStageById = async (req, res, next) => {
           model: Skill,
           as: "skills",
           attributes: ["id", "name"],
+        },
+        {
+          model: Application,
+          as: "applications",
+          attributes: ["id"],
+          include: [
+            {
+              model: StudentProfile,
+              as: "student",
+              attributes: [
+                "firstName",
+                "lastName",
+                "school",
+                "level",
+                "fieldOfStudy",
+                "location",
+                "availability",
+                "bio",
+                "photoUrl",
+                "cvUrl",
+              ],
+            },
+          ],
         },
       ],
     });
@@ -156,8 +185,20 @@ export const getMyStages = async (req, res, next) => {
     const stages = await Stage.findAll({
       where: { companyId: req.user.id },
     });
-    console.log(stages);
-    return res.json(stages);
+
+    const lastUploadedStages = await Stage.findAll({
+      limit: 3,
+      order: [["created", "DESC"]],
+      include: [
+        {
+          model: Application,
+          as: "applications",
+          attributes: ["id"],
+        },
+      ],
+    });
+
+    return res.json({ stages, lastUploadedStages });
   } catch (error) {
     next(error);
   }
@@ -266,7 +307,7 @@ export const searchStages = async (req, res, next) => {
             attributes: ["id", "companyName", "location"],
             include: [
               {
-                model: Company,
+                model: User,
                 as: "company",
                 attributes: ["id", "email", "role"],
               },
@@ -293,7 +334,7 @@ export const searchStages = async (req, res, next) => {
             attributes: ["id", "companyName", "location"],
             include: [
               {
-                model: Company,
+                model: User,
                 as: "company",
                 attributes: ["id", "email", "role"],
               },
@@ -318,7 +359,7 @@ export const searchStages = async (req, res, next) => {
           attributes: ["id", "companyName", "location"],
           include: [
             {
-              model: Company,
+              model: User,
               as: "company",
               attributes: ["id", "email", "role"],
             },

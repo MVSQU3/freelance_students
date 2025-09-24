@@ -8,6 +8,7 @@ import Login from "./pages/Login.jsx";
 import Register from "./pages/Register.jsx";
 import Stages from "./pages/Stages.jsx";
 import StageDetails from "./pages/StageDetails.jsx";
+import MyProfileStats from "./pages/StudentPages/MyProfileStats.jsx";
 import Lab from "./test/Lab.jsx";
 
 // START STUDENT ROUTES
@@ -24,6 +25,10 @@ import EditProfileCompany from "./pages/CompanyPages/EditProfileCompany.jsx";
 import MyApply from "./pages/StudentPages/MyApply.jsx";
 import { LogIn } from "lucide-react";
 import SettingsPage from "./pages/SettingsPage.jsx";
+import CreateStage from "./pages/CompanyPages/CreateStage.jsx";
+import MyStages from "./pages/CompanyPages/MyStages.jsx";
+import ApplyStages from "./pages/CompanyPages/ApplyStages.jsx";
+import CompanyDashboard from "./pages/CompanyPages/CompanyDashboard.jsx";
 // END COMPANY ROUTES
 function App() {
   const { authUser, checkAuth } = useAuthStore();
@@ -39,6 +44,23 @@ function App() {
         <Route path="/lab" element={<Lab />} />
         <Route path="/" element={authUser ? <Home /> : <Login />} />
         <Route path="/stages" element={authUser ? <Stages /> : <Login />} />
+        <Route
+          path="/company/stages"
+          element={authUser ? <MyStages /> : <Login />}
+        />
+        <Route
+          path="/company/applied-stages/"
+          element={authUser ? <ApplyStages /> : <Login />}
+        />
+        <Route
+          path="/company/dashboard"
+          element={authUser ? <CompanyDashboard /> : <Login />}
+        />
+
+        <Route
+          path="/student/stats"
+          element={authUser ? <MyProfileStats /> : <Login />}
+        />
         <Route
           path="/settings"
           element={authUser ? <SettingsPage /> : <Login />}
@@ -89,6 +111,11 @@ function App() {
         <Route
           path="/company/edit/profile"
           element={authUser ? <EditProfileCompany /> : <Login />}
+        />
+
+        <Route
+          path="/company/create/stage"
+          element={authUser ? <CreateStage /> : <Login />}
         />
         {/* end Company routes */}
 

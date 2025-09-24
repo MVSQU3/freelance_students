@@ -15,6 +15,7 @@ export const CompanyProfileModel = () => {
       location: { type: DataTypes.STRING },
       website: { type: DataTypes.STRING, validate: { isUrl: true } },
       description: { type: DataTypes.TEXT },
+      photoUrl: { type: DataTypes.STRING },
     },
     {
       timestamps: true,

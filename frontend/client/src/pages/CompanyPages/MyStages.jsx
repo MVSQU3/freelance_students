@@ -1,0 +1,346 @@
+import React, { useState, useEffect } from "react";
+import {
+  Briefcase,
+  Search,
+  Filter,
+  Plus,
+  Eye,
+  Edit,
+  Trash2,
+  MoreVertical,
+  Users,
+  Calendar,
+  MapPin,
+  Clock,
+  BarChart3,
+  Download,
+  Share2,
+} from "lucide-react";
+import { Link } from "react-router-dom";
+
+const MyStages = () => {
+  const [stages, setStages] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [statusFilter, setStatusFilter] = useState("all");
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Données simulées
+  useEffect(() => {
+    setTimeout(() => {
+      setStages([
+        {
+          id: 1,
+          title: "Développeur Full Stack React/Node.js",
+          company: "Tech Solutions Inc.",
+          location: "Paris, France",
+          duration: "6 mois",
+          salary: "1200€/mois",
+          applications: 24,
+          status: "active",
+          createdDate: "2024-01-15",
+          deadline: "2024-03-15",
+          views: 156,
+        },
+        {
+          id: 2,
+          title: "Stage en Marketing Digital",
+          company: "Digital Agency",
+          location: "Lyon, France",
+          duration: "4 mois",
+          salary: "1000€/mois",
+          applications: 18,
+          status: "active",
+          createdDate: "2024-01-20",
+          deadline: "2024-03-30",
+          views: 89,
+        },
+        {
+          id: 3,
+          title: "Data Analyst Junior",
+          company: "Data Corp",
+          location: "Remote",
+          duration: "5 mois",
+          salary: "1100€/mois",
+          applications: 32,
+          status: "closed",
+          createdDate: "2023-12-10",
+          deadline: "2024-02-10",
+          views: 203,
+        },
+        {
+          id: 4,
+          title: "Designer UI/UX",
+          company: "Creative Studio",
+          location: "Bordeaux, France",
+          duration: "3 mois",
+          salary: "950€/mois",
+          applications: 12,
+          status: "draft",
+          createdDate: "2024-01-25",
+          deadline: "2024-04-15",
+          views: 45,
+        },
+      ]);
+      setIsLoading(false);
+    }, 1000);
+  }, []);
+
+  const filteredStages = stages.filter((stage) => {
+    const matchesSearch =
+      stage.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      stage.company.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesStatus =
+      statusFilter === "all" || stage.status === statusFilter;
+    return matchesSearch && matchesStatus;
+  });
+
+  const getStatusBadge = (status) => {
+    const statusConfig = {
+      active: { color: "bg-green-100 text-green-800", label: "Active" },
+      closed: { color: "bg-red-100 text-red-800", label: "Clôturée" },
+      draft: { color: "bg-gray-100 text-gray-800", label: "Brouillon" },
+    };
+    return statusConfig[status] || statusConfig.draft;
+  };
+
+  const handleDeleteStage = (stageId) => {
+    if (window.confirm("Êtes-vous sûr de vouloir supprimer cette offre ?")) {
+      setStages(stages.filter((stage) => stage.id !== stageId));
+    }
+  };
+
+  const stats = {
+    total: stages.length,
+    active: stages.filter((s) => s.status === "active").length,
+    closed: stages.filter((s) => s.status === "closed").length,
+    draft: stages.filter((s) => s.status === "draft").length,
+    totalApplications: stages.reduce(
+      (sum, stage) => sum + stage.applications,
+      0
+    ),
+  };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      <div className="max-w-7xl mx-auto px-4 py-8">
+        {/* En-tête */}
+        <div className="mb-8">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+            <div>
+              <h1 className="text-3xl font-bold text-gray-800 mb-2 flex items-center gap-3">
+                <Briefcase className="w-8 h-8 text-indigo-600" />
+                Mes offres de stage
+              </h1>
+              <p className="text-gray-600">
+                Gérez et suivez vos offres de stage publiées
+              </p>
+            </div>
+            <Link
+              to="/company/create-stage"
+              className="btn btn-primary flex items-center gap-2"
+            >
+              <Plus className="w-4 h-4" />
+              Nouvelle offre
+            </Link>
+          </div>
+
+          {/* Statistiques */}
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">
+            <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+              <div className="text-2xl font-bold text-indigo-600">
+                {stats.total}
+              </div>
+              <div className="text-sm text-gray-600">Total</div>
+            </div>
+            <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+              <div className="text-2xl font-bold text-green-600">
+                {stats.active}
+              </div>
+              <div className="text-sm text-gray-600">Actives</div>
+            </div>
+            <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+              <div className="text-2xl font-bold text-red-600">
+                {stats.closed}
+              </div>
+              <div className="text-sm text-gray-600">Clôturées</div>
+            </div>
+            <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+              <div className="text-2xl font-bold text-gray-600">
+                {stats.draft}
+              </div>
+              <div className="text-sm text-gray-600">Brouillons</div>
+            </div>
+            <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+              <div className="text-2xl font-bold text-blue-600">
+                {stats.totalApplications}
+              </div>
+              <div className="text-sm text-gray-600">Candidatures</div>
+            </div>
+          </div>
+        </div>
+
+        {/* Barre de recherche et filtres */}
+        <div className="bg-white rounded-xl shadow-sm p-6 mb-6 border border-gray-200">
+          <div className="flex flex-col md:flex-row gap-4">
+            <div className="flex-1 relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+              <input
+                type="text"
+                placeholder="Rechercher une offre..."
+                className="input input-bordered pl-10 w-full"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+            </div>
+            <select
+              className="select select-bordered"
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+            >
+              <option value="all">Tous les statuts</option>
+              <option value="active">Actives</option>
+              <option value="closed">Clôturées</option>
+              <option value="draft">Brouillons</option>
+            </select>
+          </div>
+        </div>
+
+        {/* Liste des offres */}
+        <div className="space-y-4">
+          {filteredStages.length > 0 ? (
+            filteredStages.map((stage) => (
+              <div
+                key={stage.id}
+                className="bg-white rounded-xl shadow-sm p-6 border border-gray-200 hover:shadow-md transition-shadow"
+              >
+                <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+                  <div className="flex-1">
+                    <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-3">
+                      <div>
+                        <h3 className="text-lg font-semibold text-gray-800 mb-1">
+                          {stage.title}
+                        </h3>
+                        <p className="text-indigo-600 font-medium">
+                          {stage.company}
+                        </p>
+                      </div>
+                      <span
+                        className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium mt-2 sm:mt-0 ${
+                          getStatusBadge(stage.status).color
+                        }`}
+                      >
+                        {getStatusBadge(stage.status).label}
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 text-sm text-gray-600 mb-4">
+                      <div className="flex items-center gap-2">
+                        <MapPin className="w-4 h-4" />
+                        <span>{stage.location}</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Clock className="w-4 h-4" />
+                        <span>{stage.duration}</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Users className="w-4 h-4" />
+                        <span>{stage.applications} candidatures</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <BarChart3 className="w-4 h-4" />
+                        <span>{stage.views} vues</span>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-4 text-xs text-gray-500">
+                      <span>
+                        Publiée le{" "}
+                        {new Date(stage.createdDate).toLocaleDateString()}
+                      </span>
+                      <span>•</span>
+                      <span>
+                        Clôture le{" "}
+                        {new Date(stage.deadline).toLocaleDateString()}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <button className="btn btn-ghost btn-sm flex items-center gap-1">
+                      <Eye className="w-4 h-4" />
+                      Voir
+                    </button>
+                    <button className="btn btn-ghost btn-sm flex items-center gap-1">
+                      <Edit className="w-4 h-4" />
+                      Modifier
+                    </button>
+                    <div className="dropdown dropdown-end">
+                      <label tabIndex={0} className="btn btn-ghost btn-sm">
+                        <MoreVertical className="w-4 h-4" />
+                      </label>
+                      <ul
+                        tabIndex={0}
+                        className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52"
+                      >
+                        <li>
+                          <button className="flex items-center gap-2">
+                            <Download className="w-4 h-4" />
+                            Télécharger les CV
+                          </button>
+                        </li>
+                        <li>
+                          <button className="flex items-center gap-2">
+                            <Share2 className="w-4 h-4" />
+                            Partager
+                          </button>
+                        </li>
+                        <li>
+                          <hr />
+                        </li>
+                        <li>
+                          <button
+                            onClick={() => handleDeleteStage(stage.id)}
+                            className="flex items-center gap-2 text-red-600"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                            Supprimer
+                          </button>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))
+          ) : (
+            <div className="bg-white rounded-xl shadow-sm p-8 text-center border border-gray-200">
+              <Briefcase className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+              <h3 className="text-xl font-semibold text-gray-800 mb-2">
+                Aucune offre trouvée
+              </h3>
+              <p className="text-gray-600 mb-6">
+                {searchTerm || statusFilter !== "all"
+                  ? "Aucune offre ne correspond à vos critères de recherche."
+                  : "Vous n'avez pas encore publié d'offre de stage."}
+              </p>
+              <Link to="/company/create-stage" className="btn btn-primary">
+                <Plus className="w-4 h-4 mr-2" />
+                Créer votre première offre
+              </Link>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default MyStages;

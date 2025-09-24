@@ -7,6 +7,10 @@ import {
   Briefcase,
   MapPin,
   Clock,
+  Star,
+  LogIn,
+  PlayCircle,
+  ChevronDown,
 } from "lucide-react";
 import { useAuthStore } from "../store/useAuthStore";
 import { Link } from "react-router-dom";
@@ -170,26 +174,119 @@ const Home = () => {
           </section>
         </>
       ) : (
-        <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-indigo-600 to-purple-600">
-          <div className="text-center text-white p-8 max-w-2xl">
-            <h1 className="text-4xl md:text-5xl font-bold mb-6">
-              Recrutez la prochaine génération de talents
+        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-600 relative overflow-hidden">
+          {/* Éléments décoratifs */}
+          <div className="absolute inset-0 overflow-hidden">
+            <div className="absolute -top-40 -right-40 w-80 h-80 bg-white/10 rounded-full blur-3xl"></div>
+            <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-indigo-400/20 rounded-full blur-3xl"></div>
+            <div className="absolute top-1/2 left-1/4 w-20 h-20 bg-white/10 rounded-full animate-pulse"></div>
+          </div>
+
+          <div className="relative text-center text-white p-8 max-w-4xl">
+            {/* Badge */}
+            <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm rounded-full px-4 py-2 mb-6 border border-white/30">
+              <Star className="w-4 h-4 fill-yellow-400" />
+              <span className="text-sm font-medium">
+                Plateforme n°1 pour les stages
+              </span>
+            </div>
+
+            <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight">
+              Recrutez la
+              <span className="block bg-gradient-to-r from-yellow-400 to-amber-400 bg-clip-text text-transparent">
+                prochaine génération
+              </span>
+              de talents
             </h1>
-            <p className="text-xl text-indigo-100 mb-8">
-              Connectez-vous avec des étudiants talentueux et trouvez les futurs
-              leaders de votre entreprise
+
+            <p className="text-xl md:text-2xl text-indigo-100 mb-8 leading-relaxed max-w-3xl mx-auto">
+              Connectez-vous avec des étudiants talentueux et trouvez les
+              <span className="font-semibold text-white">
+                {" "}
+                futurs leaders
+              </span>{" "}
+              de votre entreprise
             </p>
-            <div className="bg-white rounded-xl shadow-lg p-6 max-w-md mx-auto">
-              <h2 className="text-2xl font-bold text-gray-800 mb-4">
-                Pour les recruteurs
-              </h2>
-              <p className="text-gray-600 mb-6">
-                Publiez vos offres de stage et consultez les profils des
-                étudiants
-              </p>
-              <button className="btn btn-primary rounded-full px-8">
-                Accéder au tableau de bord
-              </button>
+
+            {/* Statistiques */}
+            <div className="flex justify-center gap-8 mb-8 flex-wrap">
+              <div className="text-center">
+                <div className="text-3xl font-bold text-yellow-400">500+</div>
+                <div className="text-indigo-200 text-sm">
+                  Entreprises partenaires
+                </div>
+              </div>
+              <div className="text-center">
+                <div className="text-3xl font-bold text-yellow-400">10K+</div>
+                <div className="text-indigo-200 text-sm">Étudiants actifs</div>
+              </div>
+              <div className="text-center">
+                <div className="text-3xl font-bold text-yellow-400">95%</div>
+                <div className="text-indigo-200 text-sm">
+                  Taux de satisfaction
+                </div>
+              </div>
+            </div>
+
+            {/* Carte principale */}
+            <div className="bg-white/10 backdrop-blur-md rounded-2xl shadow-2xl border border-white/20 p-8 max-w-md mx-auto transform hover:scale-105 transition-transform duration-300">
+              <div className="bg-white rounded-xl shadow-lg p-6">
+                <div className="flex items-center justify-center mb-4">
+                  <div className="p-3 bg-indigo-100 rounded-full">
+                    <Briefcase className="w-6 h-6 text-indigo-600" />
+                  </div>
+                </div>
+
+                <h2 className="text-2xl font-bold text-gray-800 mb-3">
+                  Pour les recruteurs
+                </h2>
+
+                <p className="text-gray-600 mb-6 leading-relaxed">
+                  Publiez vos offres de stage, consultez les profils qualifiés
+                  et
+                  <Link to={"/student/liste"}>
+                    <span className="font-semibold text-indigo-600">
+                      {" "}
+                      trouvez les talents de demain
+                    </span>
+                  </Link>
+                </p>
+
+                <div className="space-y-3">
+                  <button className="btn btn-primary rounded-full px-8 w-full gap-2 transform hover:-translate-y-1 transition-transform">
+                    <LogIn className="w-4 h-4" />
+                    Accéder au tableau de bord
+                  </button>
+
+                  <button className="btn btn-outline border-indigo-200 text-indigo-600 rounded-full px-8 w-full gap-2 hover:bg-indigo-50">
+                    <PlayCircle className="w-4 h-4" />
+                    Voir la démo
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {/* Témoignage */}
+            <div className="mt-8 max-w-lg mx-auto">
+              <div className="flex items-center justify-center gap-3 text-indigo-200">
+                <div className="flex -space-x-2">
+                  <div className="w-8 h-8 bg-gradient-to-r from-amber-400 to-orange-400 rounded-full"></div>
+                  <div className="w-8 h-8 bg-gradient-to-r from-green-400 to-emerald-400 rounded-full"></div>
+                  <div className="w-8 h-8 bg-gradient-to-r from-blue-400 to-cyan-400 rounded-full"></div>
+                </div>
+                <span className="text-sm">
+                  Rejoignez{" "}
+                  <span className="font-semibold text-white">
+                    TechCorp, MarketPlus,
+                  </span>{" "}
+                  et d'autres...
+                </span>
+              </div>
+            </div>
+
+            {/* Scroll indicator */}
+            <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
+              <ChevronDown className="w-6 h-6 text-white/60" />
             </div>
           </div>
         </div>

@@ -1,7 +1,6 @@
 export default function setupAssociations(db) {
   const {
-    Student,
-    Company,
+    User,
     StudentProfile,
     CompanyProfile,
     Skill,
@@ -12,23 +11,23 @@ export default function setupAssociations(db) {
   } = db;
 
   // 1-1 StudentProfile ↔ User
-  Student.hasOne(StudentProfile, {
+  User.hasOne(StudentProfile, {
     foreignKey: "userId",
     as: "studentProfile", // alias clair
     onDelete: "CASCADE",
   });
-  StudentProfile.belongsTo(Student, {
+  StudentProfile.belongsTo(User, {
     foreignKey: "userId",
     as: "student", // alias clair
   });
 
   // 1-1 CompanyProfile ↔ User
-  Company.hasOne(CompanyProfile, {
+  User.hasOne(CompanyProfile, {
     foreignKey: "userId",
     as: "companyProfile", // alias clair
     onDelete: "CASCADE",
   });
-  CompanyProfile.belongsTo(Company, {
+  CompanyProfile.belongsTo(User, {
     foreignKey: "userId",
     as: "company", // alias clair
   });
@@ -76,11 +75,11 @@ export default function setupAssociations(db) {
     as: "company",
   });
 
-  Application.belongsTo(Student, {
+  Application.belongsTo(StudentProfile, {
     foreignKey: "studentId",
     as: "student",
   });
   Application.belongsTo(Stage, { foreignKey: "stageId", as: "stage" });
-}
 
-// Relation directe pour simplifier les include
+  Stage.hasMany(Application, { foreignKey: "stageId", as: "applications" });
+}

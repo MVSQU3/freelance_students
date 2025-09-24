@@ -14,11 +14,12 @@ import {
   CheckCircle,
   XCircle,
   ClockIcon,
+  LucideTrash,
 } from "lucide-react";
 
 const MyApply = () => {
   const { logout } = useAuthStore();
-  const { getMyApply, myApply, isLoading } = useApplyStore();
+  const { getMyApply, deleteApply, myApply, isLoading } = useApplyStore();
 
   useEffect(() => {
     getMyApply();
@@ -182,6 +183,13 @@ const MyApply = () => {
                         <FileText className="w-4 h-4 mr-1" />
                         Voir l'offre
                       </Link>
+                      <button
+                        onClick={() => deleteApply(application.id)}
+                        className="text-red-600 hover:text-red-800 text-sm font-medium flex items-center"
+                      >
+                        <LucideTrash className="w-4 h-4 mr-1" />
+                        Supprimer
+                      </button>
                       {application.status === "accepted" && (
                         <button className="btn btn-primary btn-sm">
                           Contacter l'entreprise

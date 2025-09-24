@@ -37,4 +37,20 @@ export const useApplyStore = create((set) => ({
       set({ isApplying: false });
     }
   },
+
+  deleteApply: async (stageId) => {
+    set({ isApplying: true });
+    try {
+      const res = await api.delete(`/apply/delete/${stageId}`);
+      console.log("log de res.data in deleteApply: ", res.data);
+      // Mettre à jour l'état myApply après la suppression
+      set((state) => ({
+        myApply: state.myApply.filter((apply) => apply.id !== stageId),
+      }));
+    } catch (error) {
+      console.error("Erreur lors de la suppression de la candidature: ", error);
+    } finally {
+      set({ isApplying: false });
+    }
+  },
 }));

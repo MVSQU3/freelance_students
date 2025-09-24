@@ -5,8 +5,6 @@ import {
   Skill,
   Stage,
   Application,
-  Student,
-  Company,
   User,
 } from "../config/sequelize.js";
 import bcrypt from "bcrypt";
@@ -88,17 +86,13 @@ export const seed = async () => {
       level: faker.helpers.arrayElement(levels),
       fieldOfStudy: faker.helpers.arrayElement(fieldsOfStudy),
       location: faker.location.city(),
-      availability: faker.datatype.boolean(),
-      is_public: faker.helpers.arrayElement(["Oui", "Non"]),
       bio: faker.lorem.paragraph(),
-      phone: faker.phone.number(),
-      birthDate: faker.date.birthdate({ min: 18, max: 30, mode: "age" }),
-      cvUrl: faker.internet.url(),
     }));
 
     const studentProfiles = await Promise.all(
       studentProfilesData.map((s) => StudentProfile.create(s))
     );
+    console.log(studentProfiles);
 
     // ====== PROFILS ENTREPRISES ======
     const sectors = [
@@ -151,12 +145,9 @@ export const seed = async () => {
       description: faker.company.catchPhrase(),
       phone: faker.phone.number(),
       employeesCount: faker.number.int({ min: 5, max: 1000 }),
-      foundedYear: faker.number.int({ min: 1990, max: 2023 }),
     }));
 
-    const companyProfiles = await Promise.all(
-      companyProfilesData.map((c) => CompanyProfile.create(c))
-    );
+    await Promise.all(companyProfilesData.map((c) => CompanyProfile.create(c)));
 
     // ====== COMPÉTENCES ======
     const skillsData = [

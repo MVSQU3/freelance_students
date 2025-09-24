@@ -1,7 +1,15 @@
 import { useEffect, useState } from "react";
 import { useStudentStore } from "../../store/useStudentStore";
 import StudentCard from "../../components/StudentCard";
-import { Search, MapPin, BookOpen, Filter, X, Loader } from "lucide-react";
+import {
+  Search,
+  MapPin,
+  BookOpen,
+  Filter,
+  X,
+  Loader,
+  Loader2,
+} from "lucide-react";
 
 const StudentsList = () => {
   const { getAllStudents, isStudentLoading, students } = useStudentStore();
@@ -147,7 +155,7 @@ const StudentsList = () => {
         {/* Liste des étudiants */}
         {isStudentLoading ? (
           <div className="flex justify-center py-12">
-            <Loader />
+            <span className="loading loading-spinner loading-lg" />
           </div>
         ) : students.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">

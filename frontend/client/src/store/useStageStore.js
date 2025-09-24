@@ -32,6 +32,19 @@ export const useStageStore = create((set) => ({
     }
   },
 
+  getMyStages: async () => {
+    set({ isLoading: true });
+    try {
+      const res = await api.get("/stages/my-stage");
+      set({ stages: res.data.lastUploadedStages });
+      console.log("log de res.data in getMyStages: ", res.data);
+    } catch (error) {
+      console.error("Error in getMyStages:", error);
+    } finally {
+      set({ isLoading: false });
+    }
+  },
+
   searchStages: async (q, location, domain, sort, field) => {
     try {
       const params = new URLSearchParams();

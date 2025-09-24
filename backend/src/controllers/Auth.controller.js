@@ -2,8 +2,6 @@ import bcrypt from "bcrypt";
 import {
   StudentProfile,
   CompanyProfile,
-  Student,
-  Company,
   User,
 } from "../config/sequelize.js";
 import { generateToken } from "../config/util.js";
@@ -71,8 +69,8 @@ export const login = async (req, res, next) => {
   try {
     // Recherche utilisateur
     let user;
-    const student = await Student.findOne({ where: { email } });
-    const company = await Company.findOne({ where: { email } });
+    const student = await User.findOne({ where: { email } });
+    const company = await User.findOne({ where: { email } });
     if (!student && !company) {
       const error = new Error("Email incorrect");
       error.statusCode = 401;
@@ -141,9 +139,9 @@ export const me = async (req, res, next) => {
     let userInfo;
 
     if (req.user.role === "student") {
-      userInfo = await Student.findOne({ where: { id: req.user.id } });
+      userInfo = await User.findOne({ where: { id: req.user.id } });
     } else if (req.user.role === "company") {
-      userInfo = await Company.findOne({ where: { id: req.user.id } });
+      userInfo = await User.findOne({ where: { id: req.user.id } });
     }
 
     if (!userInfo) {

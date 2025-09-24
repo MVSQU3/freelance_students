@@ -43,10 +43,10 @@ export const useUploadStore = create((set) => ({
           set({ uploadProgress: percent });
         },
       });
-      console.log("res.data in uploadCv:", res.data);
+      console.log("res.data in uploadPp:", res.data);
       return res.data;
     } catch (error) {
-      console.error("Error uploading CV:", error);
+      console.error("Error uploading PP:", error);
       throw error;
     }
   },
