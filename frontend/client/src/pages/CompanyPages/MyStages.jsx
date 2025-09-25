@@ -17,73 +17,19 @@ import {
   Share2,
 } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useStageStore } from "../../store/useStageStore";
 
 const MyStages = () => {
-  const [stages, setStages] = useState([]);
+  const { getMyStages, stages, isLoading } = useStageStore();
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
-  const [isLoading, setIsLoading] = useState(true);
 
   // Données simulées
   useEffect(() => {
-    setTimeout(() => {
-      setStages([
-        {
-          id: 1,
-          title: "Développeur Full Stack React/Node.js",
-          company: "Tech Solutions Inc.",
-          location: "Paris, France",
-          duration: "6 mois",
-          salary: "1200€/mois",
-          applications: 24,
-          status: "active",
-          createdDate: "2024-01-15",
-          deadline: "2024-03-15",
-          views: 156,
-        },
-        {
-          id: 2,
-          title: "Stage en Marketing Digital",
-          company: "Digital Agency",
-          location: "Lyon, France",
-          duration: "4 mois",
-          salary: "1000€/mois",
-          applications: 18,
-          status: "active",
-          createdDate: "2024-01-20",
-          deadline: "2024-03-30",
-          views: 89,
-        },
-        {
-          id: 3,
-          title: "Data Analyst Junior",
-          company: "Data Corp",
-          location: "Remote",
-          duration: "5 mois",
-          salary: "1100€/mois",
-          applications: 32,
-          status: "closed",
-          createdDate: "2023-12-10",
-          deadline: "2024-02-10",
-          views: 203,
-        },
-        {
-          id: 4,
-          title: "Designer UI/UX",
-          company: "Creative Studio",
-          location: "Bordeaux, France",
-          duration: "3 mois",
-          salary: "950€/mois",
-          applications: 12,
-          status: "draft",
-          createdDate: "2024-01-25",
-          deadline: "2024-04-15",
-          views: 45,
-        },
-      ]);
-      setIsLoading(false);
-    }, 1000);
+    getMyStages();
   }, []);
+
+  console.log("stages =>", stages);
 
   const filteredStages = stages.filter((stage) => {
     const matchesSearch =
@@ -111,11 +57,11 @@ const MyStages = () => {
 
   const stats = {
     total: stages.length,
-    active: stages.filter((s) => s.status === "active").length,
-    closed: stages.filter((s) => s.status === "closed").length,
+    active: stages.filter((s) => s.isActive === true).length,
+    closed: stages.filter((s) => s.isActive === false).length,
     draft: stages.filter((s) => s.status === "draft").length,
     totalApplications: stages.reduce(
-      (sum, stage) => sum + stage.applications,
+      (sum, stage) => sum + stage.applications.length,
       0
     ),
   };
@@ -144,7 +90,7 @@ const MyStages = () => {
               </p>
             </div>
             <Link
-              to="/company/create-stage"
+              to="/company/create/stage"
               className="btn btn-primary flex items-center gap-2"
             >
               <Plus className="w-4 h-4" />
@@ -215,8 +161,8 @@ const MyStages = () => {
 
         {/* Liste des offres */}
         <div className="space-y-4">
-          {filteredStages.length > 0 ? (
-            filteredStages.map((stage) => (
+          {stages.length > 0 ? (
+            stages.map((stage) => (
               <div
                 key={stage.id}
                 className="bg-white rounded-xl shadow-sm p-6 border border-gray-200 hover:shadow-md transition-shadow"
@@ -229,15 +175,15 @@ const MyStages = () => {
                           {stage.title}
                         </h3>
                         <p className="text-indigo-600 font-medium">
-                          {stage.company}
+                          {stage.company || "Company Name"}
                         </p>
                       </div>
                       <span
                         className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium mt-2 sm:mt-0 ${
-                          getStatusBadge(stage.status).color
+                          getStatusBadge(stage.isActive).color
                         }`}
                       >
-                        {getStatusBadge(stage.status).label}
+                        {getStatusBadge(stage.isActive).label}
                       </span>
                     </div>
 
@@ -248,11 +194,16 @@ const MyStages = () => {
                       </div>
                       <div className="flex items-center gap-2">
                         <Clock className="w-4 h-4" />
-                        <span>{stage.duration}</span>
+                        <span>{stage.duree}</span>
                       </div>
                       <div className="flex items-center gap-2">
                         <Users className="w-4 h-4" />
-                        <span>{stage.applications} candidatures</span>
+                        <span>
+                          {Array.isArray(stage.applications)
+                            ? stage?.applications.length
+                            : []}{" "}
+                          candidatures
+                        </span>
                       </div>
                       <div className="flex items-center gap-2">
                         <BarChart3 className="w-4 h-4" />
@@ -278,10 +229,13 @@ const MyStages = () => {
                       <Eye className="w-4 h-4" />
                       Voir
                     </button>
-                    <button className="btn btn-ghost btn-sm flex items-center gap-1">
+                    <Link
+                      to={`/company/edite/stage/${stage.id}`}
+                      className="btn btn-ghost btn-sm flex items-center gap-1"
+                    >
                       <Edit className="w-4 h-4" />
                       Modifier
-                    </button>
+                    </Link>
                     <div className="dropdown dropdown-end">
                       <label tabIndex={0} className="btn btn-ghost btn-sm">
                         <MoreVertical className="w-4 h-4" />
@@ -331,7 +285,7 @@ const MyStages = () => {
                   ? "Aucune offre ne correspond à vos critères de recherche."
                   : "Vous n'avez pas encore publié d'offre de stage."}
               </p>
-              <Link to="/company/create-stage" className="btn btn-primary">
+              <Link to="/company/create/stage" className="btn btn-primary">
                 <Plus className="w-4 h-4 mr-2" />
                 Créer votre première offre
               </Link>

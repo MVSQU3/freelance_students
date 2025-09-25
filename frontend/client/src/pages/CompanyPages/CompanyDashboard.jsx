@@ -166,7 +166,7 @@ const CompanyDashboard = () => {
               </p>
             </div>
             <Link
-              to="/company/create-stage"
+              to="/company/create/stage"
               className="btn btn-primary flex items-center gap-2"
             >
               <Plus className="w-4 h-4" />
@@ -252,7 +252,7 @@ const CompanyDashboard = () => {
                   Vos offres récentes
                 </h2>
                 <Link
-                  to="/company/my-stages"
+                  to="/company/stages"
                   className="text-indigo-600 hover:text-indigo-800 text-sm flex items-center gap-1"
                 >
                   Voir tout <ArrowRight className="w-4 h-4" />
@@ -306,7 +306,7 @@ const CompanyDashboard = () => {
                             {new Date(stage.deadline).toLocaleDateString()}
                           </div>
                           <Link
-                            to={`/company/stages/${stage.id}/applications`}
+                            to={`/company/applied-stages/${stage.id}`}
                             className="btn btn-ghost btn-sm text-indigo-600"
                           >
                             Voir candidatures
@@ -419,7 +419,7 @@ const CompanyDashboard = () => {
               </h2>
               <div className="space-y-3">
                 <Link
-                  to="/company/create-stage"
+                  to="/company/create/stage"
                   className="flex items-center justify-between p-3 border border-gray-200 rounded-lg hover:border-indigo-400 transition-colors"
                 >
                   <span>Créer une nouvelle offre</span>

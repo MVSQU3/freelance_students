@@ -92,7 +92,6 @@ export const seed = async () => {
     const studentProfiles = await Promise.all(
       studentProfilesData.map((s) => StudentProfile.create(s))
     );
-    console.log(studentProfiles);
 
     // ====== PROFILS ENTREPRISES ======
     const sectors = [

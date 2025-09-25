@@ -13,7 +13,6 @@ import {
   Briefcase,
   Users,
   BarChart3,
-  Calendar,
   Award,
   Star,
   Eye,
@@ -22,13 +21,17 @@ import { useStageStore } from "../../store/useStageStore";
 
 const MyProfileCompany = () => {
   const { getMyProfile, myProfile, isCompanyLoading } = useCompanyStore();
-  const { getMyStages, stages } = useStageStore();
+  const { getMyStages, stages, lastUploadStages } = useStageStore();
   const { logout, authUser } = useAuthStore();
 
   useEffect(() => {
     getMyProfile();
-    getMyStages();
+    if (!stages.lastUploadedStages) {
+      getMyStages();
+    }
   }, []);
+
+  console.log("stages =>", stages);
 
   if (isCompanyLoading) {
     return (
@@ -132,7 +135,9 @@ const MyProfileCompany = () => {
                 <h3 className="font-semibold text-gray-700 mb-3">Activité</h3>
                 <div className="grid grid-cols-2 gap-3">
                   <div className="text-center p-3 bg-indigo-50 rounded-lg">
-                    <div className="text-xl font-bold text-indigo-600">12</div>
+                    <div className="text-xl font-bold text-indigo-600">
+                      {stages.length}
+                    </div>
                     <div className="text-xs text-gray-600">Offres actives</div>
                   </div>
                   <div className="text-center p-3 bg-green-50 rounded-lg">
@@ -207,9 +212,14 @@ const MyProfileCompany = () => {
               </div>
 
               <div className="space-y-4">
-                {Array.isArray(stages) && stages.length > 0 ? (
-                  stages.map((stage, index) => (
-                    <li key={index} className="list-none">
+                {Array.isArray(lastUploadStages) &&
+                lastUploadStages.length > 0 ? (
+                  lastUploadStages.map((stage, index) => (
+                    <Link
+                      to={`/company/applied-stages/${stage.id}`}
+                      key={index}
+                      className="list-none"
+                    >
                       <div className="p-4 bg-gray-50 rounded-lg border border-gray-100">
                         <div className="flex justify-between items-start">
                           <div>
@@ -233,15 +243,22 @@ const MyProfileCompany = () => {
                         </div>
                         <div className="flex gap-2 mt-3">
                           <span className="bg-indigo-100 text-indigo-700 px-2 py-1 rounded text-xs">
-                            {stage?.applications.length} Candidature
-                            {stage?.applications.length > 1 ? "s" : ""}
+                            {Array.isArray(stage?.applications)
+                              ? stage?.applications.length
+                              : 0}{" "}
+                            Candidature
+                            {Array.isArray(stage?.applications)
+                              ? stage?.applications.length > 1
+                                ? "s"
+                                : ""
+                              : []}
                           </span>
                           <span className="bg-blue-100 text-blue-700 px-2 py-1 rounded text-xs">
                             {stage.domain}
                           </span>
                         </div>
                       </div>
-                    </li>
+                    </Link>
                   ))
                 ) : (
                   <p className="text-gray-600">

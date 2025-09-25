@@ -4,6 +4,7 @@ import { api } from "../lib/utils";
 export const useStageStore = create((set) => ({
   stages: [],
   stage: {},
+  lastUploadStages: [],
   isLoading: false,
 
   getAllStages: async (page) => {
@@ -25,6 +26,7 @@ export const useStageStore = create((set) => ({
       const res = await api.get(`/stages/${stageId}`);
       console.log("log de res.data in getStageById:", res.data.stage);
       set({ stage: res.data.stage });
+      return res.data.stage;
     } catch (error) {
       console.error("Error in getStageById:", error);
     } finally {
@@ -36,10 +38,26 @@ export const useStageStore = create((set) => ({
     set({ isLoading: true });
     try {
       const res = await api.get("/stages/my-stage");
-      set({ stages: res.data.lastUploadedStages });
+      set({
+        stages: res.data.stages,
+        lastUploadStages: res.data.lastUploadedStages,
+      });
       console.log("log de res.data in getMyStages: ", res.data);
     } catch (error) {
       console.error("Error in getMyStages:", error);
+    } finally {
+      set({ isLoading: false });
+    }
+  },
+
+  getMyStageDetails: async (id) => {
+    set({ isLoading: true });
+    try {
+      const res = await api.get(`/stages/my-stage/details/${id}`);
+      set({ stage: res.data.stages });
+      console.log("log de res.data in getMyStagesDetails: ", res.data);
+    } catch (error) {
+      console.error("Error in getMyStagesDetails:", error);
     } finally {
       set({ isLoading: false });
     }
@@ -71,6 +89,17 @@ export const useStageStore = create((set) => ({
       console.log("log de res.data in lastUploadedStages:", res.data);
 
       return res.data;
+    } catch (error) {
+      console.error("Error in lastUploadedStages:", error);
+    }
+  },
+
+  updateStage: async (id, data) => {
+    set({ isLoading: true });
+    try {
+      const res = await api.put(`/stages/${id}`, data);
+      set({ stage: res.data.stage, isLoading: false });
+      console.log("log de res.data in updateStage", res.data);
     } catch (error) {
       console.error("Error in lastUploadedStages:", error);
     }

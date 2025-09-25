@@ -159,7 +159,7 @@ const Stages = () => {
               <div key={stage.id} className="list-none">
                 <StageCard
                   title={stage.title}
-                  company={stage.company.companyName}
+                  company={stage?.company?.companyName}
                   duree={stage.duree}
                   location={stage.location}
                   skills={

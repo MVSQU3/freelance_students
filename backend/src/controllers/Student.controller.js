@@ -253,7 +253,7 @@ export const addSkill = async (req, res, next) => {
     });
 
     // Vérifier si la compétence est déjà associée à l'étudiant
-    const hasSkill = await student.hasSkill(skill);
+    const hasSkill = await Student.hasSkill(skill);
     if (hasSkill) {
       return res.status(400).json({
         success: false,

@@ -18,10 +18,10 @@ export const createStage = async (req, res, next) => {
       });
     }
 
-    const { title, description, location, domain } = req.body;
-
+    const { title, description, location, domain, duree } = req.body;
+    const { skills } = req.body;
     // Vérifier que l'entreprise existe
-    const company = await Company.findByPk(req.user.id);
+    const company = await User.findByPk(req.user.id);
     if (!company) {
       return res.status(404).json({
         success: false,
@@ -35,13 +35,31 @@ export const createStage = async (req, res, next) => {
       description: description.trim(),
       location: location.trim(),
       domain: domain.trim(),
+      duree: duree,
       companyId: req.user.id,
     });
+
+    // Transformer skills en tableau d’objets
+    const skillsData = skills.map((s) => ({ name: s }));
+
+    // Créer les skills (ou ignorer si déjà existants)
+    await Skill.bulkCreate(skillsData, {
+      ignoreDuplicates: true,
+    });
+
+    // Récupérer tous les skills correspondants (y compris ceux qui existaient déjà)
+    const allSkills = await Skill.findAll({
+      where: { name: skills },
+    });
+
+    // Associer les skills au stage
+    await stage.addSkills(allSkills);
 
     return res.status(201).json({
       success: true,
       message: "Stage créé avec succès",
       stage,
+      skillsData
     });
   } catch (error) {
     next(error);
@@ -187,6 +205,7 @@ export const getMyStages = async (req, res, next) => {
     });
 
     const lastUploadedStages = await Stage.findAll({
+      where: { companyId: req.user.id },
       limit: 3,
       order: [["created", "DESC"]],
       include: [
@@ -204,6 +223,61 @@ export const getMyStages = async (req, res, next) => {
   }
 };
 
+export const getMyStageDetails = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    if (req.user.role !== "company") {
+      return res.status(403).json({
+        success: false,
+        message: "vous ne pouvez pas possédé de stages",
+      });
+    }
+    const stages = await Stage.findOne({
+      where: { companyId: req.user.id, id },
+      include: [
+        {
+          model: Application,
+          as: "applications",
+          attributes: { exclude: ["updated"] },
+          include: [
+            {
+              model: StudentProfile,
+              as: "student",
+              include: [
+                {
+                  model: Skill,
+                  as: "skills",
+                },
+                {
+                  model: User,
+                  as: "student",
+                  attributes: ["email"],
+                },
+              ],
+            },
+          ],
+        },
+        {
+          model: CompanyProfile,
+          as: "company",
+          attributes: ["companyName"],
+        },
+      ],
+    });
+
+    if (!stages) {
+      return res.status(404).json({
+        success: false,
+        message: "Aucune stages trouvé",
+      });
+    }
+
+    return res.json({ stages });
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const updateStage = async (req, res, next) => {
   try {
     if (req.user.role !== "company") {
@@ -214,7 +288,8 @@ export const updateStage = async (req, res, next) => {
     }
 
     const { id } = req.params;
-    const { title, description, location, isActive, skills } = req.body;
+    const { title, description, location, isActive, duree, domain, skills } =
+      req.body;
 
     const stage = await Stage.findOne({
       where: { id, companyId: req.user.id },
@@ -228,7 +303,14 @@ export const updateStage = async (req, res, next) => {
     }
 
     // Mise à jour
-    await stage.update({ title, description, location, isActive });
+    await stage.update({
+      title,
+      description,
+      location,
+      isActive,
+      duree,
+      domain,
+    });
 
     return res.status(200).json({
       success: true,

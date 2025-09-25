@@ -14,7 +14,7 @@ const Login = () => {
     e.preventDefault();
     login(formData).then((user) => {
       if (user && user.role === "student") navigate("/student/me/profile");
-      else if (user && user.role === "company") navigate("/");
+      else if (user && user.role === "company") navigate("/company/me/profile");
     });
   };
 
