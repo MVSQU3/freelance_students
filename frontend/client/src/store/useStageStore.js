@@ -104,4 +104,17 @@ export const useStageStore = create((set) => ({
       console.error("Error in lastUploadedStages:", error);
     }
   },
+
+  deleteStage: async (stageId) => {
+    set({ isLoading: true });
+    try {
+      const res = await api.delete(`/stages/${stageId}`);
+      console.log("res.data.success", res.data.success);
+      return res.data.success;
+    } catch (error) {
+      console.error("Error in deleteStage:", error);
+    } finally {
+      set({ isLoading: false });
+    }
+  },
 }));

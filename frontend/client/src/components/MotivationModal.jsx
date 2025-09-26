@@ -5,7 +5,7 @@ import { useApplyStore } from "../store/useApplyStore";
 
 const MotivationModal = ({ isOpen, onClose, title, company, stageId }) => {
   const [formData, setFormData] = useState({ coverLetter: "" });
-  const { setApplying, isApplying } = useApplyStore();
+  const { setApplying, isLoading } = useApplyStore();
 
   if (!isOpen) return null;
 
@@ -87,9 +87,9 @@ const MotivationModal = ({ isOpen, onClose, title, company, stageId }) => {
             type="submit"
             onClick={handleSubmit}
             className="btn btn-primary"
-            disabled={isApplying}
+            disabled={isLoading}
           >
-            {isApplying ? "Envoi en cours..." : "Soumettre ma candidature"}
+            {isLoading ? "Envoi en cours..." : "Soumettre ma candidature"}
           </button>
         </div>
       </div>

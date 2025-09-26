@@ -29,9 +29,9 @@ const MyProfileCompany = () => {
     if (!stages.lastUploadedStages) {
       getMyStages();
     }
-  }, []);
+  }, [stages.lastUploadedStages]);
 
-  console.log("stages =>", stages);
+  console.log("stages in MyProfileCompany =>", stages);
 
   if (isCompanyLoading) {
     return (
@@ -141,7 +141,15 @@ const MyProfileCompany = () => {
                     <div className="text-xs text-gray-600">Offres actives</div>
                   </div>
                   <div className="text-center p-3 bg-green-50 rounded-lg">
-                    <div className="text-xl font-bold text-green-600">45</div>
+                    <div className="text-xl font-bold text-green-600">
+                      {(Array.isArray(stages) ? stages : [])
+                        .map((stage) =>
+                          Array.isArray(stage.applications)
+                            ? stage.applications.length
+                            : 0
+                        )
+                        .reduce((a, b) => a + b, 0)}
+                    </div>
                     <div className="text-xs text-gray-600">Candidatures</div>
                   </div>
                 </div>
@@ -333,7 +341,7 @@ const MyProfileCompany = () => {
                   Modifier le profil
                 </Link>
                 <Link
-                  to="/company/stats"
+                  to="/company/dashboard"
                   className="btn btn-outline gap-2 justify-start"
                 >
                   <BarChart3 className="w-4 h-4" />

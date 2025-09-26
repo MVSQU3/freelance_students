@@ -1,53 +1,61 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
   ArrowLeft,
   Search,
-  Filter,
   Download,
   Mail,
   Phone,
-  Calendar,
   FileText,
   Eye,
   ChevronDown,
   ChevronUp,
   MapPin,
-  CircleCheckBig,
-  BookOpen,
   Star,
   MessageCircle,
   X,
-  CheckCircle,
-  Clock,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
 import { pdfjs } from "react-pdf";
 import { Document, Page } from "react-pdf";
 import { Link, useParams } from "react-router-dom";
-import { useStageStore } from "../../store/useStageStore";
+import { useStageStore } from "../../store/useStageStore.js";
+import { useApplyStore } from "../../store/useApplyStore.js";
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
   "pdfjs-dist/build/pdf.worker.min.mjs",
   import.meta.url
 ).toString();
+
 const ApplyStages = () => {
   const { getMyStageDetails, stage, isLoading } = useStageStore();
-  const { id } = useParams();
+  const { updateApplyStatus } = useApplyStore();
+  const [applyStatus, setApplyStatus] = useState("");
   const [numPages, setNumPages] = useState(null);
   const [pageNumber, setPageNumber] = useState(1);
   const [showCV, setShowCV] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
-  const [statusFilter, setStatusFilter] = useState("all");
-  const [sortBy, setSortBy] = useState("newest");
   const [expandedApp, setExpandedApp] = useState(null);
+  const { id } = useParams();
 
   useEffect(() => {
     getMyStageDetails(id);
   }, [id]);
 
+  // console.log("stage in ApplyStages =>", stage);
+
   function onDocumentLoadSuccess({ numPages }) {
     setNumPages(numPages);
   }
 
-  const handleViewCV = () => {
+  function previousPage() {
+    setPageNumber((prev) => Math.max(prev - 1, 1));
+  }
+
+  function nextPage() {
+    setPageNumber((prev) => Math.min(prev + 1, numPages));
+  }
+
+  const handleViewCV = (cvUrl) => {
     setShowCV(true);
     setPageNumber(1);
   };
@@ -56,60 +64,29 @@ const ApplyStages = () => {
     setShowCV(false);
   };
 
-  const filteredApplications = (stage?.applications || []).filter((app) => {
-    const matchesSearch =
-      app.student.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      app.student.school.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesStatus = statusFilter === "all" || app.status === statusFilter;
-    return matchesSearch && matchesStatus;
-  });
-
-  const sortedApplications = [...filteredApplications].sort((a, b) => {
-    switch (sortBy) {
-      case "newest":
-        return new Date(b.created) - new Date(a.created);
-      case "oldest":
-        return new Date(a.created) - new Date(b.created);
-      case "score":
-        return b.score - a.score;
-      default:
-        return 0;
-    }
-  });
-
-  const getStatusConfig = (status) => {
-    const configs = {
-      accepted: {
-        color: "bg-blue-100 text-blue-800",
-        icon: CircleCheckBig,
-        label: "Acceptée",
-      },
-      rejected: {
-        color: "bg-red-100 text-red-800",
-        icon: X,
-        label: "Rejetée",
-      },
-      pending: {
-        color: "bg-yellow-100 text-yellow-800",
-        icon: Clock,
-        label: "En attente",
-      },
-    };
-    return (
-      configs[status] || {
-        color: "bg-gray-100 text-gray-800",
-        icon: Clock,
-        label: "Inconnu",
-      }
-    );
-  };
-
   const toggleExpand = (appId) => {
     setExpandedApp(expandedApp === appId ? null : appId);
   };
 
   const downloadAllCVs = () => {
-    alert("Téléchargement de tous les CV en cours...");
+    // Action de téléchargement
+  };
+
+  const getStatusConfig = (status) => {
+    const configs = {
+      pending: {
+        color: "bg-blue-100 text-blue-800",
+        icon: Eye,
+        label: "En attente",
+      },
+      accepted: {
+        color: "bg-green-100 text-green-800",
+        icon: Star,
+        label: "Acceptée",
+      },
+      rejected: { color: "bg-red-100 text-red-800", icon: X, label: "Rejetée" },
+    };
+    return configs[status];
   };
 
   if (isLoading) {
@@ -124,47 +101,41 @@ const ApplyStages = () => {
     <>
       {/* Modal de visualisation du CV */}
       {showCV && (
-        <div className="fixed inset-0 bg-opacity-50 z-50 flex items-center justify-center p-4">
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
           <div className="bg-white rounded-xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden">
-            {/* En-tête du modal */}
             <div className="flex justify-between items-center p-6 border-b border-gray-200">
               <h3 className="text-xl font-semibold text-gray-800">
-                CV de {stage.applications.lastName}{" "}
-                {stage.applications.firstName}
+                CV de l'étudiant
               </h3>
               <button
                 onClick={handleCloseCV}
-                className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                className="p-2 hover:bg-gray-100 rounded-lg"
               >
                 <X className="w-5 h-5 text-gray-600" />
               </button>
             </div>
 
-            {/* Contenu du PDF */}
             <div className="p-6 overflow-auto">
               <div className="flex justify-center mb-4">
-                <div className="max-h-[75vh] overflow-y-auto">
-                  <Document
-                    file={stage.applications.cvUrl || "/cv.pdf"}
-                    onLoadSuccess={onDocumentLoadSuccess}
-                    loading={
-                      <div className="flex justify-center py-8">
-                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div>
-                      </div>
-                    }
-                  >
-                    <Page
-                      pageNumber={pageNumber}
-                      renderTextLayer={false}
-                      renderAnnotationLayer={false}
-                      width={700} // ou responsive si tu veux
-                      className="shadow-lg"
-                    />
-                  </Document>
-                </div>
+                <Document
+                  file={"/cv.pdf"}
+                  onLoadSuccess={onDocumentLoadSuccess}
+                  loading={
+                    <div className="flex justify-center py-8">
+                      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div>
+                    </div>
+                  }
+                >
+                  <Page
+                    pageNumber={pageNumber}
+                    renderTextLayer={false}
+                    renderAnnotationLayer={false}
+                    width={700}
+                    className="shadow-lg"
+                  />
+                </Document>
               </div>
 
-              {/* Contrôles de pagination */}
               {numPages > 1 && (
                 <div className="flex justify-center items-center gap-4 mt-4">
                   <button
@@ -175,11 +146,9 @@ const ApplyStages = () => {
                     <ChevronLeft className="w-4 h-4" />
                     Précédent
                   </button>
-
                   <span className="text-sm text-gray-600">
                     Page {pageNumber} sur {numPages}
                   </span>
-
                   <button
                     onClick={nextPage}
                     disabled={pageNumber >= numPages}
@@ -192,7 +161,6 @@ const ApplyStages = () => {
               )}
             </div>
 
-            {/* Pied du modal */}
             <div className="flex justify-between items-center p-6 border-t border-gray-200 bg-gray-50">
               <span className="text-sm text-gray-600">
                 {numPages && `${numPages} page${numPages > 1 ? "s" : ""}`}
@@ -205,7 +173,7 @@ const ApplyStages = () => {
                   Fermer
                 </button>
                 <a
-                  href={stage.applications.cvUrl || "/cv.pdf"}
+                  href={"/cv.pdf"}
                   download
                   className="btn btn-primary btn-sm flex items-center gap-1"
                 >
@@ -217,6 +185,7 @@ const ApplyStages = () => {
           </div>
         </div>
       )}
+
       <div className="min-h-screen bg-gray-50">
         <div className="max-w-6xl mx-auto px-4 py-8">
           {/* En-tête */}
@@ -236,15 +205,14 @@ const ApplyStages = () => {
                     Candidatures reçues
                   </h1>
                   <div className="text-lg text-indigo-600 font-medium">
-                    {stage?.title} •{" "}
-                    <Link to={"/company/me/profile"}>
-                      {stage?.company?.companyName}
-                    </Link>
+                    {stage.title} • {stage?.company?.companyName}
                   </div>
                 </div>
                 <div className="flex items-center gap-4">
                   <span className="text-2xl font-bold text-gray-800">
-                    {sortedApplications.length}
+                    {Array.isArray(stage.applications)
+                      ? stage.applications.length
+                      : 0}
                   </span>
                   <span className="text-gray-600">candidatures</span>
                   <button
@@ -273,29 +241,26 @@ const ApplyStages = () => {
                 />
               </div>
 
-              <select
-                className="select select-bordered select-sm"
-                value={application.status}
-                onChange={(e) =>
-                  console.log(
-                    "Nouveau statut : ",
-                    application.id,
-                    e.target.value
-                  )
-                }
-              >
-                <option value="pending">Marquer en attente</option>
-                <option value="accepted">Marquer comme acceptée</option>
-                <option value="rejected">Marquer comme rejetée</option>
+              <select className="select select-bordered" defaultValue="">
+                <option value="">Tous les statuts</option>
+                <option value="">En attente</option>
+                <option value="accepted">Acceptées</option>
+                <option value="rejected">Rejetées</option>
+              </select>
+
+              <select className="select select-bordered" defaultValue="newest">
+                <option value="newest">Plus récentes</option>
+                <option value="oldest">Plus anciennes</option>
               </select>
             </div>
           </div>
 
           {/* Liste des candidatures */}
           <div className="space-y-4">
-            {sortedApplications.length > 0 ? (
-              sortedApplications.map((application) => {
+            {Array.isArray(stage.applications) &&
+              stage.applications.map((application) => {
                 const StatusIcon = getStatusConfig(application.status).icon;
+
                 return (
                   <div
                     key={application.id}
@@ -310,14 +275,13 @@ const ApplyStages = () => {
                         <div className="flex items-center gap-4">
                           <div className="w-12 h-12 bg-indigo-100 rounded-full flex items-center justify-center">
                             <span className="text-indigo-600 font-semibold">
-                              {application.student.lastName
-                                .split(" ")
-                                .map((n) => n[0])
-                                .join("")}
+                              {application.student.firstName?.[0]}
+                              {application.student.lastName?.[0]}
                             </span>
                           </div>
                           <div>
                             <h3 className="font-semibold text-gray-800">
+                              {application.student.firstName}{" "}
                               {application.student.lastName}
                             </h3>
                             <p className="text-gray-600">
@@ -371,14 +335,11 @@ const ApplyStages = () => {
                             <div className="space-y-2 text-sm">
                               <div className="flex items-center gap-2">
                                 <Mail className="w-4 h-4 text-gray-400" />
-                                <span>{application.student.email}</span>
+                                <span>{application.student.student.email}</span>
                               </div>
                               <div className="flex items-center gap-2">
                                 <Phone className="w-4 h-4 text-gray-400" />
-                                <span>
-                                  {application.student.phone ||
-                                    "+225 01 05 04 06 08"}
-                                </span>
+                                <span>Non renseigné</span>
                               </div>
                               <div className="flex items-center gap-2">
                                 <MapPin className="w-4 h-4 text-gray-400" />
@@ -393,18 +354,16 @@ const ApplyStages = () => {
                               Compétences
                             </h4>
                             <div className="flex flex-wrap gap-2">
-                              {Array.isArray(application.student.skills)
-                                ? application.student.skills.map(
-                                    (skill, index) => (
-                                      <span
-                                        key={index}
-                                        className="badge badge-outline badge-primary"
-                                      >
-                                        {skill.name}
-                                      </span>
-                                    )
-                                  )
-                                : []}
+                              {application.student.skills.map(
+                                (skill, index) => (
+                                  <span
+                                    key={index}
+                                    className="badge badge-outline badge-primary"
+                                  >
+                                    {skill.name}
+                                  </span>
+                                )
+                              )}
                             </div>
                           </div>
 
@@ -414,14 +373,15 @@ const ApplyStages = () => {
                               Actions
                             </h4>
                             <div className="space-y-2">
-                              <a
-                                onClick={handleViewCV}
-                                download
+                              <button
+                                onClick={() =>
+                                  handleViewCV(application.student.cvUrl)
+                                }
                                 className="btn btn-outline btn-sm w-full flex items-center gap-2"
                               >
                                 <Eye className="w-4 h-4" />
                                 Voir le CV
-                              </a>
+                              </button>
                               <button className="btn btn-primary btn-sm w-full flex items-center gap-2">
                                 <MessageCircle className="w-4 h-4" />
                                 Contacter
@@ -442,50 +402,34 @@ const ApplyStages = () => {
 
                         {/* Changement de statut */}
                         <div className="mt-6 flex gap-2">
-                          <select
-                            className="select select-bordered select-sm"
-                            value={application.status}
-                            onChange={(e) =>
-                              console.log(
-                                "Nouveau statut : ",
-                                application.id,
-                                e.target.value
-                              )
-                            }
-                          >
-                            <option value="new">Marquer comme nouvelle</option>
-                            <option value="reviewed">
-                              Marquer comme consultée
-                            </option>
-                            <option value="contacted">
-                              Marquer comme contactée
-                            </option>
-                            <option value="rejected">
-                              Marquer comme rejetée
-                            </option>
-                          </select>
+                          <form>
+                            <select
+                              className="select select-bordered select-sm"
+                              value={applyStatus}
+                              onChange={async (e) => {
+                                setApplyStatus(e.target.value);
+                                await updateApplyStatus(
+                                  application.id,
+                                  e.target.value
+                                );
+                                await getMyStageDetails(id);
+                              }}
+                            >
+                              <option value="">Changer le statut</option>
+                              <option value="pending">En attente</option>
+                              <option value="accepted">Accepter</option>
+                              <option value="rejected">Rejeter</option>
+                            </select>
+                          </form>
                         </div>
                       </div>
                     )}
                   </div>
                 );
-              })
-            ) : (
-              <div className="bg-white rounded-xl shadow-sm p-8 text-center border border-gray-200">
-                <FileText className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-                <h3 className="text-xl font-semibold text-gray-800 mb-2">
-                  Aucune candidature
-                </h3>
-                <p className="text-gray-600">
-                  {searchTerm || statusFilter !== "all"
-                    ? "Aucune candidature ne correspond à vos critères de recherche."
-                    : "Aucune candidature n'a été reçue pour cette offre pour le moment."}
-                </p>
-              </div>
-            )}
+              })}
           </div>
         </div>
-      </div>{" "}
+      </div>
     </>
   );
 };

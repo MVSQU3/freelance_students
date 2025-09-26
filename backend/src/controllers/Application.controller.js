@@ -3,6 +3,7 @@ import {
   Application,
   CompanyProfile,
   Stage,
+  StudentProfile,
   User,
 } from "../config/sequelize.js";
 
@@ -189,9 +190,8 @@ export const getOfferApplications = async (req, res, next) => {
       where: { stageId },
       include: [
         {
-          model: User,
+          model: StudentProfile,
           as: "student",
-          attributes: ["id", "email", "role"],
         },
       ],
     });
@@ -227,10 +227,11 @@ export const updateApplicationStatus = async (req, res, next) => {
     const { applicationId } = req.params;
     const { status } = req.body; // "accepted" | "rejected"
 
-    if (!["accepted", "rejected"].includes(status)) {
+    if (!["accepted", "rejected", "pending"].includes(status)) {
       return res.status(400).json({
         success: false,
-        message: "Statut invalide, utilisez 'accepted' ou 'rejected'",
+        message:
+          "Statut invalide, utilisez 'accepted', 'rejected' ou 'pending'",
       });
     }
 

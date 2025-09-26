@@ -196,7 +196,10 @@ const Home = () => {
               <span className="block bg-gradient-to-r from-yellow-400 to-amber-400 bg-clip-text text-transparent">
                 prochaine génération
               </span>
-              de talents
+              de{" "}
+              <Link to={"/student/liste"} className="hover:from-yellow-400 hover:to-amber-400 bg-gradient-to-r from-white to-white bg-clip-text text-transparent font-semibold">
+                talents
+              </Link>
             </h1>
 
             <p className="text-xl md:text-2xl text-indigo-100 mb-8 leading-relaxed max-w-3xl mx-auto">

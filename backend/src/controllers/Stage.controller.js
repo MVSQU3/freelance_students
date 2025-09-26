@@ -59,7 +59,7 @@ export const createStage = async (req, res, next) => {
       success: true,
       message: "Stage créé avec succès",
       stage,
-      skillsData
+      skillsData,
     });
   } catch (error) {
     next(error);
@@ -202,6 +202,18 @@ export const getMyStages = async (req, res, next) => {
     }
     const stages = await Stage.findAll({
       where: { companyId: req.user.id },
+      include: [
+        {
+          model: Application,
+          as: "applications",
+          attributes: ["id"],
+        },
+        {
+          model: CompanyProfile,
+          as: "company",
+          attributes: ["companyName"],
+        },
+      ],
     });
 
     const lastUploadedStages = await Stage.findAll({

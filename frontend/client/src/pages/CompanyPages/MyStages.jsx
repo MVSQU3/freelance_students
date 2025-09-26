@@ -20,7 +20,7 @@ import { Link } from "react-router-dom";
 import { useStageStore } from "../../store/useStageStore";
 
 const MyStages = () => {
-  const { getMyStages, stages, isLoading } = useStageStore();
+  const { getMyStages, deleteStage, stages, isLoading } = useStageStore();
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
 
@@ -29,29 +29,22 @@ const MyStages = () => {
     getMyStages();
   }, []);
 
-  console.log("stages =>", stages);
+  console.log("stages in MyStages =>", stages);
 
-  const filteredStages = stages.filter((stage) => {
-    const matchesSearch =
-      stage.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      stage.company.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesStatus =
-      statusFilter === "all" || stage.status === statusFilter;
-    return matchesSearch && matchesStatus;
-  });
-
-  const getStatusBadge = (status) => {
+  const getStatusBadge = (isActive) => {
     const statusConfig = {
       active: { color: "bg-green-100 text-green-800", label: "Active" },
       closed: { color: "bg-red-100 text-red-800", label: "Clôturée" },
-      draft: { color: "bg-gray-100 text-gray-800", label: "Brouillon" },
     };
-    return statusConfig[status] || statusConfig.draft;
+    return statusConfig[isActive ? "active" : "closed"];
   };
 
-  const handleDeleteStage = (stageId) => {
+  const handleDeleteStage = async (stageId) => {
     if (window.confirm("Êtes-vous sûr de vouloir supprimer cette offre ?")) {
-      setStages(stages.filter((stage) => stage.id !== stageId));
+      const success = await deleteStage(stageId);
+      if (success) {
+        getMyStages();
+      }
     }
   };
 
@@ -59,7 +52,6 @@ const MyStages = () => {
     total: stages.length,
     active: stages.filter((s) => s.isActive === true).length,
     closed: stages.filter((s) => s.isActive === false).length,
-    draft: stages.filter((s) => s.status === "draft").length,
     totalApplications: stages.reduce(
       (sum, stage) => sum + stage.applications.length,
       0
@@ -119,12 +111,6 @@ const MyStages = () => {
               <div className="text-sm text-gray-600">Clôturées</div>
             </div>
             <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
-              <div className="text-2xl font-bold text-gray-600">
-                {stats.draft}
-              </div>
-              <div className="text-sm text-gray-600">Brouillons</div>
-            </div>
-            <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
               <div className="text-2xl font-bold text-blue-600">
                 {stats.totalApplications}
               </div>
@@ -154,14 +140,13 @@ const MyStages = () => {
               <option value="all">Tous les statuts</option>
               <option value="active">Actives</option>
               <option value="closed">Clôturées</option>
-              <option value="draft">Brouillons</option>
             </select>
           </div>
         </div>
 
         {/* Liste des offres */}
         <div className="space-y-4">
-          {stages.length > 0 ? (
+          {Array.isArray(stages) && stages.length > 0 ? (
             stages.map((stage) => (
               <div
                 key={stage.id}
@@ -175,7 +160,7 @@ const MyStages = () => {
                           {stage.title}
                         </h3>
                         <p className="text-indigo-600 font-medium">
-                          {stage.company || "Company Name"}
+                          {stage.company?.companyName}
                         </p>
                       </div>
                       <span
@@ -214,21 +199,24 @@ const MyStages = () => {
                     <div className="flex items-center gap-4 text-xs text-gray-500">
                       <span>
                         Publiée le{" "}
-                        {new Date(stage.createdDate).toLocaleDateString()}
+                        {new Date(stage.created).toLocaleDateString()}
                       </span>
                       <span>•</span>
                       <span>
                         Clôture le{" "}
-                        {new Date(stage.deadline).toLocaleDateString()}
+                        {new Date(stage.created).toLocaleDateString()}
                       </span>
                     </div>
                   </div>
 
                   <div className="flex items-center gap-2">
-                    <button className="btn btn-ghost btn-sm flex items-center gap-1">
+                    <Link
+                      to={`/company/applied-stages/${stage.id}`}
+                      className="btn btn-ghost btn-sm flex items-center gap-1"
+                    >
                       <Eye className="w-4 h-4" />
                       Voir
-                    </button>
+                    </Link>
                     <Link
                       to={`/company/edite/stage/${stage.id}`}
                       className="btn btn-ghost btn-sm flex items-center gap-1"
@@ -245,13 +233,13 @@ const MyStages = () => {
                         className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52"
                       >
                         <li>
-                          <button className="flex items-center gap-2">
+                          <button className="flex items-center gap-2 ">
                             <Download className="w-4 h-4" />
                             Télécharger les CV
                           </button>
                         </li>
                         <li>
-                          <button className="flex items-center gap-2">
+                          <button className="flex items-center gap-2 ">
                             <Share2 className="w-4 h-4" />
                             Partager
                           </button>

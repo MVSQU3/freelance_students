@@ -305,7 +305,7 @@ export const seed = async () => {
     }
 
     // ====== CANDIDATURES ======
-    const statuses = ["pending", "accepted", "rejected", "under_review"];
+    const statuses = ["pending", "accepted", "rejected"];
 
     // Créer entre 150 et 300 candidatures aléatoires
     const applicationsCount = faker.number.int({ min: 150, max: 300 });

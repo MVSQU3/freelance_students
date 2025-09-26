@@ -80,7 +80,7 @@ const CreateStage = () => {
         {/* En-tête */}
         <div className="mb-8">
           <Link
-            to="/stages"
+            to="/company/stages"
             className="inline-flex items-center text-indigo-600 hover:text-indigo-800 mb-4"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
