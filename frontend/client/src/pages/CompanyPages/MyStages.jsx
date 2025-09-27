@@ -23,13 +23,75 @@ const MyStages = () => {
   const { getMyStages, deleteStage, stages, isLoading } = useStageStore();
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
+  const [currentPage, setCurrentPage] = useState(1);
+  const stagesPerPage = 5; // tu peux mettre 10 ou 20
 
   // Données simulées
   useEffect(() => {
     getMyStages();
   }, []);
 
-  console.log("stages in MyStages =>", stages);
+  // On filtre les stages avant de les afficher
+  const [sortOption, setSortOption] = useState("recent"); // par défaut
+
+  // On filtre puis on trie les stages
+  const filteredStages = stages
+    .filter((stage) => {
+      // filtre statut
+      if (statusFilter !== "all") {
+        if (statusFilter === "active" && !stage.isActive) return false;
+        if (statusFilter === "closed" && stage.isActive) return false;
+      }
+
+      // filtre recherche
+      if (searchTerm.trim() !== "") {
+        const lowerSearch = searchTerm.toLowerCase();
+        const matchTitle = stage.title?.toLowerCase().includes(lowerSearch);
+        const matchCompany = stage.company?.companyName
+          ?.toLowerCase()
+          .includes(lowerSearch);
+        const matchLocation = stage.location
+          ?.toLowerCase()
+          .includes(lowerSearch);
+
+        if (!matchTitle && !matchCompany && !matchLocation) return false;
+      }
+
+      return true;
+    })
+    .sort((a, b) => {
+      if (sortOption === "recent") {
+        return new Date(b.created) - new Date(a.created); // plus récent en premier
+      }
+      if (sortOption === "oldest") {
+        return new Date(a.created) - new Date(b.created); // plus ancien
+      }
+      if (sortOption === "applications") {
+        return (b.applications?.length || 0) - (a.applications?.length || 0); // + de candidatures en premier
+      }
+      if (sortOption === "views") {
+        return (b.views || 0) - (a.views || 0); // + de vues en premier
+      }
+      return 0;
+    });
+
+  // Pagination : calcul index
+  const indexOfLastStage = currentPage * stagesPerPage;
+  const indexOfFirstStage = indexOfLastStage - stagesPerPage;
+  const currentStages = filteredStages.slice(
+    indexOfFirstStage,
+    indexOfLastStage
+  );
+
+  // Nombre total de pages
+  const totalPages = Math.ceil(filteredStages.length / stagesPerPage);
+
+  // Changer de page
+  const goToPage = (page) => {
+    if (page >= 1 && page <= totalPages) {
+      setCurrentPage(page);
+    }
+  };
 
   const getStatusBadge = (isActive) => {
     const statusConfig = {
@@ -53,7 +115,7 @@ const MyStages = () => {
     active: stages.filter((s) => s.isActive === true).length,
     closed: stages.filter((s) => s.isActive === false).length,
     totalApplications: stages.reduce(
-      (sum, stage) => sum + stage.applications.length,
+      (sum, stage) => sum + stage?.applications.length,
       0
     ),
   };
@@ -141,13 +203,23 @@ const MyStages = () => {
               <option value="active">Actives</option>
               <option value="closed">Clôturées</option>
             </select>
+            <select
+              className="select select-bordered"
+              value={sortOption}
+              onChange={(e) => setSortOption(e.target.value)}
+            >
+              <option value="recent">Plus récentes</option>
+              <option value="oldest">Plus anciennes</option>
+              <option value="applications">+ de candidatures</option>
+              <option value="views">+ de vues</option>
+            </select>
           </div>
         </div>
 
         {/* Liste des offres */}
         <div className="space-y-4">
-          {Array.isArray(stages) && stages.length > 0 ? (
-            stages.map((stage) => (
+          {Array.isArray(currentStages) && currentStages.length > 0 ? (
+            currentStages.map((stage) => (
               <div
                 key={stage.id}
                 className="bg-white rounded-xl shadow-sm p-6 border border-gray-200 hover:shadow-md transition-shadow"
@@ -277,6 +349,38 @@ const MyStages = () => {
                 <Plus className="w-4 h-4 mr-2" />
                 Créer votre première offre
               </Link>
+            </div>
+          )}
+          {/* Pagination */}
+          {totalPages > 1 && (
+            <div className="flex justify-center mt-6 space-x-2">
+              <button
+                onClick={() => goToPage(currentPage - 1)}
+                disabled={currentPage === 1}
+                className="btn btn-sm"
+              >
+                Précédent
+              </button>
+
+              {[...Array(totalPages)].map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => goToPage(index + 1)}
+                  className={`btn btn-sm ${
+                    currentPage === index + 1 ? "btn-primary" : "btn-ghost"
+                  }`}
+                >
+                  {index + 1}
+                </button>
+              ))}
+
+              <button
+                onClick={() => goToPage(currentPage + 1)}
+                disabled={currentPage === totalPages}
+                className="btn btn-sm"
+              >
+                Suivant
+              </button>
             </div>
           )}
         </div>

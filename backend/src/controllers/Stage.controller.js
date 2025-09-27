@@ -497,3 +497,103 @@ export const lastUploadedStages = async (req, res, next) => {
     next(error);
   }
 };
+
+export const StageDashboard = async (req, res, next) => {
+  try {
+    if (req.user.role !== "company") {
+      return res.status(403).json({
+        success: false,
+        message: "vous ne pouvez pas possédé de stages",
+      });
+    }
+
+    const totalApplications = await Application.count({
+      include: [
+        {
+          model: Stage,
+          as: "stage",
+          where: { companyId: req.user.id },
+        },
+      ],
+    });
+
+    const totalApplicationsPending = await Application.count({
+      where: { status: "pending" },
+      include: [
+        { model: Stage, as: "stage", where: { companyId: req.user.id } },
+      ],
+    });
+    const totalApplicationsAccepted = await Application.count({
+      where: { status: "accepted" },
+      include: [
+        { model: Stage, as: "stage", where: { companyId: req.user.id } },
+      ],
+    });
+    const totalApplicationsRejected = await Application.count({
+      where: { status: "rejected" },
+      include: [
+        { model: Stage, as: "stage", where: { companyId: req.user.id } },
+      ],
+    });
+
+    const totalStages = await Stage.count({
+      where: { companyId: req.user.id },
+    });
+
+    const totalStageActifs = await Stage.count({
+      where: { companyId: req.user.id, isActive: true },
+    });
+    const totalStageInactifs = await Stage.count({
+      where: { companyId: req.user.id, isActive: false },
+    });
+
+    totalStageActifs, totalStageInactifs;
+
+    const lastUploadedStages = await Stage.findAll({
+      where: { companyId: req.user.id },
+      limit: 3,
+      order: [["created", "DESC"]],
+      include: [
+        {
+          model: Application,
+          as: "applications",
+          attributes: ["id"],
+        },
+      ],
+    });
+
+    const lastApplications = await Application.findAll({
+      limit: 4,
+      order: [["created", "DESC"]],
+      include: [
+        {
+          model: StudentProfile,
+          as: "student",
+          include: [
+            { model: User, as: "student", attributes: ["id", "email"] },
+            { model: Skill, as: "skills" },
+          ],
+        },
+        {
+          model: Stage,
+          as: "stage",
+          where: { companyId: req.user.id },
+        },
+      ],
+    });
+
+    return res.json({
+      totalStages,
+      totalStageActifs,
+      totalStageInactifs,
+      lastUploadedStages,
+      totalApplications,
+      lastApplications,
+      totalApplicationsPending,
+      totalApplicationsAccepted,
+      totalApplicationsRejected,
+    });
+  } catch (error) {
+    next(error);
+  }
+};

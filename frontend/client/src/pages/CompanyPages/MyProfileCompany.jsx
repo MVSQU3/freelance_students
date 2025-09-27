@@ -26,12 +26,8 @@ const MyProfileCompany = () => {
 
   useEffect(() => {
     getMyProfile();
-    if (!stages.lastUploadedStages) {
-      getMyStages();
-    }
-  }, [stages.lastUploadedStages]);
-
-  console.log("stages in MyProfileCompany =>", stages);
+    getMyStages();
+  }, []);
 
   if (isCompanyLoading) {
     return (
@@ -181,13 +177,13 @@ const MyProfileCompany = () => {
                   <Users className="w-4 h-4 mr-3" />
                   Candidatures
                 </Link>
-                <Link
+                {/* <Link
                   to="/company/stats"
                   className="flex items-center text-indigo-600 bg-indigo-50 p-2 rounded-lg"
                 >
                   <Award className="w-4 h-4 mr-3" />
                   Statistiques
-                </Link>
+                </Link> */}
               </div>
             </div>
           </div>
@@ -277,7 +273,7 @@ const MyProfileCompany = () => {
             </div>
 
             {/* Statistiques rapides */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-200">
                 <div className="flex items-center gap-2 mb-4">
                   <Eye className="w-5 h-5 text-indigo-600" />
@@ -311,7 +307,7 @@ const MyProfileCompany = () => {
                   </div>
                 </div>
               </div>
-            </div>
+            </div> */}
 
             {/* Actions rapides */}
             <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-200">

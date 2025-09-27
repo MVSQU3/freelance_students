@@ -9,6 +9,7 @@ import {
   MessageCircle,
   Plus,
   ArrowRight,
+  StarIcon,
   Search,
   Filter,
   Star,
@@ -18,93 +19,21 @@ import {
   BarChart3,
   Download,
   Share2,
+  DoorClosed,
+  DoorOpen,
+  X,
 } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useStageStore } from "../../store/useStageStore";
 
 const CompanyDashboard = () => {
+  const { StageDashboard, stage, isLoading } = useStageStore();
   const [stats, setStats] = useState({});
-  const [recentStages, setRecentStages] = useState([]);
-  const [recentApplications, setRecentApplications] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
 
   // Données simulées
   useEffect(() => {
-    setTimeout(() => {
-      setStats({
-        totalStages: 12,
-        activeStages: 8,
-        totalApplications: 156,
-        newApplications: 23,
-        interviewRate: 68,
-        averageResponseTime: "2 jours",
-      });
-
-      setRecentStages([
-        {
-          id: 1,
-          title: "Développeur Full Stack",
-          company: "Tech Solutions Inc.",
-          location: "Paris",
-          applications: 24,
-          views: 156,
-          status: "active",
-          deadline: "2024-03-15",
-        },
-        {
-          id: 2,
-          title: "Data Analyst",
-          company: "Data Corp",
-          location: "Remote",
-          applications: 18,
-          views: 89,
-          status: "active",
-          deadline: "2024-03-30",
-        },
-        {
-          id: 3,
-          title: "Designer UI/UX",
-          company: "Creative Studio",
-          location: "Lyon",
-          applications: 12,
-          views: 45,
-          status: "active",
-          deadline: "2024-04-15",
-        },
-      ]);
-
-      setRecentApplications([
-        {
-          id: 1,
-          student: "Marie Dubois",
-          stage: "Développeur Full Stack",
-          date: "2024-01-20",
-          status: "new",
-          score: 85,
-          school: "École d'Ingénieurs",
-        },
-        {
-          id: 2,
-          student: "Thomas Martin",
-          stage: "Data Analyst",
-          date: "2024-01-18",
-          status: "reviewed",
-          score: 72,
-          school: "Université Paris-Saclay",
-        },
-        {
-          id: 3,
-          student: "Sophie Lambert",
-          stage: "Designer UI/UX",
-          date: "2024-01-15",
-          status: "contacted",
-          score: 91,
-          school: "EPITECH",
-        },
-      ]);
-
-      setIsLoading(false);
-    }, 1000);
-  }, []);
+    StageDashboard();
+  }, [StageDashboard]);
 
   const getStatusConfig = (status) => {
     const configs = {
@@ -150,7 +79,14 @@ const CompanyDashboard = () => {
       </div>
     );
   }
-
+  // totalStageActifs,
+  // totalStageInactifs,
+  // lastUploadedStages,
+  // totalApplications,
+  // lastApplications,
+  // totalApplicationsPending,
+  // totalApplicationsAccepted,
+  // totalApplicationsRejected,
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 py-8">
@@ -184,12 +120,16 @@ const CompanyDashboard = () => {
                 </div>
               </div>
               <div className="text-3xl font-bold text-gray-800">
-                {stats.totalStages}
+                {stage.totalStages}
               </div>
               <div className="flex items-center gap-2 mt-2">
-                <TrendingUp className="w-4 h-4 text-green-500" />
+                <DoorOpen className="w-4 h-4 text-green-500" />
                 <span className="text-sm text-green-600">
-                  {stats.activeStages} actives
+                  {stage.totalStageActifs} actives
+                </span>
+                <DoorClosed className="w-4 h-4 text-red-500" />
+                <span className="text-sm text-red-600">
+                  {stage.totalStageInactifs} inactif
                 </span>
               </div>
             </div>
@@ -202,17 +142,25 @@ const CompanyDashboard = () => {
                 </div>
               </div>
               <div className="text-3xl font-bold text-gray-800">
-                {stats.totalApplications}
+                {stage.totalApplications}
               </div>
               <div className="flex items-center gap-2 mt-2">
                 <Clock className="w-4 h-4 text-blue-500" />
                 <span className="text-sm text-blue-600">
-                  {stats.newApplications} nouvelles
+                  {stage.totalApplicationsPending} En attente
+                </span>
+                <StarIcon className="w-4 h-4 text-green-500" />
+                <span className="text-sm text-green-600">
+                  {stage.totalApplicationsAccepted} Accepté
+                </span>
+                <X className="w-4 h-4 text-red-500" />
+                <span className="text-sm text-red-600">
+                  {stage.totalApplicationsRejected} Rejeté
                 </span>
               </div>
             </div>
 
-            <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+            {/* <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-gray-600">Taux d'entretien</h3>
                 <div className="bg-amber-100 p-2 rounded-lg">
@@ -225,9 +173,9 @@ const CompanyDashboard = () => {
               <div className="text-sm text-gray-500 mt-2">
                 sur les 30 derniers jours
               </div>
-            </div>
+            </div> */}
 
-            <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+            {/* <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-gray-600">Temps de réponse</h3>
                 <div className="bg-purple-100 p-2 rounded-lg">
@@ -238,7 +186,7 @@ const CompanyDashboard = () => {
                 {stats.averageResponseTime}
               </div>
               <div className="text-sm text-gray-500 mt-2">moyen</div>
-            </div>
+            </div> */}
           </div>
         </div>
 
@@ -260,8 +208,8 @@ const CompanyDashboard = () => {
               </div>
 
               <div className="space-y-4">
-                {Array.isArray(recentStages) &&
-                  recentStages.map((stage) => {
+                {Array.isArray(stage.lastUploadedStages) &&
+                  stage.lastUploadedStages.map((stage) => {
                     const StatusIcon = getStatusConfig(stage.status).icon;
 
                     return (
@@ -291,7 +239,9 @@ const CompanyDashboard = () => {
                             </div>
                             <div className="flex items-center gap-1">
                               <Users className="w-3 h-3" />
-                              <span>{stage.applications} candidatures</span>
+                              <span>
+                                {stage?.applications.length} candidatures
+                              </span>
                             </div>
                             <div className="flex items-center gap-1">
                               <Eye className="w-3 h-3" />
@@ -319,7 +269,7 @@ const CompanyDashboard = () => {
             </div>
 
             {/* Graphique d'activité (simplifié) */}
-            <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-200">
+            {/* <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-200">
               <h2 className="text-xl font-semibold text-gray-800 mb-6">
                 Activité récente
               </h2>
@@ -343,7 +293,7 @@ const CompanyDashboard = () => {
                   +12% vs semaine dernière
                 </span>
               </div>
-            </div>
+            </div> */}
           </div>
 
           {/* Colonne droite - Candidatures récentes */}
@@ -363,52 +313,52 @@ const CompanyDashboard = () => {
               </div>
 
               <div className="space-y-4">
-                {recentApplications.map((application) => {
-                  const StatusIcon = getStatusConfig(application.status).icon;
+                {Array.isArray(stage.lastApplications) &&
+                  stage.lastApplications.map((application) => {
+                    const StatusIcon = getStatusConfig(application.status).icon;
 
-                  return (
-                    <div
-                      key={application.id}
-                      className="p-4 border border-gray-100 rounded-lg hover:bg-gray-50 transition-colors"
-                    >
-                      <div className="flex justify-between items-start mb-2">
-                        <div>
-                          <h3 className="font-semibold text-gray-800">
-                            {application.student}
-                          </h3>
-                          <p className="text-sm text-gray-600">
-                            {application.school}
-                          </p>
-                        </div>
-                        <span
-                          className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${
-                            getStatusConfig(application.status).color
-                          }`}
-                        >
-                          <StatusIcon className="w-3 h-3" />
-                          {getStatusConfig(application.status).label}
-                        </span>
-                      </div>
-
-                      <div className="flex items-center justify-between text-sm">
-                        <span className="text-gray-600">
-                          {application.stage}
-                        </span>
-                        <div className="flex items-center gap-1">
-                          <Star className="w-3 h-3 text-amber-500" />
-                          <span className="font-medium">
-                            {application.score}%
+                    return (
+                      <div
+                        key={application.id}
+                        className="p-4 border border-gray-100 rounded-lg hover:bg-gray-50 transition-colors"
+                      >
+                        <div className="flex justify-between items-start mb-2">
+                          <div>
+                            <h3 className="font-semibold text-gray-800">
+                              {application.student.firstName}{" "}
+                              {application.student.lastName}
+                            </h3>
+                            <p className="text-sm text-gray-600">
+                              {application.student.school}
+                            </p>
+                          </div>
+                          <span
+                            className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${
+                              getStatusConfig(application.status).color
+                            }`}
+                          >
+                            <StatusIcon className="w-3 h-3" />
+                            {getStatusConfig(application.status).label}
                           </span>
                         </div>
-                      </div>
 
-                      <div className="text-xs text-gray-500 mt-2">
-                        Postulé le{" "}
-                        {new Date(application.date).toLocaleDateString()}
+                        <div className="flex items-center justify-between text-sm">
+                          <span className="text-gray-600">
+                            {application.stage.title}
+                          </span>
+                          <div className="flex items-center gap-1">
+                            <Star className="w-3 h-3 text-amber-500" />
+                            <span className="font-medium">{"100"}%</span>
+                          </div>
+                        </div>
+
+                        <div className="text-xs text-gray-500 mt-2">
+                          Postulé le{" "}
+                          {new Date(application.created).toLocaleDateString()}
+                        </div>
                       </div>
-                    </div>
-                  );
-                })}
+                    );
+                  })}
               </div>
             </div>
 
@@ -425,19 +375,19 @@ const CompanyDashboard = () => {
                   <span>Créer une nouvelle offre</span>
                   <Plus className="w-4 h-4 text-gray-400" />
                 </Link>
-                <button className="flex items-center justify-between w-full p-3 border border-gray-200 rounded-lg hover:border-indigo-400 transition-colors">
+                {/* <button className="flex items-center justify-between w-full p-3 border border-gray-200 rounded-lg hover:border-indigo-400 transition-colors">
                   <span>Télécharger les rapports</span>
                   <Download className="w-4 h-4 text-gray-400" />
-                </button>
-                <button className="flex items-center justify-between w-full p-3 border border-gray-200 rounded-lg hover:border-indigo-400 transition-colors">
+                </button> */}
+                {/* <button className="flex items-center justify-between w-full p-3 border border-gray-200 rounded-lg hover:border-indigo-400 transition-colors">
                   <span>Partager le profil</span>
                   <Share2 className="w-4 h-4 text-gray-400" />
-                </button>
+                </button> */}
               </div>
             </div>
 
             {/* Performance */}
-            <div className="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-xl shadow-sm p-6 text-white">
+            {/* <div className="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-xl shadow-sm p-6 text-white">
               <h2 className="text-xl font-semibold mb-2">
                 Performance du mois
               </h2>
@@ -458,7 +408,7 @@ const CompanyDashboard = () => {
                   <span className="font-semibold">92%</span>
                 </div>
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>

@@ -117,4 +117,15 @@ export const useStageStore = create((set) => ({
       set({ isLoading: false });
     }
   },
+
+  StageDashboard: async () => {
+    set({ isLoading: true });
+    try {
+      const res = await api.get("/stages/stage-dashboard");
+      console.log("log de res.data in StageDashboard", res.data);
+      set({ stage: res.data, isLoading: false });
+    } catch (error) {
+      console.error("Error in StageDashboard:", error);
+    }
+  },
 }));

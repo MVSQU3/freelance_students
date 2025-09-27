@@ -394,7 +394,7 @@ const ApplyStages = () => {
                         <div className="mt-6">
                           <h4 className="font-semibold text-gray-800 mb-3">
                             Lettre de motivation
-                          </h4>
+                          </h4>+
                           <p className="text-gray-600 text-sm leading-relaxed bg-gray-50 p-4 rounded-lg">
                             {application.coverLetter}
                           </p>
