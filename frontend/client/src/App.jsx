@@ -30,6 +30,7 @@ import MyStages from "./pages/CompanyPages/MyStages.jsx";
 import ApplyStages from "./pages/CompanyPages/ApplyStages.jsx";
 import CompanyDashboard from "./pages/CompanyPages/CompanyDashboard.jsx";
 import EditeStage from "./pages/CompanyPages/EditeStage.jsx";
+import ManageCompetences from "./pages/StudentPages/ManageCompetences.jsx";
 // END COMPANY ROUTES
 function App() {
   const { authUser, checkAuth } = useAuthStore();
@@ -48,6 +49,14 @@ function App() {
         <Route
           path="/company/stages"
           element={authUser ? <MyStages /> : <Login />}
+        />
+        <Route
+          path="/student/add/competences"
+          element={authUser ? <ManageCompetences /> : <Login />}
+        />
+        <Route
+          path="/company/stage/:id"
+          element={authUser ? <StageDetails /> : <Login />}
         />
         <Route
           path="/company/applied-stages/:id"

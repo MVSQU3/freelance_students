@@ -4,6 +4,7 @@ import {
   Skill,
   User,
   Application,
+  StudentSkill,
 } from "../config/sequelize.js";
 
 export const getAllStudents = async (req, res, next) => {
@@ -93,13 +94,12 @@ export const getMyProfile = async (req, res, next) => {
         .json({ success: false, message: "Accès réservé aux étudiants" });
     }
 
-    console.log(req.user);
-
     // Load basic user info
     const userInfo = await User.findOne({
       where: { id: req.user.id, role: "student" },
       attributes: ["id", "email", "role"],
     });
+
     if (!userInfo) {
       return res
         .status(404)
@@ -122,6 +122,9 @@ export const getMyProfile = async (req, res, next) => {
     const candidatureCount = await Application.count({
       where: { studentId: req.user.id },
     });
+    const candidaturePendingCount = await Application.count({
+      where: { studentId: req.user.id, status: "pending" },
+    });
     const candidatureAcceptedCount = await Application.count({
       where: { studentId: req.user.id, status: "accepted" },
     });
@@ -131,10 +134,10 @@ export const getMyProfile = async (req, res, next) => {
 
     candidatureStats = {
       candidatures: candidatureCount,
+      candidaturePending: candidaturePendingCount,
       candidatureAccepted: candidatureAcceptedCount,
       candidatureRejected: candidatureRejectedCount,
     };
-    console.log(candidatureStats);
 
     if (!profile) {
       return res
@@ -229,6 +232,8 @@ export const addSkill = async (req, res, next) => {
   try {
     const { skillName } = req.body;
 
+    console.log("log de req.body", req.body);
+
     if (!skillName || !skillName.trim()) {
       return res.status(400).json({
         success: false,
@@ -253,7 +258,7 @@ export const addSkill = async (req, res, next) => {
     });
 
     // Vérifier si la compétence est déjà associée à l'étudiant
-    const hasSkill = await Student.hasSkill(skill);
+    const hasSkill = await student.hasSkill(skill);
     if (hasSkill) {
       return res.status(400).json({
         success: false,
@@ -277,6 +282,8 @@ export const addSkill = async (req, res, next) => {
 export const removeSkill = async (req, res, next) => {
   try {
     const { skillName } = req.body;
+
+    console.log(skillName);
 
     if (!skillName || !skillName.trim()) {
       return res.status(400).json({
@@ -305,6 +312,8 @@ export const removeSkill = async (req, res, next) => {
 
     // Vérifier si la compétence est bien associée à l’étudiant
     const hasSkill = await student.hasSkill(skill);
+    console.log(hasSkill);
+
     if (!hasSkill) {
       return res.status(400).json({
         success: false,
@@ -318,6 +327,45 @@ export const removeSkill = async (req, res, next) => {
     return res.status(200).json({
       success: true,
       message: "Compétence supprimée avec succès",
+      skill,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getMySkills = async (req, res, next) => {
+  try {
+    // Récupérer toutes les compétences existantes
+    const AllSkills = await Skill.findAll({
+      attributes: ["id", "name"],
+    });
+
+    // Récupérer les compétences de l'étudiant connecté
+    const student = await StudentProfile.findByPk(req.user.id, {
+      include: [
+        {
+          model: Skill,
+          as: "skills", // alias défini dans tes associations
+          attributes: ["id", "name"],
+          through: { attributes: [] }, // masque les colonnes de StudentSkill
+        },
+      ],
+    });
+
+    if (!student) {
+      return res.status(404).json({
+        success: false,
+        message: "Étudiant introuvable",
+      });
+    }
+
+    const MySkills = student.skills;
+    const CountMySkills = MySkills.length;
+
+    return res.status(200).json({
+      success: true,
+      skills: { MySkills, CountMySkills, AllSkills },
     });
   } catch (error) {
     next(error);

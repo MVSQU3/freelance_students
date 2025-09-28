@@ -21,12 +21,14 @@ import { useUploadStore } from "../../store/useUploadStore";
 const StudentDashboard = () => {
   const fileInputRef = useRef(null);
   const { logout } = useAuthStore();
-  const { getMyProfile, UpdateMyProfile, myProfile } = useStudentStore();
+  const { getMyProfile, UpdateMyProfile, myProfile, stats } = useStudentStore();
   const { uploadPp } = useUploadStore();
 
   useEffect(() => {
     getMyProfile();
   }, []);
+
+  console.log(stats);
 
   const handleAvatarClick = () => {
     fileInputRef.current?.click();
@@ -93,7 +95,7 @@ const StudentDashboard = () => {
                 className="w-full text-left px-4 py-3 rounded-lg flex items-center text-gray-600 hover:bg-gray-100 transition-colors"
               >
                 <LucidePieChart className="mr-3 h-5 w-5" />
-                Données & Statistique
+                Données
               </Link>
             </li>
             <li>
@@ -230,10 +232,13 @@ const StudentDashboard = () => {
                       </span>
                     ))
                   : []}
-                <button className="text-indigo-600 text-sm flex items-center hover:underline">
+                <Link
+                  to={"/student/add/competences"}
+                  className="text-indigo-600 text-sm flex items-center hover:underline"
+                >
                   Ajouter une compétence{" "}
                   <ChevronRight className="h-4 w-4 ml-1" />
-                </button>
+                </Link>
               </div>
             </div>
           </div>
@@ -247,8 +252,10 @@ const StudentDashboard = () => {
                   <Briefcase className="h-5 w-5 text-blue-600" />
                 </div>
               </div>
-              <p className="text-2xl font-bold mt-3">12</p>
-              <p className="text-sm text-gray-500">5 en attente</p>
+              <p className="text-2xl font-bold mt-3">{stats.candidatures}</p>
+              <p className="text-sm text-gray-500">
+                {stats.candidaturePending} en attente
+              </p>
             </div>
 
             <div className="bg-white p-5 rounded-xl shadow-sm border border-gray-100">

@@ -13,6 +13,7 @@ import {
   EyeOff,
   Save,
   Palette,
+  LucidePieChart,
 } from "lucide-react";
 import { useState } from "react";
 
@@ -74,6 +75,15 @@ const SettingsPage = () => {
               >
                 <Briefcase className="mr-3 h-5 w-5" />
                 Mes candidatures
+              </Link>
+            </li>
+            <li>
+              <Link
+                to={"/student/stats"}
+                className="w-full text-left px-4 py-3 rounded-lg flex items-center text-gray-600 hover:bg-gray-100 transition-colors"
+              >
+                <LucidePieChart className="mr-3 h-5 w-5" />
+                Données
               </Link>
             </li>
             <li>
