@@ -258,7 +258,7 @@ const StudentDashboard = () => {
               </p>
             </div>
 
-            <div className="bg-white p-5 rounded-xl shadow-sm border border-gray-100">
+            {/* <div className="bg-white p-5 rounded-xl shadow-sm border border-gray-100">
               <div className="flex items-center justify-between">
                 <h3 className="font-medium text-gray-700">Entretiens</h3>
                 <div className="bg-green-100 p-2 rounded-lg">
@@ -267,7 +267,7 @@ const StudentDashboard = () => {
               </div>
               <p className="text-2xl font-bold mt-3">3</p>
               <p className="text-sm text-gray-500">2 cette semaine</p>
-            </div>
+            </div> */}
 
             <div className="bg-white p-5 rounded-xl shadow-sm border border-gray-100">
               <div className="flex items-center justify-between">

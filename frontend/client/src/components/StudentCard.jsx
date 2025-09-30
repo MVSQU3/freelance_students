@@ -9,7 +9,7 @@ const StudentCard = ({ name, school, location, level, skills, photo, id }) => {
         <div className="flex items-center mb-4">
           <div className="w-16 h-16 rounded-full bg-gray-200 overflow-hidden mr-4">
             <img
-              src={photo || "/default-avatar.png"}
+              src={photo || "https://avatar.iran.liara.run/public"}
               alt={name}
               className="w-full h-full object-cover"
             />

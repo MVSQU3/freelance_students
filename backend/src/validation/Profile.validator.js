@@ -46,7 +46,7 @@ export const studentSchema = [
   body("location").notEmpty().withMessage("La localisation est obligatoire"),
 
   body("availability")
-    .isIn(["disponible", "indisponible"])
+    .isIn(["Disponible", "Indisponible"])
     .withMessage("La disponibilité doit être 'disponible' ou 'indisponible'"),
   body("bio")
     .optional()

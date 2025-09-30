@@ -85,7 +85,7 @@ function App() {
           element={authUser ? <StageDetails /> : <Login />}
         />
         <Route
-          path="student/my-apply"
+          path="/student/my-apply"
           element={authUser ? <MyApply /> : <LogIn />}
         />
 

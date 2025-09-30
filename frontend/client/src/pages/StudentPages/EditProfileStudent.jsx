@@ -237,7 +237,6 @@ const EditProfile = () => {
                   onChange={handleChange}
                   className="select select-bordered w-full focus:ring-2 focus:ring-indigo-500"
                 >
-                  <option value="">Sélectionnez...</option>
                   <option value="disponible">Disponible</option>
                   <option value="indisponible">Indisponible</option>
                 </select>

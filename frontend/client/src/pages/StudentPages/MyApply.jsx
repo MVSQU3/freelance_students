@@ -169,9 +169,7 @@ const MyApply = () => {
                         <Calendar className="w-4 h-4 mr-2 text-indigo-500" />
                         <span>
                           Postulé le{" "}
-                          {new Date(
-                            application.applicationDate
-                          ).toLocaleDateString()}
+                          {new Date(application.created).toLocaleDateString()}
                         </span>
                       </div>
                     </div>

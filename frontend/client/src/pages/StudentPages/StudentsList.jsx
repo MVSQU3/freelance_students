@@ -1,15 +1,7 @@
 import { useEffect, useState } from "react";
 import { useStudentStore } from "../../store/useStudentStore";
 import StudentCard from "../../components/StudentCard";
-import {
-  Search,
-  MapPin,
-  BookOpen,
-  Filter,
-  X,
-  Loader,
-  Loader2,
-} from "lucide-react";
+import { Search, MapPin, BookOpen, Filter, X } from "lucide-react";
 
 const StudentsList = () => {
   const { getAllStudents, isStudentLoading, students } = useStudentStore();
@@ -24,7 +16,6 @@ const StudentsList = () => {
   }, [getAllStudents]);
 
   const hasActiveFilters = locationFilter || schoolFilter || skillFilter;
-  console.log("students =>", students);
 
   return (
     <div className="min-h-screen bg-gray-50 p-6">
@@ -162,6 +153,7 @@ const StudentsList = () => {
             {students.map((student, index) => (
               <li key={index} className="list-none">
                 <StudentCard
+                  photo={student.photoUrl}
                   name={student.lastName}
                   school={student.school}
                   location={student.location}
@@ -171,7 +163,6 @@ const StudentsList = () => {
                       ? student.skills.map((s) => s.name)
                       : []
                   }
-                  photo={student.photoUrl}
                   id={student.id}
                 />
               </li>

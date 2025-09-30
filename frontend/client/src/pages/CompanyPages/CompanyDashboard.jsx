@@ -79,14 +79,7 @@ const CompanyDashboard = () => {
       </div>
     );
   }
-  // totalStageActifs,
-  // totalStageInactifs,
-  // lastUploadedStages,
-  // totalApplications,
-  // lastApplications,
-  // totalApplicationsPending,
-  // totalApplicationsAccepted,
-  // totalApplicationsRejected,
+
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 py-8">
@@ -111,7 +104,7 @@ const CompanyDashboard = () => {
           </div>
 
           {/* Statistiques principales */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6 mb-8">
             <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-gray-600">Offres publiées</h3>
@@ -253,7 +246,7 @@ const CompanyDashboard = () => {
                         <div className="text-right">
                           <div className="text-sm text-gray-500 mb-1">
                             Clôture le{" "}
-                            {new Date(stage.deadline).toLocaleDateString()}
+                            {new Date(stage.created).toLocaleDateString()}
                           </div>
                           <Link
                             to={`/company/applied-stages/${stage.id}`}

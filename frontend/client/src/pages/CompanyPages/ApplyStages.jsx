@@ -89,6 +89,23 @@ const ApplyStages = () => {
     return configs[status];
   };
 
+  const filterApplications = Array.isArray(stage.applications)
+    ? stage.applications.filter((app) => {
+        if (searchTerm.trim() !== "") {
+          const lowerSearch = searchTerm.toLowerCase();
+          const martchSchool = app.student.school
+            .toLowerCase()
+            .includes(lowerSearch);
+          const matchLevel = app?.student?.level
+            .toLowerCase()
+            .includes(lowerSearch);
+
+          if (!martchSchool && !matchLevel) return false;
+        }
+        return true;
+      })
+    : [];
+
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -257,8 +274,8 @@ const ApplyStages = () => {
 
           {/* Liste des candidatures */}
           <div className="space-y-4">
-            {Array.isArray(stage.applications) &&
-              stage.applications.map((application) => {
+            {Array.isArray(filterApplications) &&
+              filterApplications.map((application) => {
                 const StatusIcon = getStatusConfig(application.status).icon;
 
                 return (
@@ -394,7 +411,8 @@ const ApplyStages = () => {
                         <div className="mt-6">
                           <h4 className="font-semibold text-gray-800 mb-3">
                             Lettre de motivation
-                          </h4>+
+                          </h4>
+                          +
                           <p className="text-gray-600 text-sm leading-relaxed bg-gray-50 p-4 rounded-lg">
                             {application.coverLetter}
                           </p>
